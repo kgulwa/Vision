@@ -1,0 +1,16 @@
+<p style="color: green;"><%= notice %></p>
+
+<h2><%= @pin.title %></h2>
+<p><%= @pin.description %></p>
+
+<% if @pin.image.attached? %>
+  <%= image_tag @pin.image, style: "max-width: 100%; height: auto;" %>
+<% end %>
+
+<div>
+  <%= link_to "Edit this pin", edit_pin_path(@pin) %> |
+  <%= link_to "Back to pins", pins_path %> |
+  <%= button_to "Destroy this pin", @pin, method: :delete, data: { confirm: "Are you sure?" } %>
+</div>
+
+
