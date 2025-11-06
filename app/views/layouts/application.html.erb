@@ -6,17 +6,18 @@
     <meta name="turbo-visit-control" content="reload">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>load" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body class="bg-gray-50">
     <%= render 'layouts/header' %>
     
-    <div class="flex">
+    <div class="flex pt-16">
       <%= render 'layouts/sidebar' if logged_in? %>
       
-      <main class="flex-1 <%= logged_in? ? 'ml-64' : '' %> mt-16 p-6">
+      <main class="flex-1 <%= logged_in? ? 'ml-64' : '' %> p-6 min-h-screen">
         <% if notice %>
           <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
             <span class="block sm:inline"><%= notice %></span>
