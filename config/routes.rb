@@ -1,15 +1,17 @@
 Rails.application.routes.draw do
-  root 'sessions#home'              # homepage route
+  # Homepage
+  root 'sessions#home'
 
-  resources :pins                    # pins CRUD routes
+  # Pins CRUD
+  resources :pins
 
+  # Users routes
   resources :users, only: [:new, :create, :edit, :update, :show, :destroy]
 
   # Sessions routes
-  get '/login', to: 'sessions#new'
-  resources :users, only: [:new, :create, :edit, :update, :show, :destroy]
+  get '/login', to: 'sessions#new', as: :login
   post '/login', to: 'sessions#create'
-  delete '/logout', to: 'sessions#destroy'
+  delete '/logout', to: 'sessions#destroy', as: :logout
 
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check

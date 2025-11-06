@@ -1,0 +1,58 @@
+<div class="signup-page">
+  <h1>Create Your Account</h1>
+
+  <%= form_with(model: @user, url: users_path, local: true) do |f| %>
+    <div>
+      <%= f.label :username %><br>
+      <%= f.text_field :username, required: true %>
+    </div>
+
+    <div>
+      <%= f.label :email %><br>
+      <%= f.email_field :email, required: true %>
+    </div>
+
+    <div>
+      <%= f.label :password %><br>
+      <%= f.password_field :password, required: true %>
+    </div>
+
+    <div>
+      <%= f.label :password_confirmation %><br>
+      <%= f.password_field :password_confirmation, required: true %>
+    </div>
+
+    <div>
+      <%= f.submit "Sign Up", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
+
+<style>
+.signup-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+.signup-page h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+input, label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.btn-primary {
+  background-color: #ff4d6d;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 25px;
+  font-weight: bold;
+}
+</style>

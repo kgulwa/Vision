@@ -6,6 +6,7 @@ class SessionsController < ApplicationController
 
   def new
     # login form
+    # @user here is not strictly needed for login, you could remove it if you prefer
   end
 
   def create
