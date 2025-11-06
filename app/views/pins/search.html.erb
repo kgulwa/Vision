@@ -1,0 +1,15 @@
+<h1 class="text-2xl font-bold mb-4">Search Results for "<%= @query %>"</h1>
+
+<% if @pins.any? %>
+  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <% @pins.each do |pin| %>
+      <div class="bg-white p-4 rounded shadow">
+        <%= image_tag pin.image_url, alt: pin.title, class: "w-full h-48 object-cover rounded" %>
+        <h2 class="mt-2 font-semibold"><%= pin.title %></h2>
+        <p class="text-sm text-gray-600"><%= truncate(pin.description, length: 50) %></p>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p>No pins found.</p>
+<% end %>

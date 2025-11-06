@@ -34,7 +34,6 @@ class PinsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /pins/1 or /pins/1.json
   def update
     respond_to do |format|
       if @pin.update(pin_params)
@@ -47,7 +46,6 @@ class PinsController < ApplicationController
     end
   end
 
-  # DELETE /pins/1 or /pins/1.json
   def destroy
     @pin.destroy!
 
@@ -57,6 +55,14 @@ class PinsController < ApplicationController
     end
   end
 
+  def search
+    @query = params[:query]
+    @pins = if @query.present?
+              Pin.where("title LIKE ? OR description LIKE ?", "%#{@query}%", "%#{@query}%")
+            else
+              Pin.none
+            end
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_pin
