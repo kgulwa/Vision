@@ -1,21 +1,17 @@
 class SessionsController < ApplicationController
   def home
     if logged_in?
-      # Feed: pins from followed users + own pins + reposts
       following_ids = current_user.following.pluck(:id)
-      @pins = Pin.where(user_id: [current_user.id] + following_ids)
-                 .or(Pin.joins(:reposts).where(reposts: { user_id: [current_user.id] + following_ids }))
-                 .distinct
-                 .recent
-                 .limit(50)
+      user_and_following_ids = [current_user.id] + following_ids
+      pins_from_users = Pin.where(user_id: user_and_following_ids)
+      reposted_pins = Pin.joins(:reposts).where(reposts: { user_id: user_and_following_ids })
+      @pins = (pins_from_users + reposted_pins).uniq.sort_by(&:created_at).reverse.first(50)
     else
-      # Show recent pins for non-logged in users
       @pins = Pin.recent.limit(20)
     end
   end
 
   def new
-    # login form
   end
 
   def create

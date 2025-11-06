@@ -1,20 +1,19 @@
 class User < ApplicationRecord
     has_secure_password
 
-    #validations
-    validates :username, presence: true, uniquness: true
-    validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP }
+    # validations
+    validates :username, presence: true, uniqueness: true
+    validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
-    #associations
+    # associations
     has_many :pins, dependent: :destroy
-    has_many :comemnts, dependent: :destroy
+    has_many :comments, dependent: :destroy
     has_many :likes, dependent: :destroy
     has_many :reposts, dependent: :destroy
     has_many :liked_pins, through: :likes, source: :pin
     has_many :reposted_pins, through: :reposts, source: :pin 
 
-
-    #following associations
+    # following associations
     has_many :active_follows, class_name: "Follow", foreign_key: "follower_id", dependent: :destroy
     has_many :passive_follows, class_name: "Follow", foreign_key: "followed_id", dependent: :destroy
     has_many :following, through: :active_follows, source: :followed
@@ -28,8 +27,8 @@ class User < ApplicationRecord
         following.delete(user)
     end
 
-    def following(user)
-        following.include?(user)
+    def following?(user)
+         following.include?(user)
     end
 
     def like(pin)
@@ -55,6 +54,4 @@ class User < ApplicationRecord
     def reposted?(pin)
         reposted_pins.include?(pin)
     end
-
-    
 end
