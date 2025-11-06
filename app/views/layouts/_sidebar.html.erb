@@ -1,0 +1,45 @@
+<aside class="fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 overflow-y-auto">
+  <nav class="p-4 space-y-2">
+    <%= link_to root_path, class: "flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 #{current_page?(root_path) ? 'bg-gray-100' : ''}" do %>
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+      </svg>
+      <span class="font-medium">Home</span>
+    <% end %>
+
+    <%= link_to pins_path, class: "flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 #{current_page?(pins_path) ? 'bg-gray-100' : ''}" do %>
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+      </svg>
+      <span class="font-medium">Explore</span>
+    <% end %>
+
+    <%= link_to current_user, class: "flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 #{current_page?(current_user) ? 'bg-gray-100' : ''}" do %>
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+      </svg>
+      <span class="font-medium">Your Profile</span>
+    <% end %>
+
+    <hr class="my-4">
+
+    <div class="px-4 py-2">
+      <h3 class="text-sm font-semibold text-gray-600 uppercase">Following</h3>
+    </div>
+
+    <% if current_user.following.any? %>
+      <% current_user.following.limit(10).each do |user| %>
+        <%= link_to user, class: "flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-gray-100" do %>
+          <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+            <%= user.username[0].upcase %>
+          </div>
+          <span class="text-sm"><%= user.username %></span>
+        <% end %>
+      <% end %>
+    <% else %>
+      <div class="px-4 py-2 text-sm text-gray-500">
+        Not following anyone yet
+      </div>
+    <% end %>
+  </nav>
+</aside>
