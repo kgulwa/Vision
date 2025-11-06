@@ -1,0 +1,61 @@
+<div class="homepage">
+  <h1>WELCOME TO VISION</h1>
+
+  <div class="auth-buttons">
+    <%= link_to "Sign In", login_path, class: "btn btn-primary" %>
+    <%= link_to "Sign Up", new_user_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<style>
+  .homepage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    color: white;
+    text-align: center;
+    font-family: 'Helvetica Neue', sans-serif;
+  }
+
+  .homepage h1 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+  }
+
+  .auth-buttons {
+    display: flex;
+    gap: 20px;
+  }
+
+  .btn {
+    text-decoration: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+
+  .btn-primary {
+    background-color: white;
+    color: #ff4d6d;
+  }
+
+  .btn-primary:hover {
+    background-color: #ffe3ec;
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+  }
+
+  .btn-secondary:hover {
+    background-color: white;
+    color: #ff4d6d;
+  }
+</style>
