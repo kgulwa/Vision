@@ -2,16 +2,24 @@ Rails.application.routes.draw do
   # Homepage
   root 'sessions#home'
 
-  # Pins CRUD
-  resources :pins
+  # Pins with nested routes
+  resources :pins do
+    resources :comments, only: [:create, :destroy]
+    resource :like, only: [:create, :destroy]
+    resource :repost, only: [:create, :destroy]
+  end
 
-  # Users routes
-  resources :users, only: [:new, :create, :edit, :update, :show, :destroy]
+  # Users with nested routes
+  resources :users do
+    resource :follow, only: [:create, :destroy]
+  end
 
-  # Sessions routes
+  # Sessions
   get '/login', to: 'sessions#new', as: :login
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy', as: :logout
+  
+  # Search
   get '/search', to: 'pins#search', as: 'search'
 
   # Health check
