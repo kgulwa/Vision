@@ -19,7 +19,7 @@ RSpec.describe "Sessions", type: :request do
       it "does not log in and shows error message" do
         post login_path, params: { username: 'wronguser', password: 'password123' }
         
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(session[:user_id]).to be_nil
         expect(response.body).to include("Invalid username or password")
       end
@@ -29,7 +29,7 @@ RSpec.describe "Sessions", type: :request do
       it "does not log in and shows error message" do
         post login_path, params: { username: user.username, password: 'wrongpassword' }
         
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(session[:user_id]).to be_nil
         expect(response.body).to include("Invalid username or password")
       end

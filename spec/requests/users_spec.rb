@@ -43,7 +43,7 @@ RSpec.describe "Users", type: :request do
           post users_path, params: user_params
         }.not_to change(User, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("Email has already been taken")
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe "Users", type: :request do
           post users_path, params: user_params
         }.not_to change(User, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("Password confirmation doesn&#39;t match Password")
       end
     end
@@ -83,9 +83,9 @@ RSpec.describe "Users", type: :request do
           post users_path, params: user_params
         }.not_to change(User, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("Email is invalid")
       end
     end
   end
-ends
+end
