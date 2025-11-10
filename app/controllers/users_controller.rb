@@ -18,7 +18,7 @@ class UsersController < ApplicationController
       session[:user_id] = @user.id
       redirect_to root_path, notice: "Account created successfully!"
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -29,7 +29,7 @@ class UsersController < ApplicationController
     if @user.update(user_params)
       redirect_to @user, notice: "Profile updated successfully!"
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -37,6 +37,20 @@ class UsersController < ApplicationController
     @user.destroy
     session[:user_id] = nil
     redirect_to root_path, notice: "Account deleted successfully."
+  end
+
+  # AJAX endpoint to check email availability
+  def check_email
+    email = params[:email]&.downcase
+    available = email.present? && !User.exists?(email: email)
+    render json: { available: available }
+  end
+
+  # AJAX endpoint to check username availability
+  def check_username
+    username = params[:username]
+    available = username.present? && !User.exists?(username: username)
+    render json: { available: available }
   end
 
   private

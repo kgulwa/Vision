@@ -12,6 +12,10 @@ Rails.application.routes.draw do
   # Users with nested routes
   resources :users do
     resource :follow, only: [:create, :destroy]
+    collection do
+      get :check_email
+      get :check_username
+    end
   end
 
   # Sessions

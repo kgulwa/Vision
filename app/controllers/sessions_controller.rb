@@ -1,17 +1,28 @@
 class SessionsController < ApplicationController
+
   def home
     if logged_in?
+      # Feed: pins from followed users + own pins + reposts
       following_ids = current_user.following.pluck(:id)
-      user_and_following_ids = [current_user.id] + following_ids
-      pins_from_users = Pin.where(user_id: user_and_following_ids)
-      reposted_pins = Pin.joins(:reposts).where(reposts: { user_id: user_and_following_ids })
-      @pins = (pins_from_users + reposted_pins).uniq.sort_by(&:created_at).reverse.first(50)
+      all_user_ids = [current_user.id] + following_ids
+      
+      # Get pins from users we follow and our own pins
+      own_and_following_pins = Pin.where(user_id: all_user_ids)
+      
+      # Get pins that were reposted by us or people we follow
+      reposted_pin_ids = Repost.where(user_id: all_user_ids).pluck(:pin_id)
+      reposted_pins = Pin.where(id: reposted_pin_ids)
+      
+      # Combine and remove duplicates
+      @pins = (own_and_following_pins + reposted_pins).uniq.sort_by(&:created_at).reverse.first(50)
     else
+      # Show recent pins for non-logged in users
       @pins = Pin.recent.limit(20)
     end
   end
 
   def new
+    # login form
   end
 
   def create
@@ -21,7 +32,7 @@ class SessionsController < ApplicationController
       redirect_to root_path, notice: "Welcome back, #{@user.username}!"
     else
       flash.now[:alert] = "Invalid username or password"
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -29,4 +40,5 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to root_path, notice: "Logged out successfully"
   end
+
 end
