@@ -6,32 +6,79 @@
     <meta name="turbo-visit-control" content="reload">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-50">
+  <body class="bg-white text-gray-900">
     <%= render 'layouts/header' %>
-    
-    <div class="flex pt-16">
-      <%= render 'layouts/sidebar' if logged_in? %>
-      
-      <main class="flex-1 <%= logged_in? ? 'ml-64' : '' %> p-6 min-h-screen">
-        <% if notice %>
-          <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline"><%= notice %></span>
-          </div>
-        <% end %>
-        
-        <% if alert %>
-          <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline"><%= alert %></span>
-          </div>
-        <% end %>
-        
-        <%= yield %>
-      </main>
-    </div>
+
+    <main class="pt-14">
+      <% if notice %>
+        <div class="mb-4 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl relative flex items-center shadow-sm max-w-4xl mx-auto">
+          <svg class="w-5 h-5 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          <span><%= notice %></span>
+        </div>
+      <% end %>
+
+      <% if alert %>
+        <div class="mb-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl relative flex items-center shadow-sm max-w-4xl mx-auto">
+          <svg class="w-5 h-5 mr-2 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+          </svg>
+          <span><%= alert %></span>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-black text-white flex justify-around py-2 border-t border-gray-700 z-50">
+      <!-- Home -->
+      <%= link_to root_path, class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
+        <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 2L2 8h3v8h10V8h3L10 2z"/>
+        </svg>
+        Home
+      <% end %>
+
+      <!-- Search -->
+      <%= link_to "#", class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"/>
+        </svg>
+        Search
+      <% end %>
+
+      <!-- Create -->
+      <%= link_to new_pin_path, class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Create
+      <% end %>
+
+      <!-- Inbox (placeholder) -->
+      <%= link_to "#", class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10a2 2 0 00-2-2H5a2 2 0 00-2 2v8h18v-8zM5 10l7 5 7-5"/>
+        </svg>
+        Inbox
+      <% end %>
+
+      <!-- Saved (placeholder) -->
+      <%= link_to "#", class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3-7 3V5z"/>
+        </svg>
+        Saved
+      <% end %>
+    </nav>
   </body>
 </html>

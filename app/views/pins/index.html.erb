@@ -1,16 +1,44 @@
-<p style="color: green"><%= notice %></p>
+<div class="max-w-7xl mx-auto px-0 bg-white min-h-screen pb-20">
+  <div class="flex items-center justify-between px-4 mb-6 pt-4">
+    <h1 class="text-2xl font-bold text-gray-900">Explore Pins</h1>
+    <% if logged_in? %>
+      <%= link_to new_pin_path, class: "px-5 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-full hover:bg-red-700 flex items-center space-x-2 shadow-md hover:shadow-lg transition-all" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span>Create Pin</span>
+      <% end %>
+    <% end %>
+  </div>
 
-<% content_for :title, "Pins" %>
-
-<h1>Pins</h1>
-
-<div id="pins">
-  <% @pins.each do |pin| %>
-    <%= render pin %>
-    <p>
-      <%= link_to "Show this pin", pin %>
-    </p>
+  <% if @pins.any? %>
+    <!-- Masonry Grid -->
+    <div class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-2 [column-fill:_balance] px-2">
+      <% @pins.each do |pin| %>
+        <div class="break-inside-avoid mb-2">
+          <%= link_to pin, class: "block rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02]" do %>
+            <% if pin.image.attached? %>
+              <%= image_tag pin.image, class: "w-full h-auto rounded-xl" %>
+            <% else %>
+              <div class="aspect-[3/4] bg-gray-200 flex items-center justify-center">
+                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-16 bg-white rounded-2xl">
+      <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      <h3 class="text-xl font-semibold text-gray-700 mb-2">No pins yet</h3>
+      <p class="text-gray-500">Be the first to create a pin!</p>
+    </div>
   <% end %>
 </div>
-
-<%= link_to "New pin", new_pin_path %>
