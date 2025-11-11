@@ -15,6 +15,8 @@ Rails.application.routes.draw do
     collection do
       get :check_email
       get :check_username
+      get :check_username_exists
+      post :check_password
     end
   end
 

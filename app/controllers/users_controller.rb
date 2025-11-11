@@ -39,18 +39,36 @@ class UsersController < ApplicationController
     redirect_to root_path, notice: "Account deleted successfully."
   end
 
-  # AJAX endpoint to check email availability
+  # AJAX endpoint to check email availability (for signup)
   def check_email
     email = params[:email]&.downcase
     available = email.present? && !User.exists?(email: email)
     render json: { available: available }
   end
 
-  # AJAX endpoint to check username availability
+  # AJAX endpoint to check username availability (for signup)
   def check_username
     username = params[:username]
     available = username.present? && !User.exists?(username: username)
     render json: { available: available }
+  end
+
+  # AJAX endpoint to check if username exists (for login)
+  def check_username_exists
+    username = params[:username]
+    exists = username.present? && User.exists?(username: username)
+    render json: { exists: exists }
+  end
+
+  # AJAX endpoint to check password validity (for login)
+  def check_password
+    username = params[:username]
+    password = params[:password]
+    
+    user = User.find_by(username: username)
+    valid = user && user.authenticate(password)
+    
+    render json: { valid: !!valid }
   end
 
   private
