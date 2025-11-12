@@ -1,0 +1,19 @@
+<div class="bg-white rounded-lg shadow-md overflow-hidden mb-4">
+  <!-- Pin image -->
+  <% if pin.image.attached? %>
+    <%= image_tag pin.image, class: "w-full h-auto object-cover" %>
+  <% end %>
+
+  <div class="p-4">
+    <!-- Pin title -->
+    <h3 class="font-bold text-lg mb-2"><%= pin.title %></h3>
+
+    <!-- Pin description -->
+    <% if pin.description.present? %>
+      <p class="text-gray-700 text-sm mb-2"><%= pin.description %></p>
+    <% end %>
+
+    <!-- Pin author -->
+    <p class="text-gray-500 text-xs">Posted by <%= pin.user.username %></p>
+  </div>
+</div>

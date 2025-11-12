@@ -1,11 +1,49 @@
-<% content_for :title, "New pin" %>
+<% content_for :title, "New Pin" %>
 
-<h1>New pin</h1>
+<div class="flex justify-center items-start py-12">
+  <div class="w-full max-w-xl bg-white p-8 rounded-xl shadow-md">
+    
+    <!-- Flash Messages -->
+    <% if flash[:notice] %>
+      <div class="mb-4 p-3 bg-green-100 text-green-700 rounded">
+        <%= flash[:notice] %>
+      </div>
+    <% elsif flash[:alert] %>
+      <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
 
-<%= render "form", pin: @pin %>
+    <h1 class="text-2xl font-bold text-center mb-6">Create a New Pin</h1>
 
-<br>
+    <%= form_with(model: @pin, local: true, html: { multipart: true, class: "space-y-4" }) do |f| %>
+      <!-- Title -->
+      <div>
+        <%= f.label :title, class: "block mb-1 font-semibold" %>
+        <%= f.text_field :title, class: "w-full border-gray-300 rounded p-2" %>
+      </div>
 
-<div>
-  <%= link_to "Back to pins", pins_path %>
+      <!-- Description -->
+      <div>
+        <%= f.label :description, class: "block mb-1 font-semibold" %>
+        <%= f.text_area :description, rows: 3, class: "w-full border-gray-300 rounded p-2" %>
+      </div>
+
+      <!-- Image Upload -->
+      <div>
+        <%= f.label :image, class: "block mb-1 font-semibold" %>
+        <%= f.file_field :image, class: "w-full text-gray-700" %>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="text-center">
+        <%= f.submit "Post Pin", class: "px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition" %>
+      </div>
+    <% end %>
+
+    <!-- Back Link -->
+    <div class="text-center mt-6">
+      <%= link_to "Back to Pins", pins_path, class: "text-red-600 hover:underline" %>
+    </div>
+  </div>
 </div>
