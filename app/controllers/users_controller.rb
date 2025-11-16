@@ -8,6 +8,7 @@ class UsersController < ApplicationController
     @reposted_pins = @user.reposted_pins.recent
   end
 
+  # Fixed: renamed from `newwo` to `new` so form_with gets a valid @user
   def new
     @user = User.new
   end

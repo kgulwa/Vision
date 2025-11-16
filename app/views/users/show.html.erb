@@ -28,21 +28,36 @@
         </div>
       </div>
 
+      <!-- Follow / Edit Button -->
       <% if logged_in? %>
         <% if @user == current_user %>
+
+          <!-- EDIT PROFILE BUTTON -->
           <%= link_to edit_user_path(@user), class: "px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50" do %>
             Edit Profile
           <% end %>
+
         <% else %>
+
           <% if current_user.following?(@user) %>
-            <%= button_to user_follow_path(@user), method: :delete, class: "px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-full hover:bg-gray-300" do %>
+            <!-- FOLLOWING BUTTON (hover turns red to unfollow) -->
+            <%= button_to user_follow_path(@user),
+                          method: :delete,
+                          class: "px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-full
+                                  hover:bg-red-500 hover:text-white transition-colors duration-200" do %>
               Following
             <% end %>
+
           <% else %>
-            <%= button_to user_follow_path(@user), method: :post, class: "px-6 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700" do %>
+            <!-- FOLLOW BUTTON -->
+            <%= button_to user_follow_path(@user),
+                          method: :post,
+                          class: "px-6 py-3 bg-blue-600 text-white font-semibold rounded-full
+                                  hover:bg-blue-700 transition-colors duration-200" do %>
               Follow
             <% end %>
           <% end %>
+
         <% end %>
       <% end %>
     </div>

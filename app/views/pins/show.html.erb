@@ -1,16 +1,131 @@
-<p style="color: green;"><%= notice %></p>
+<div class="max-w-5xl mx-auto">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-6">
+    <div class="grid md:grid-cols-2 gap-0">
+      <!-- Image Section -->
+      <div class="bg-gray-100 flex items-center justify-center">
+        <% if @pin.image.attached? %>
+          <%= image_tag @pin.image, class: "w-full h-auto object-contain max-h-[80vh]" %>
+        <% else %>
+          <div class="w-full h-96 flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 text-white text-2xl font-bold">
+            No image
+          </div>
+        <% end %>
+      </div>
 
-<h2><%= @pin.title %></h2>
-<p><%= @pin.description %></p>
+      <!-- Details Section -->
+      <div class="p-6 flex flex-col">
+        <!-- Creator info -->
+        <div class="flex items-center justify-between mb-4">
+          <%= link_to @pin.user, class: "flex items-center space-x-3" do %>
+            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              <%= @pin.user.username[0].upcase %>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-900"><%= @pin.user.username %></p>
+              <p class="text-xs text-gray-500"><%= pluralize(@pin.user.followers.count, 'follower') %></p>
+            </div>
+          <% end %>
 
-<% if @pin.image.attached? %>
-  <%= image_tag @pin.image, style: "max-width: 100%; height: auto;" %>
-<% end %>
+          <% if logged_in? && @pin.user == current_user %>
+            <div class="flex space-x-2">
+              <%= link_to "Edit", edit_pin_path(@pin), class: "px-3 py-1 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 text-sm" %>
+              <%= button_to "Delete", @pin, method: :delete,
+                  data: { turbo_confirm: "Are you sure you want to delete this pin?" },
+                  class: "px-3 py-1 text-red-600 border border-red-200 rounded-lg hover:bg-red-50 text-sm" %>
+            </div>
+          <% end %>
+        </div>
 
-<div>
-  <%= link_to "Edit this pin", edit_pin_path(@pin) %> |
-  <%= link_to "Back to pins", pins_path %> |
-  <%= button_to "Destroy this pin", @pin, method: :delete, data: { confirm: "Are you sure?" } %>
+        <!-- Title & Description -->
+        <h1 class="text-2xl font-bold text-gray-900 mb-2"><%= @pin.title %></h1>
+        <% if @pin.description.present? %>
+          <p class="text-gray-700 mb-6"><%= @pin.description %></p>
+        <% end %>
+
+        <!-- Actions Section -->
+        <% if logged_in? && @pin.user != current_user %>
+          <div class="flex flex-wrap items-center space-x-4 mb-6">
+            <!-- Like -->
+            <% if current_user.liked?(@pin) %>
+              <%= button_to pin_like_path(@pin), method: :delete,
+                  class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                </svg>
+                <span><%= @pin.likes.count %></span>
+              <% end %>
+            <% else %>
+              <%= button_to pin_like_path(@pin), method: :post,
+                  class: "flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100" do %>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 20 20">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <span><%= @pin.likes.count %></span>
+              <% end %>
+            <% end %>
+
+            <!-- Comment -->
+            <a href="#comments" class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100">
+              <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                      d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"
+                      clip-rule="evenodd" />
+              </svg>
+              <span><%= @comments.count %></span>
+            </a>
+          </div>
+        <% end %>
+
+        <!-- Comments Section -->
+        <div id="comments" class="mt-4">
+          <h3 class="font-semibold text-gray-900 mb-4">Comments (<%= @comments.count %>)</h3>
+
+          <% if logged_in? %>
+            <%= form_with model: [@pin, Comment.new], class: "mb-6" do |f| %>
+              <div class="flex space-x-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                  <%= current_user.username[0].upcase %>
+                </div>
+                <div class="flex-1">
+                  <%= f.text_area :content, rows: 3, placeholder: "Add a comment...",
+                      class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+                  <%= f.submit "Comment",
+                      class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer" %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+
+          <div class="space-y-4">
+            <% @comments.each do |comment| %>
+              <div class="flex space-x-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                  <%= comment.user.username[0].upcase %>
+                </div>
+                <div class="flex-1 bg-gray-50 rounded-lg p-3">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-semibold text-gray-900"><%= comment.user.username %></span>
+                    <span class="text-xs text-gray-500"><%= time_ago_in_words(comment.created_at) %> ago</span>
+                  </div>
+                  <p class="text-gray-700"><%= comment.content %></p>
+
+                  <% if logged_in? && comment.user == current_user %>
+                    <%= button_to "Delete", pin_comment_path(@pin, comment),
+                        method: :delete, data: { turbo_confirm: "Are you sure?" },
+                        class: "mt-2 text-xs text-red-600 hover:underline" %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+
+            <% if @comments.empty? %>
+              <p class="text-center text-gray-500 py-6">No comments yet. Be the first to comment!</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-
