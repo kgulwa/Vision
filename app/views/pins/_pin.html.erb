@@ -25,6 +25,7 @@
     <div class="flex justify-between items-center text-xs text-gray-500">
       <div class="flex space-x-3">
         <% if logged_in? %>
+
           <!-- Like -->
           <% if current_user.liked?(pin) %>
             <%= button_to pin_like_path(pin), method: :delete, class: "hover:text-red-600 flex items-center" do %>
@@ -42,10 +43,11 @@
               🔄 <span class="ml-1"><%= pin.reposts_count %></span>
             <% end %>
           <% else %>
-            <%= button_to pin_reposts_path(pin), method: :post, class: "hover:text-green-600 flex items-center" do %>
+            <%= button_to pin_repost_path(pin), method: :post, class: "hover:text-green-600 flex items-center" do %>
               🔄 <span class="ml-1"><%= pin.reposts_count %></span>
             <% end %>
           <% end %>
+
         <% else %>
           <span class="flex items-center">❤️ <span class="ml-1"><%= pin.likes_count %></span></span>
           <span class="flex items-center">🔄 <span class="ml-1"><%= pin.reposts_count %></span></span>

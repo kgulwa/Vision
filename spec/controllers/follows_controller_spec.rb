@@ -1,0 +1,48 @@
+require 'rails_helper'
+
+RSpec.describe FollowsController, type: :controller do
+  let(:user) { User.create!(email: "test@example.com", password: "password", username: "testuser") }
+  let(:other_user) { User.create!(email: "other@example.com", password: "password", username: "otheruser") }
+
+  describe "POST #create" do
+    context "when not logged in" do
+      it "redirects to login page" do
+        post :create, params: { user_id: other_user.id }
+        expect(response).to redirect_to(login_path)
+      end
+    end
+
+    context "when logged in" do
+      before { allow(controller).to receive(:current_user).and_return(user) }
+
+      it "follows the user" do
+        expect {
+          post :create, params: { user_id: other_user.id }
+        }.to change { user.following.include?(other_user) }.from(false).to(true)
+        expect(response).to redirect_to(other_user)
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    before { user.follow(other_user) }
+
+    context "when not logged in" do
+      it "redirects to login page" do
+        delete :destroy, params: { user_id: other_user.id }
+        expect(response).to redirect_to(login_path)
+      end
+    end
+
+    context "when logged in" do
+      before { allow(controller).to receive(:current_user).and_return(user) }
+
+      it "unfollows the user" do
+        expect {
+          delete :destroy, params: { user_id: other_user.id }
+        }.to change { user.following.include?(other_user) }.from(true).to(false)
+        expect(response).to redirect_to(other_user)
+      end
+    end
+  end
+end

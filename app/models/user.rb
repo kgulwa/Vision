@@ -57,8 +57,9 @@ class User < ApplicationRecord
   end
   
   def reposted?(pin)
-    reposted_pins.include?(pin)
+    reposts.exists?(pin_id: pin.id)
   end
+
 
   private
 
