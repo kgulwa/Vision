@@ -1,69 +1,111 @@
-<div class="w-full max-w-3xl mx-auto mt-6">
+<div class="w-full max-w-6xl mx-auto mt-6">
 
-  <!-- Pin Image -->
-  <div class="mb-6">
-    <%= image_tag @pin.image, class: "w-full rounded-lg shadow" %>
+  <!-- USER INFO -->
+  <div class="flex items-center space-x-4 mb-8">
+    <div class="w-16 h-16 rounded-full bg-blue-500 text-white flex items-center justify-center text-2xl">
+      <%= @user.username.first.upcase %>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold"><%= @user.username %></h1>
+      <p class="text-gray-500 text-sm">
+        <%= pluralize(@user.pins.count, "pin") %>
+      </p>
+    </div>
   </div>
 
-  <!-- Actions Section -->
-  <% if logged_in? && @pin.user != current_user %>
-    <div class="flex items-center space-x-6 mb-6 justify-center">
-
-      <!-- Like Button -->
-      <% if current_user.liked?(@pin) %>
-        <%= button_to pin_like_path(@pin), method: :delete,
-            class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
-          <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
-          </svg>
-          <span><%= @pin.likes.count %></span>
+  <!-- FOLLOW BUTTON -->
+  <% if logged_in? && current_user != @user %>
+    <div class="mb-6">
+      <% if current_user.following?(@user) %>
+        <%= button_to user_follow_path(@user),
+            method: :delete,
+            class: "px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
+          Unfollow
         <% end %>
       <% else %>
-        <%= button_to pin_like_path(@pin), method: :post,
-            class: "flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100" do %>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 20 20">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
-          <span><%= @pin.likes.count %></span>
+        <%= button_to user_follow_path(@user),
+            method: :post,
+            class: "px-4 py-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200" do %>
+          Follow
         <% end %>
       <% end %>
-
-      <!-- Comment Button -->
-      <a href="#comments" class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100">
-        <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd"
-                d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"
-                clip-rule="evenodd" />
-        </svg>
-        <span><%= @comments.count %></span>
-      </a>
-
-      <!-- Repost Button -->
-      <% if current_user.reposted?(@pin) %>
-        <%= button_to pin_repost_path(@pin), method: :delete,
-            class: "flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200" do %>
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-            <path fill="none" d="M0 0h24v24H0z"/>
-            <path d="M17 1l4 4-4 4V6H7v4l-4-4 4-4v2h10V1zm-10 22l-4-4 4-4v2h10v-4l4 4-4 4v-2H7v4z"/>
-          </svg>
-          <span><%= @pin.reposts_count %></span>
-        <% end %>
-      <% else %>
-        <%= button_to pin_repost_path(@pin), method: :post,
-            class: "flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100" do %>
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-            <path fill="none" d="M0 0h24v24H0z"/>
-            <path d="M17 1l4 4-4 4V6H7v4l-4-4 4-4v2h10V1zm-10 22l-4-4 4-4v2h10v-4l4 4-4 4v-2H7v4z"/>
-          </svg>
-          <span><%= @pin.reposts_count %></span>
-        <% end %>
-      <% end %>
-
     </div>
   <% end %>
 
-  <!-- Comments Section (unchanged) -->
-  ...
+  <!-- TWO-COLUMN GRID: PINS | REPOSTS -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- USER'S PINS -->
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Pins</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <% @user.pins.each do |pin| %>
+          <div class="bg-white rounded-lg shadow-md overflow-hidden relative">
+            <% if pin.image.attached? %>
+              <%= link_to image_tag(pin.image, class: "w-full h-48 object-cover"), pin_path(pin) %>
+            <% end %>
+            <div class="p-4">
+              <h3 class="font-semibold text-lg mb-2"><%= link_to pin.title, pin_path(pin) %></h3>
+              <% if pin.description.present? %>
+                <p class="text-gray-700 text-sm mb-2"><%= truncate(pin.description, length: 80) %></p>
+              <% end %>
+
+              <!-- Edit/Delete buttons for current user's pins -->
+              <% if current_user == @user %>
+                <div class="flex space-x-2 mt-2">
+                  <%= link_to "Edit", edit_pin_path(pin), class: "px-2 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 text-sm" %>
+                  <%= button_to "Delete", pin_path(pin), method: :delete, data: { confirm: "Are you sure?" }, class: "px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm" %>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Comments -->
+            <div class="p-4 border-t">
+              <h4 class="font-semibold text-sm mb-2">Comments</h4>
+              <% pin.comments.each do |comment| %>
+                <div class="flex justify-between items-start mb-2">
+                  <p class="text-sm"><strong><%= comment.user.username %>:</strong> <%= comment.body %></p>
+                  <% if current_user == comment.user %>
+                    <div class="flex space-x-2">
+                      <%= link_to "Edit", edit_pin_comment_path(pin, comment), class: "text-blue-600 text-sm" %>
+                      <%= button_to "Delete", pin_comment_path(pin, comment), method: :delete, data: { confirm: "Delete this comment?" }, class: "text-red-600 text-sm" %>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+
+          </div>
+        <% end %>
+      </div>
+      <% if @user.pins.empty? %>
+        <p class="text-gray-500 mt-4">This user hasn’t posted any pins yet.</p>
+      <% end %>
+    </div>
+
+    <!-- USER'S REPOSTS -->
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Reposts</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <% @user.reposts.each do |repost| %>
+          <% pin = repost.pin %>
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <% if pin.image.attached? %>
+              <%= link_to image_tag(pin.image, class: "w-full h-48 object-cover"), pin_path(pin) %>
+            <% end %>
+            <div class="p-4">
+              <h3 class="font-semibold text-lg mb-2"><%= link_to pin.title, pin_path(pin) %></h3>
+              <% if pin.description.present? %>
+                <p class="text-gray-700 text-sm mb-2"><%= truncate(pin.description, length: 80) %></p>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <% if @user.reposts.empty? %>
+        <p class="text-gray-500 mt-4">This user hasn’t reposted any pins yet.</p>
+      <% end %>
+    </div>
+
+  </div>
 </div>
