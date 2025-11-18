@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  self.primary_key = :uid
+  
   has_secure_password
   
   # Validations

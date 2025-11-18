@@ -1,0 +1,16 @@
+<div class="max-w-md mx-auto mt-6 p-4 bg-white rounded-xl shadow">
+  <h2 class="text-xl font-semibold mb-4">Edit Comment</h2>
+
+  <%= form_with model: [@pin, @comment], local: true do |f| %>
+    <div class="mb-4">
+      <%= f.label :body, "Your Comment", class: "block text-sm font-medium" %>
+      <%= f.text_area :body, rows: 4, class: "w-full p-2 border rounded" %>
+    </div>
+
+    <div class="flex justify-between">
+      <%= f.submit "Update Comment", class: "px-4 py-2 bg-blue-600 text-white rounded" %>
+
+      <%= link_to "Cancel", pin_path(@pin), class: "px-4 py-2 bg-gray-300 rounded" %>
+    </div>
+  <% end %>
+</div>

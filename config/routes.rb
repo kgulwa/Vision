@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   # Pins with nested routes
   resources :pins do
-    resources :comments, only: [:create, :destroy]
+    resources :comments, only: [:create, :destroy, :edit, :update]
     resource :like, only: [:create, :destroy]
     resource :repost, only: [:create, :destroy]
   end

@@ -1,14 +1,16 @@
 <div class="w-full max-w-6xl mx-auto mt-6">
 
   <!-- USER INFO -->
-  <div class="flex items-center space-x-4 mb-8">
+  <div class="flex items-center space-x-4 mb-6">
     <div class="w-16 h-16 rounded-full bg-blue-500 text-white flex items-center justify-center text-2xl">
       <%= @user.username.first.upcase %>
     </div>
     <div>
       <h1 class="text-2xl font-bold"><%= @user.username %></h1>
       <p class="text-gray-500 text-sm">
-        <%= pluralize(@user.pins.count, "pin") %>
+        <%= pluralize(@user.pins.count, "pin") %> ·
+        <%= pluralize(@user.followers.count, "follower") %> ·
+        <%= pluralize(@user.following.count, "following") %>
       </p>
     </div>
   </div>
@@ -20,7 +22,7 @@
         <%= button_to user_follow_path(@user),
             method: :delete,
             class: "px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
-          Unfollow
+          Following
         <% end %>
       <% else %>
         <%= button_to user_follow_path(@user),
@@ -64,7 +66,7 @@
               <h4 class="font-semibold text-sm mb-2">Comments</h4>
               <% pin.comments.each do |comment| %>
                 <div class="flex justify-between items-start mb-2">
-                  <p class="text-sm"><strong><%= comment.user.username %>:</strong> <%= comment.body %></p>
+                  <p class="text-sm"><strong><%= comment.user.username %>:</strong> <%= comment.content %></p>
                   <% if current_user == comment.user %>
                     <div class="flex space-x-2">
                       <%= link_to "Edit", edit_pin_comment_path(pin, comment), class: "text-blue-600 text-sm" %>

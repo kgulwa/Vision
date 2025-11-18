@@ -13,48 +13,65 @@
       <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
         <%= @pin.user.username.first.upcase %>
       </div>
+
       <div>
         <h2 class="font-semibold text-gray-800"><%= @pin.user.username %></h2>
         <p class="text-gray-500 text-sm">New Post</p>
       </div>
     </div>
 
+    <!-- EDIT/DELETE for current user's pin -->
+    <% if current_user == @pin.user %>
+      <div class="flex space-x-2 mb-4">
+        <%= link_to "Edit", edit_pin_path(@pin), class: "px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 text-sm" %>
+        <%= button_to "Delete", pin_path(@pin), method: :delete, data: { confirm: "Are you sure?" }, class: "px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm" %>
+      </div>
+    <% end %>
+
     <!-- ACTION BUTTONS: LIKE / COMMENT / REPOST -->
     <div class="flex items-center space-x-4 mb-8">
+
+      <!-- LIKE / UNLIKE -->
       <% if current_user.liked?(@pin) %>
-        <%= button_to pin_like_path(@pin), method: :delete, class: "flex items-center space-x-2 border px-4 py-2 rounded-full" do %>
+        <%= button_to pin_like_path(@pin),
+            method: :delete,
+            class: "flex items-center space-x-2 border px-4 py-2 rounded-full" do %>
           💔
           <span><%= @pin.likes.count %></span>
         <% end %>
       <% else %>
-        <%= button_to pin_like_path(@pin), method: :post, class: "flex items-center space-x-2 border px-4 py-2 rounded-full" do %>
+        <%= button_to pin_like_path(@pin),
+            method: :post,
+            class: "flex items-center space-x-2 border px-4 py-2 rounded-full" do %>
           ❤️
           <span><%= @pin.likes.count %></span>
         <% end %>
       <% end %>
 
-      <%= link_to "#comments_section", class: "flex items-center space-x-2 border px-4 py-2 rounded-full" do %>
+      <!-- COMMENT (scroll-to) -->
+      <%= link_to "#comments_section",
+          class: "flex items-center space-x-2 border px-4 py-2 rounded-full" do %>
         💬
         <span><%= @pin.comments.count %></span>
       <% end %>
 
+      <!-- REPOST / UNREPOST -->
       <% if current_user.reposts.exists?(pin: @pin) %>
-        <%= button_to pin_repost_path(@pin), method: :delete, class: "flex items-center space-x-2 border px-4 py-2 rounded-full" do %>
+        <%= button_to pin_repost_path(@pin),
+            method: :delete,
+            class: "flex items-center space-x-2 border px-4 py-2 rounded-full" do %>
           🔄
           <span><%= @pin.reposts.count %></span>
         <% end %>
       <% else %>
-        <%= button_to pin_repost_path(@pin), method: :post, class: "flex items-center space-x-2 border px-4 py-2 rounded-full" do %>
+        <%= button_to pin_repost_path(@pin),
+            method: :post,
+            class: "flex items-center space-x-2 border px-4 py-2 rounded-full" do %>
           🔁
           <span><%= @pin.reposts.count %></span>
         <% end %>
       <% end %>
 
-      <!-- EDIT / DELETE PIN BUTTONS -->
-      <% if current_user == @pin.user %>
-        <%= link_to "Edit Pin", edit_pin_path(@pin), class: "px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 text-sm" %>
-        <%= button_to "Delete Pin", pin_path(@pin), method: :delete, data: { confirm: "Are you sure?" }, class: "px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm" %>
-      <% end %>
     </div>
 
     <!-- COMMENTS SECTION -->
@@ -79,7 +96,6 @@
               <strong><%= comment.user.username %>:</strong>
               <%= comment.content %>
             </p>
-
             <% if current_user == comment.user %>
               <div class="flex space-x-2">
                 <%= link_to "Edit", edit_pin_comment_path(@pin, comment), class: "text-blue-600 text-sm" %>
@@ -91,6 +107,5 @@
       </div>
 
     </div>
-
   </div>
 </div>
