@@ -1,0 +1,24 @@
+<div class="p-3 border rounded-lg bg-gray-50 flex justify-between items-start">
+  <p>
+    <strong><%= comment.user&.username || "Deleted User" %>:</strong>
+    <%= comment.content %>
+  </p>
+
+  <div class="flex space-x-2">
+    <% if current_user == comment.user %>
+      <%= link_to "Edit", edit_pin_comment_path(comment.pin, comment),
+          class: "text-blue-600 text-sm" %>
+
+      <%= button_to "Delete",
+          pin_comment_path(comment.pin, comment),
+          method: :delete,
+          data: { confirm: "Delete this comment?" },
+          class: "text-red-600 text-sm" %>
+    <% end %>
+
+    <!-- REPLY BUTTON (always visible) -->
+    <%= link_to "Reply",
+        new_pin_comment_path(comment.pin, parent_id: comment.id),
+        class: "text-gray-600 text-sm" %>
+  </div>
+</div>

@@ -13,8 +13,9 @@
     </div>
 
     <div class="bg-white rounded-xl shadow-lg p-8">
-      <%= form_with url: login_path, method: :post, local: true, data: { controller: "login-validation" }, class: "space-y-6" do |f| %>
-        
+      <!-- ⭐ FIXED: removed |f| so params submit correctly -->
+      <%= form_with url: login_path, method: :post, local: true, data: { controller: "login-validation" }, class: "space-y-6" do %>
+
         <% if flash[:alert] %>
           <div class="bg-red-50 border-l-4 border-red-500 p-4">
             <div class="flex">
@@ -31,7 +32,7 @@
             </div>
           </div>
         <% end %>
-        
+
         <!-- Username Field -->
         <div>
           <%= label_tag :username, "Username", class: "block text-sm font-medium text-gray-700 mb-2" %>

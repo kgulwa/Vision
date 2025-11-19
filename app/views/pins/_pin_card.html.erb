@@ -1,19 +1,22 @@
-<div class="bg-white rounded-lg shadow-md overflow-hidden mb-4">
-  <!-- Pin image -->
-  <% if pin.image.attached? %>
-    <%= image_tag pin.image, class: "w-full h-auto object-cover" %>
-  <% end %>
-
-  <div class="p-4">
-    <!-- Pin title -->
-    <h3 class="font-bold text-lg mb-2"><%= pin.title %></h3>
-
-    <!-- Pin description -->
-    <% if pin.description.present? %>
-      <p class="text-gray-700 text-sm mb-2"><%= pin.description %></p>
+<div class="break-inside-avoid mb-4 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow bg-white">
+  <%= link_to pin_path(pin) do %>
+    <% if pin.image.attached? %>
+      <%= image_tag url_for(pin.image), class: "w-full h-auto object-cover rounded-t-xl" %>
     <% end %>
-
-    <!-- Pin author -->
-    <p class="text-gray-500 text-xs">Posted by <%= pin.user.username %></p>
+  <% end %>
+  <div class="p-4">
+    <h3 class="font-semibold text-gray-800 mb-1"><%= pin.title %></h3>
+    <p class="text-gray-500 text-xs mb-2">Posted by <%= pin.user&.username || "Deleted User" %></p>
+    <% if current_user == pin.user %>
+      <div class="flex space-x-2 mb-2">
+        <%= link_to "Edit", edit_pin_path(pin), class: "px-2 py-1 bg-blue-100 text-blue-600 rounded text-sm" %>
+        <%= button_to "Delete", pin_path(pin), method: :delete, data: { confirm: "Are you sure?" }, class: "px-2 py-1 bg-red-100 text-red-600 rounded text-sm" %>
+      </div>
+    <% end %>
+    <div class="flex items-center space-x-4 text-sm text-gray-600">
+      <span>❤️ <%= pin.likes.count %></span>
+      <span>💬 <%= pin.comments.from_existing_users.count %></span>
+      <span>🔁 <%= pin.reposts.count %></span>
+    </div>
   </div>
 </div>

@@ -1,16 +1,19 @@
 class CommentsController < ApplicationController
   before_action :set_pin
   before_action :set_comment, only: [:edit, :update, :destroy]
-  before_action :require_comment_owner, only: [:edit, :update, :destroy]
+
+  def new
+    @comment = @pin.comments.new(parent_id: params[:parent_id])
+  end
 
   def create
     @comment = @pin.comments.build(comment_params)
     @comment.user_uid = current_user.uid
 
     if @comment.save
-      redirect_to pin_path(@pin), notice: "Comment created."
+      redirect_to @pin, notice: "Comment was successfully created."
     else
-      redirect_to pin_path(@pin), alert: "Comment could not be saved."
+      redirect_to @pin, alert: "Unable to create comment."
     end
   end
 
@@ -19,15 +22,15 @@ class CommentsController < ApplicationController
 
   def update
     if @comment.update(comment_params)
-      redirect_to pin_path(@pin), notice: "Comment updated."
+      redirect_to @pin, notice: "Comment was successfully updated."
     else
-      render :edit, status: :unprocessable_entity
+      redirect_to @pin, alert: "Unable to update comment."
     end
   end
 
   def destroy
     @comment.destroy
-    redirect_to pin_path(@pin), notice: "Comment deleted."
+    redirect_to @pin, notice: "Comment was successfully deleted."
   end
 
   private
@@ -37,16 +40,10 @@ class CommentsController < ApplicationController
   end
 
   def set_comment
-    @comment = @pin.comments.find_by(uid: params[:id])
+    @comment = @pin.comments.find(params[:id])
   end
 
   def comment_params
-    params.require(:comment).permit(:content)
-  end
-
-  def require_comment_owner
-    unless @comment.user == current_user
-      redirect_to pin_path(@pin), alert: "You can't edit this comment."
-    end
+    params.require(:comment).permit(:content, :parent_id)
   end
 end

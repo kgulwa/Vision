@@ -1,0 +1,16 @@
+<div class="space-y-4">
+  <% pin.comments.where(parent_id: nil).where.not(user_uid: nil).order(created_at: :asc).each do |comment| %>
+    <%= render partial: "pins/comment", locals: { comment: comment } %>
+  <% end %>
+
+  <% if logged_in? %>
+    <!-- Add new top-level comment -->
+    <%= form_with(model: [pin, Comment.new], local: true, class: "mt-4 space-y-2") do |f| %>
+      <div>
+        <%= f.text_area :content, placeholder: "Add a comment...", rows: 2, class: "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      </div>
+      <%= f.hidden_field :parent_id, value: nil %>
+      <%= f.submit "Comment", class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition" %>
+    <% end %>
+  <% end %>
+</div>

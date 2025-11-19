@@ -3,8 +3,8 @@
 
   <%= form_with model: [@pin, @comment], local: true do |f| %>
     <div class="mb-4">
-      <%= f.label :body, "Your Comment", class: "block text-sm font-medium" %>
-      <%= f.text_area :body, rows: 4, class: "w-full p-2 border rounded" %>
+      <%= f.label :content, "Your Comment", class: "block text-sm font-medium" %>
+      <%= f.text_area :content, rows: 4, class: "w-full p-2 border rounded" %>
     </div>
 
     <div class="flex justify-between">

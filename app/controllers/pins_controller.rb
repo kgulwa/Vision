@@ -4,16 +4,17 @@ class PinsController < ApplicationController
   before_action :authorize_user, only: [:edit, :update, :destroy]
 
   def index
-    @pins = Pin.recent.includes(:user)
+    @pins = Pin.includes(:user).from_existing_users.recent
   end
 
   def show
-    @comments = @pin.comments.recent.includes(:user)
+    redirect_to pins_path, alert: "Pin not found" and return unless @pin.user.present?
+    @comments = @pin.comments.includes(:user, :replies).select do |comment|
+      comment.user.present? && (comment.parent.nil? || comment.parent.user.present?)
+    end
   end
 
-  def new
-    @pin = Pin.new
-  end
+  def new; @pin = Pin.new; end
 
   def create
     @pin = current_user.pins.build(pin_params)
@@ -44,22 +45,15 @@ class PinsController < ApplicationController
     @query = params[:query]
     @pins = if @query.present?
               Pin.where("title LIKE ? OR description LIKE ?", "%#{@query}%", "%#{@query}%")
-                 .recent.includes(:user)
+                 .includes(:user).from_existing_users.recent
             else
               Pin.none
             end
   end
 
   private
-
-  def set_pin
-    @pin = Pin.find(params[:id])
-  end
-
-  def pin_params
-    params.require(:pin).permit(:title, :description, :image)
-  end
-
+  def set_pin; @pin = Pin.find(params[:id]); end
+  def pin_params; params.require(:pin).permit(:title, :description, :image); end
   def authorize_user
     redirect_to pins_path, alert: "You can only edit your own pins." unless @pin.user == current_user
   end
