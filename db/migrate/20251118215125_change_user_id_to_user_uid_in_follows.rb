@@ -1,8 +1,20 @@
-class ChangeUserIdToUserUidInFollows < ActiveRecord::Migration[8.0]
+class ChangeUserIdToUserUidInFollows < ActiveRecord::Migration[7.1]
   def change
-    remove_reference :follows, :follower, foreign_key: true
-    add_reference :follows, :follower, type: :uuid, foreign_key: true
-    remove_reference :follows, :followed, foreign_key: true
-    add_reference :follows, :followed, type: :uuid, foreign_key: true
+    # Remove old integer IDs
+    remove_column :follows, :follower_id
+    remove_column :follows, :followed_id
+
+    # Add new UUID columns
+    add_column :follows, :follower_uid, :uuid
+    add_column :follows, :followed_uid, :uuid
+
+    # Add foreign keys to users.uid
+    add_foreign_key :follows, :users, column: :follower_uid, primary_key: :uid
+    add_foreign_key :follows, :users, column: :followed_uid, primary_key: :uid
+
+    # Add indexes
+    add_index :follows, :follower_uid
+    add_index :follows, :followed_uid
   end
 end
+

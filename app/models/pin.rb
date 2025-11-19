@@ -1,5 +1,5 @@
 class Pin < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, primary_key: :uid, foreign_key: :user_uid
   has_one_attached :image
 
   has_many :comments, dependent: :destroy

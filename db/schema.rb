@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_17_224003) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_18_215125) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "uuid-ossp"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
@@ -42,34 +43,32 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_17_224003) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "comments", force: :cascade do |t|
+  create_table "comments", primary_key: "uid", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
     t.integer "pin_id", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.uuid "user_uid"
     t.index ["pin_id"], name: "index_comments_on_pin_id"
-    t.index ["user_id"], name: "index_comments_on_user_id"
+    t.index ["user_uid"], name: "index_comments_on_user_uid"
   end
 
   create_table "follows", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "followed_id", null: false
-    t.integer "follower_id", null: false
+    t.uuid "followed_uid"
+    t.uuid "follower_uid"
     t.datetime "updated_at", null: false
-    t.index ["followed_id"], name: "index_follows_on_followed_id"
-    t.index ["follower_id", "followed_id"], name: "index_follows_on_follower_id_and_followed_id", unique: true
-    t.index ["follower_id"], name: "index_follows_on_follower_id"
+    t.index ["followed_uid"], name: "index_follows_on_followed_uid"
+    t.index ["follower_uid"], name: "index_follows_on_follower_uid"
   end
 
   create_table "likes", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "pin_id", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.uuid "user_uid"
     t.index ["pin_id"], name: "index_likes_on_pin_id"
-    t.index ["user_id", "pin_id"], name: "index_likes_on_user_id_and_pin_id", unique: true
-    t.index ["user_id"], name: "index_likes_on_user_id"
+    t.index ["user_uid"], name: "index_likes_on_user_uid"
   end
 
   create_table "pins", force: :cascade do |t|
@@ -78,23 +77,23 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_17_224003) do
     t.integer "reposts_count"
     t.string "title"
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
-    t.index ["user_id"], name: "index_pins_on_user_id"
+    t.uuid "user_uid"
+    t.index ["user_uid"], name: "index_pins_on_user_uid"
   end
 
   create_table "reposts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "pin_id", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.uuid "user_uid"
     t.index ["pin_id"], name: "index_reposts_on_pin_id"
-    t.index ["user_id", "pin_id"], name: "index_reposts_on_user_id_and_pin_id", unique: true
-    t.index ["user_id"], name: "index_reposts_on_user_id"
+    t.index ["user_uid"], name: "index_reposts_on_user_uid"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", primary_key: "uid", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
+    t.bigserial "id", null: false
     t.string "password_digest"
     t.string "string"
     t.datetime "updated_at", null: false
@@ -105,12 +104,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_17_224003) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "pins"
-  add_foreign_key "comments", "users"
-  add_foreign_key "follows", "users", column: "followed_id"
-  add_foreign_key "follows", "users", column: "follower_id"
+  add_foreign_key "comments", "users", column: "user_uid", primary_key: "uid"
+  add_foreign_key "follows", "users", column: "followed_uid", primary_key: "uid"
+  add_foreign_key "follows", "users", column: "follower_uid", primary_key: "uid"
   add_foreign_key "likes", "pins"
-  add_foreign_key "likes", "users"
-  add_foreign_key "pins", "users"
+  add_foreign_key "likes", "users", column: "user_uid", primary_key: "uid"
+  add_foreign_key "pins", "users", column: "user_uid", primary_key: "uid"
   add_foreign_key "reposts", "pins"
-  add_foreign_key "reposts", "users"
+  add_foreign_key "reposts", "users", column: "user_uid", primary_key: "uid"
 end

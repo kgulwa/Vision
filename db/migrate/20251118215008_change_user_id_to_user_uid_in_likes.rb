@@ -1,6 +1,16 @@
-class ChangeUserIdToUserUidInLikes < ActiveRecord::Migration[8.0]
+class ChangeUserIdToUserUidInLikes < ActiveRecord::Migration[7.1]
   def change
-    remove_reference :likes, :user, foreign_key: true
-    add_reference :likes, :user, type: :uuid, foreign_key: true
+    # Remove old user_id column
+    remove_column :likes, :user_id
+
+    # Add new UUID user reference
+    add_column :likes, :user_uid, :uuid
+
+    # Add proper FK to users.uid
+    add_foreign_key :likes, :users, column: :user_uid, primary_key: :uid
+
+    # Add index for speed
+    add_index :likes, :user_uid
   end
 end
+

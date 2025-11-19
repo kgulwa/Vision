@@ -1,12 +1,25 @@
-class ChangeCommentPrimaryKeyToUid < ActiveRecord::Migration[8.0]
+class ChangeUserIdToUserUidInPins < ActiveRecord::Migration[7.1]
   def change
-    # 1. Add a new UUID column
-    add_column :comments, :uid, :uuid, default: -> { "uuid_generate_v4()" }, null: false
+    # Remove foreign key ONLY if it exists
+    if foreign_key_exists?(:pins, :users)
+      remove_foreign_key :pins, :users
+    end
 
-    # 2. Remove the old id column
-    remove_column :comments, :id
+    # Remove user_id column ONLY if it exists
+    if column_exists?(:pins, :user_id)
+      remove_column :pins, :user_id
+    end
 
-    # 3. Set uid as the primary key
-    execute "ALTER TABLE comments ADD PRIMARY KEY (uid);"
+    # Add user_uid ONLY if it doesn't exist
+    unless column_exists?(:pins, :user_uid)
+      add_column :pins, :user_uid, :uuid
+    end
+
+    # Add foreign key ONLY if it doesn't exist
+    unless foreign_key_exists?(:pins, :users, column: :user_uid)
+      add_foreign_key :pins, :users, column: :user_uid, primary_key: :uid
+    end
   end
 end
+
+
