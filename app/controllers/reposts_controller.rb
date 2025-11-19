@@ -1,15 +1,20 @@
 class RepostsController < ApplicationController
-  before_action :require_login # optional, if you have authentication
+  before_action :require_login
+  before_action :set_pin
 
   def create
-    pin = Pin.find(params[:pin_id])
-    pin.reposts.create(user: current_user)
+    @pin.reposts.create(user_uid: current_user.uid)
     redirect_back(fallback_location: root_path)
   end
 
   def destroy
-    pin = Pin.find(params[:pin_id])
-    pin.reposts.find_by(user: current_user)&.destroy
+    @pin.reposts.find_by(user_uid: current_user.uid)&.destroy
     redirect_back(fallback_location: root_path)
+  end
+
+  private
+
+  def set_pin
+    @pin = Pin.find(params[:pin_id])
   end
 end

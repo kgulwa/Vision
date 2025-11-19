@@ -5,10 +5,10 @@ class CommentsController < ApplicationController
 
   def create
     @comment = @pin.comments.build(comment_params)
-    @comment.user = current_user
+    @comment.user_uid = current_user.uid
 
     if @comment.save
-      redirect_to pin_path(@pin)
+      redirect_to pin_path(@pin), notice: "Comment created."
     else
       redirect_to pin_path(@pin), alert: "Comment could not be saved."
     end
@@ -37,11 +37,11 @@ class CommentsController < ApplicationController
   end
 
   def set_comment
-    @comment = @pin.comments.find(params[:id])
+    @comment = @pin.comments.find_by(uid: params[:id])
   end
 
   def comment_params
-    params.require(:comment).permit(:body)
+    params.require(:comment).permit(:content)
   end
 
   def require_comment_owner
