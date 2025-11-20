@@ -1,6 +1,6 @@
 class Follow < ApplicationRecord
-  belongs_to :follower, class_name: "User", primary_key: :uid, foreign_key: :follower_uid
-  belongs_to :followed, class_name: "User", primary_key: :uid, foreign_key: :followed_uid
+  belongs_to :follower, class_name: "User", foreign_key: :follower_uid, primary_key: :uid
+  belongs_to :followed, class_name: "User", foreign_key: :followed_uid, primary_key: :uid
 
   validates :follower_uid, uniqueness: { scope: :followed_uid }
   validate :cannot_follow_self

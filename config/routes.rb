@@ -1,14 +1,13 @@
 Rails.application.routes.draw do
   # Homepage
   root 'sessions#home'
-
   # Pins with nested routes
   resources :pins do
     resources :comments   # added full CRUD so Reply + Edit work
     resource :like, only: [:create, :destroy]
     resource :repost, only: [:create, :destroy]
+    resources :saved_pins, only: [:create, :destroy]  # Added destroy for unsaving
   end
-
   # Users with nested routes
   resources :users do
     resource :follow, only: [:create, :destroy]
@@ -19,15 +18,14 @@ Rails.application.routes.draw do
       post :check_password
     end
   end
-
+  # Collections & SavedPins
+  resources :collections, only: [:show, :create]
   # Sessions
   get '/login', to: 'sessions#new', as: :login
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy', as: :logout
-  
   # Search
   get '/search', to: 'pins#search', as: 'search'
-
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 end

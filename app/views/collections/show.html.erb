@@ -1,0 +1,19 @@
+<div class="max-w-6xl mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6"><%= @collection.name %></h1>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <% @collection.saved_pins.each do |saved_pin| %>
+      <%= link_to pin_path(saved_pin.pin), class: "block" do %>
+        <% if saved_pin.pin.image.attached? %>
+          <%= image_tag saved_pin.pin.image, class: "w-full h-40 object-cover rounded-lg" %>
+        <% else %>
+          <div class="w-full h-40 bg-gray-200 rounded-lg flex items-center justify-center">
+            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+        <% end %>
+        <h3 class="mt-2 font-medium"><%= saved_pin.pin.title %></h3>
+      <% end %>
+    <% end %>
+  </div>
+</div>

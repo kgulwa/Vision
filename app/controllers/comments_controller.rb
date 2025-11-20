@@ -9,11 +9,12 @@ class CommentsController < ApplicationController
   def create
     @comment = @pin.comments.build(comment_params)
     @comment.user_uid = current_user.uid
+    @comment.parent_id = params[:parent_id] if params[:parent_id]
 
     if @comment.save
       redirect_to @pin, notice: "Comment was successfully created."
     else
-      redirect_to @pin, alert: "Unable to create comment."
+      redirect_to @pin, alert: "Unable to create comment: #{@comment.errors.full_messages.join(', ')}"
     end
   end
 
@@ -24,7 +25,7 @@ class CommentsController < ApplicationController
     if @comment.update(comment_params)
       redirect_to @pin, notice: "Comment was successfully updated."
     else
-      redirect_to @pin, alert: "Unable to update comment."
+      redirect_to @pin, alert: "Unable to update comment: #{@comment.errors.full_messages.join(', ')}"
     end
   end
 

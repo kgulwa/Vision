@@ -1,6 +1,7 @@
 <div class="max-w-6xl mx-auto">
   <div class="bg-white rounded-xl shadow-lg overflow-hidden">
     <div class="grid md:grid-cols-2 gap-0">
+
       <!-- Image Section -->
       <div class="bg-gray-900">
         <% if @pin.image.attached? %>
@@ -13,8 +14,10 @@
           </div>
         <% end %>
       </div>
+
       <!-- Details Section -->
       <div class="p-6 flex flex-col">
+
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
           <%= link_to @pin.user, class: "flex items-center space-x-3 hover:bg-gray-50 rounded-lg p-2 -m-2" do %>
@@ -26,100 +29,125 @@
               <div class="text-sm text-gray-500"><%= @pin.user.followers.count %> followers</div>
             </div>
           <% end %>
+
           <% if logged_in? %>
             <% if @pin.user == current_user %>
               <div class="flex space-x-2">
-                <%= link_to edit_pin_path(@pin), class: "px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg", aria: { label: "Edit Pin" } do %>
-                  Edit
-                <% end %>
-                <%= button_to @pin, method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg", aria: { label: "Delete Pin" } do %>
-                  Delete
-                <% end %>
+                <%= link_to edit_pin_path(@pin), class: "px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg" do %>Edit<% end %>
+                <%= button_to @pin, method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg" do %>Delete<% end %>
               </div>
             <% else %>
               <% if current_user.following?(@pin.user) %>
-                <%= button_to user_follow_path(@pin.user), method: :delete, class: "px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50", aria: { label: "Unfollow User" } do %>
-                  Following
-                <% end %>
+                <%= button_to user_follow_path(@pin.user), method: :delete, class: "px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50" do %>Following<% end %>
               <% else %>
-                <%= button_to user_follow_path(@pin.user), method: :post, class: "px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700", aria: { label: "Follow User" } do %>
-                  Follow
-                <% end %>
+                <%= button_to user_follow_path(@pin.user), method: :post, class: "px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700" do %>Follow<% end %>
               <% end %>
             <% end %>
           <% end %>
         </div>
-        <!-- Title & Description -->
+
+        <!-- Title -->
         <div class="mb-6">
           <h1 class="text-3xl font-bold text-gray-900 mb-3"><%= @pin.title %></h1>
           <% if @pin.description.present? %>
             <p class="text-gray-600"><%= @pin.description %></p>
           <% end %>
         </div>
-        <!-- Actions -->
+
+        <!-- ACTIONS -->
         <% if logged_in? %>
           <div class="flex items-center space-x-4 mb-6 pb-6 border-b">
-            <!-- Like Button -->
+
+            <!-- LIKE -->
             <% if current_user.liked?(@pin) %>
-              <%= button_to pin_like_path(@pin), method: :delete, class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200", aria: { label: "Unlike Pin" } do %>
-                <svg class="w-6 h-6 fill-current" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
-                </svg>
-                <span class="font-medium"><%= @pin.likes_count %></span>
+              <%= button_to pin_like_path(@pin), method: :delete, class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
+                ❤️ <span><%= @pin.likes_count %></span>
               <% end %>
             <% else %>
-              <%= button_to pin_like_path(@pin), method: :post, class: "flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-50", aria: { label: "Like Pin" } do %>
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 20 20">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-                <span class="font-medium"><%= @pin.likes_count %></span>
+              <%= button_to pin_like_path(@pin), method: :post, class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
+                🤍 <span><%= @pin.likes_count %></span>
               <% end %>
             <% end %>
-            <!-- Repost Button -->
+
+            <!-- REPOST -->
             <% if current_user.reposted?(@pin) %>
-              <%= button_to pin_repost_path(@pin), method: :delete, class: "flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200", aria: { label: "Remove Repost" } do %>
-                <svg class="w-6 h-6 fill-current" viewBox="0 0 20 20">
-                  <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/>
-                </svg>
-                <span class="font-medium"><%= @pin.reposts_count %></span>
+              <%= button_to pin_repost_path(@pin), method: :delete, class: "flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200" do %>
+                🔁 <span><%= @pin.reposts_count %></span>
               <% end %>
             <% else %>
-              <%= button_to pin_repost_path(@pin), method: :post, class: "flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-50", aria: { label: "Repost Pin" } do %>
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/>
-                </svg>
-                <span class="font-medium"><%= @pin.reposts_count %></span>
+              <%= button_to pin_repost_path(@pin), method: :post, class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
+                🔁 <span><%= @pin.reposts_count %></span>
               <% end %>
             <% end %>
+
+            <!-- ⭐ SIMPLE SAVE DROPDOWN ⭐ -->
+            <div class="relative inline-block text-left">
+              <button 
+                onclick="document.getElementById('save-menu').classList.toggle('hidden')"
+                class="flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50"
+              >
+                📌 <span>Save</span>
+              </button>
+
+              <!-- DROPDOWN MENU -->
+              <div 
+                id="save-menu"
+                class="hidden absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg z-50"
+              >
+                <div class="p-2">
+                  <p class="text-sm font-semibold mb-2">Save to collection</p>
+
+                  <% if current_user.collections.any? %>
+                    <% current_user.collections.each do |collection| %>
+                      <%= button_to pin_saved_pins_path(@pin, collection_id: collection.id),
+                          method: :post,
+                          class: "w-full text-left px-4 py-2 rounded hover:bg-gray-100" do %>
+                        <%= collection.name %>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                </div>
+
+                <hr>
+
+                <div class="p-2">
+                  <%= form_with url: collections_path, method: :post, local: true do |f| %>
+                    <%= hidden_field_tag :pin_id, @pin.id %>
+                    <%= f.text_field :name, placeholder: "New collection", class: "w-full border px-3 py-1 rounded mb-2" %>
+                    <%= f.submit "Create & Save", class: "w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700" %>
+                  <% end %>
+                </div>
+
+              </div>
+            </div>
+
           </div>
         <% end %>
-        <!-- Comments Section -->
+
+        <!-- COMMENTS -->
         <div class="flex-1 overflow-y-auto max-h-[400px]">
-          <h3 class="font-semibold text-gray-900 mb-4">Comments (<%= @pin.comments.where(parent_id: nil).count %>)</h3>
+          <h3 class="font-semibold mb-4">Comments (<%= @pin.comments.where(parent_id: nil).count %>)</h3>
+
           <% if logged_in? %>
             <%= form_with model: [@pin, Comment.new], class: "mb-6" do |f| %>
               <div class="flex space-x-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                <div class="w-10 h-10 bg-blue-600 rounded-full text-white flex items-center justify-center">
                   <%= current_user.username[0].upcase %>
                 </div>
                 <div class="flex-1">
-                  <%= f.text_area :content, rows: 3, placeholder: "Add a comment...", class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-                  <%= f.submit "Comment", class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer" %>
+                  <%= f.text_area :content, rows: 3, placeholder: "Add a comment...", class: "w-full border p-2 rounded" %>
+                  <%= f.submit "Comment", class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded" %>
                 </div>
               </div>
             <% end %>
           <% end %>
-          <div class="space-y-4">
-            <% @pin.comments.where(parent_id: nil).where.not(user_uid: nil).order(created_at: :asc).each do |comment| %>
-              <%= render partial: "pins/comment", locals: { comment: comment } %>
-            <% end %>
-            <% if @pin.comments.where(parent_id: nil).empty? && !logged_in? %>
-              <p class="text-center text-gray-500 py-8">No comments yet. <%= link_to "Sign in", login_path, class: "text-blue-600 hover:underline" %> to leave a comment.</p>
-            <% elsif @pin.comments.where(parent_id: nil).empty? %>
-              <p class="text-center text-gray-500 py-8">No comments yet. Be the first to comment!</p>
-            <% end %>
-          </div>
+
+          <% @pin.comments.where(parent_id: nil).order(created_at: :asc).each do |comment| %>
+            <%= render partial: "pins/comment", locals: { comment: comment } %>
+          <% end %>
+
         </div>
+
       </div>
     </div>
   </div>

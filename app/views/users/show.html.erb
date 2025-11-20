@@ -1,18 +1,15 @@
-<div class="max-w-5xl mx-auto py-8 px-4 space-y-8">
-
+<div class="max-w-5xl mx-auto py-8 px-4">
   <!-- Profile Header -->
-  <div class="flex items-center justify-between">
+  <div class="flex items-center justify-between mb-8">
     <div class="flex items-center space-x-4">
       <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold">
         <%= @user.username[0].upcase %>
       </div>
-
       <div>
         <h1 class="text-3xl font-bold text-gray-900"><%= @user.username %></h1>
         <p class="text-gray-600"><%= @user.followers.count %> followers</p>
       </div>
     </div>
-
     <% if logged_in? && current_user != @user %>
       <% if current_user.following?(@user) %>
         <%= button_to user_follow_path(@user), method: :delete,
@@ -29,84 +26,93 @@
   </div>
 
   <!-- Tabs -->
-  <div class="flex space-x-6 border-b pb-2">
-    <button 
-      data-tab-target="pins" 
-      class="py-2 font-semibold text-blue-600 border-b-2 border-blue-600">
-      Pins
-    </button>
-
-    <button 
-      data-tab-target="reposts" 
-      class="py-2 font-semibold text-gray-600 hover:text-blue-600">
-      Reposts
-    </button>
+  <div class="flex space-x-6 border-b mb-6">
+    <button data-tab-target="pins" class="py-2 font-semibold text-blue-600 border-b-2 border-blue-600">Pins</button>
+    <button data-tab-target="reposts" class="py-2 font-semibold text-gray-600 hover:text-blue-600">Reposts</button>
+    <% if @user == current_user %>
+      <button data-tab-target="collections" class="py-2 font-semibold text-gray-600 hover:text-blue-600">Collections</button>
+    <% end %>
   </div>
 
-  <!-- PINS GRID -->
-  <div id="tab-pins" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-    <% @pins.each do |pin| %>
-      <%= link_to pin_path(pin), class: "block" do %>
-        <% if pin.image.attached? %>
-          <%= image_tag pin.image,
-              class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+  <!-- Tab Contents -->
+  <div class="space-y-8">
+    <!-- Pins Grid -->
+    <div id="tab-pins" class="grid grid-cols-2 md:grid-cols-3 gap-6">
+      <% @pins.each do |pin| %>
+        <%= link_to pin_path(pin), class: "block" do %>
+          <% if pin.image.attached? %>
+            <%= image_tag pin.image, class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+          <% else %>
+            <div class="w-full h-48 md:h-60 bg-gray-200 rounded-lg flex items-center justify-center">
+              <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+          <% end %>
         <% end %>
       <% end %>
-    <% end %>
+      <% if @pins.empty? %>
+        <p class="col-span-full text-center text-gray-500 py-10">No pins yet.</p>
+      <% end %>
+    </div>
 
-    <% if @pins.empty? %>
-      <p class="col-span-full text-center text-gray-500 py-10">
-        No pins yet.
-      </p>
-    <% end %>
-  </div>
-
-  <!-- REPOSTS GRID -->
-  <div id="tab-reposts" class="hidden grid grid-cols-2 md:grid-cols-3 gap-4">
-    <% @reposted_pins.each do |pin| %>
-      <%= link_to pin_path(pin), class: "block" do %>
-        <% if pin.image.attached? %>
-          <%= image_tag pin.image,
-              class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+    <!-- Reposts Grid -->
+    <div id="tab-reposts" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
+      <% @reposted_pins.each do |pin| %>
+        <%= link_to pin_path(pin), class: "block" do %>
+          <% if pin.image.attached? %>
+            <%= image_tag pin.image, class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+          <% else %>
+            <div class="w-full h-48 md:h-60 bg-gray-200 rounded-lg flex items-center justify-center">
+              <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+          <% end %>
         <% end %>
       <% end %>
-    <% end %>
+      <% if @reposted_pins.empty? %>
+        <p class="col-span-full text-center text-gray-500 py-10">No reposts yet.</p>
+      <% end %>
+    </div>
 
-    <% if @reposted_pins.empty? %>
-      <p class="col-span-full text-center text-gray-500 py-10">
-        No reposts yet.
-      </p>
+    <!-- Collections Grid -->
+    <% if @user == current_user %>
+      <div id="tab-collections" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
+        <% @user.collections.each do |collection| %>
+          <%= link_to collection_path(collection), class: "block" do %>
+            <div class="bg-gray-100 rounded-lg p-4 hover:shadow-md transition h-full">
+              <h3 class="font-semibold mb-2"><%= collection.name %></h3>
+              <p class="text-sm text-gray-500"><%= collection.saved_pins.count %> pins</p>
+            </div>
+          <% end %>
+        <% end %>
+        <% if @user.collections.empty? %>
+          <p class="col-span-full text-center text-gray-500 py-10">No collections yet.</p>
+        <% end %>
+      </div>
     <% end %>
   </div>
-
 </div>
 
-<!-- TAB LOGIC -->
 <script>
   const buttons = document.querySelectorAll("[data-tab-target]");
   const tabs = {
     pins: document.getElementById("tab-pins"),
-    reposts: document.getElementById("tab-reposts")
+    reposts: document.getElementById("tab-reposts"),
+    collections: document.getElementById("tab-collections")
   };
-
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
-
-      // reset button styles
       buttons.forEach(b => {
         b.classList.remove("text-blue-600", "border-blue-600", "border-b-2");
         b.classList.add("text-gray-600");
       });
-
-      // activate selected tab
       btn.classList.remove("text-gray-600");
       btn.classList.add("text-blue-600", "border-b-2", "border-blue-600");
-
-      tabs.pins.classList.add("hidden");
-      tabs.reposts.classList.add("hidden");
-
+      Object.values(tabs).forEach(tab => tab?.classList.add("hidden"));
       const target = btn.dataset.tabTarget;
-      tabs[target].classList.remove("hidden");
+      tabs[target]?.classList.remove("hidden");
     });
   });
 </script>

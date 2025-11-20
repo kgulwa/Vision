@@ -1,25 +1,8 @@
-class ChangeUserIdToUserUidInPins < ActiveRecord::Migration[7.1]
+class ChangeCommentPrimaryKeyToUid < ActiveRecord::Migration[7.0]
   def change
-    # Remove foreign key ONLY if it exists
-    if foreign_key_exists?(:pins, :users)
-      remove_foreign_key :pins, :users
-    end
-
-    # Remove user_id column ONLY if it exists
-    if column_exists?(:pins, :user_id)
-      remove_column :pins, :user_id
-    end
-
-    # Add user_uid ONLY if it doesn't exist
-    unless column_exists?(:pins, :user_uid)
-      add_column :pins, :user_uid, :uuid
-    end
-
-    # Add foreign key ONLY if it doesn't exist
-    unless foreign_key_exists?(:pins, :users, column: :user_uid)
-      add_foreign_key :pins, :users, column: :user_uid, primary_key: :uid
-    end
+    enable_extension 'uuid-ossp' unless extension_enabled?('uuid-ossp')
+    return unless table_exists?(:comments)
+    remove_column :comments, :id, if_exists: true
+    add_column :comments, :id, :uuid, primary_key: true, default: -> { "uuid_generate_v4()" }
   end
 end
-
-

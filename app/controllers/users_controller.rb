@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   def show
     @pins = @user.pins.recent
     @reposted_pins = @user.reposted_pins.recent
+    @collections = @user.collections
   end
 
   def new
