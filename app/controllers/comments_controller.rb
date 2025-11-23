@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+  before_action :require_login
   before_action :set_pin
   before_action :set_comment, only: [:edit, :update, :destroy]
 
@@ -30,11 +31,18 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    @comment.destroy
-    redirect_to @pin, notice: "Comment was successfully deleted."
+    if @comment.user_uid == current_user.uid
+      @comment.destroy
+    end
+
+    redirect_to @pin
   end
 
   private
+
+  def require_login
+    redirect_to login_path unless logged_in?
+  end
 
   def set_pin
     @pin = Pin.find(params[:pin_id])

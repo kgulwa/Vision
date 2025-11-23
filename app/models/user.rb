@@ -2,6 +2,14 @@ class User < ApplicationRecord
   self.primary_key = :uid
   has_secure_password
 
+  # Validations
+  validates :username, presence: true, uniqueness: { case_sensitive: true }
+  validates :email,
+            presence: true,
+            uniqueness: { case_sensitive: false },
+            format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :password, presence: true, length: { minimum: 6 }, if: :password_required?
+
   # Associations
   has_many :pins, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
   has_many :comments, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy

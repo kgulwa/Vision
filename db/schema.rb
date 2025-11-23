@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_20_114517) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_22_194432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "uuid-ossp"
@@ -43,7 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_20_114517) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "collections", force: :cascade do |t|
+  create_table "collections", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
@@ -55,61 +55,62 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_20_114517) do
     t.text "content"
     t.datetime "created_at", null: false
     t.uuid "parent_id"
-    t.bigint "pin_id", null: false
+    t.uuid "pin_id", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_uid"
     t.index ["pin_id"], name: "index_comments_on_pin_id"
   end
 
-  create_table "follows", force: :cascade do |t|
+  create_table "follows", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.uuid "followed_uid", null: false
     t.uuid "follower_uid", null: false
     t.datetime "updated_at", null: false
+    t.index ["followed_uid"], name: "index_follows_on_followed_uid"
+    t.index ["follower_uid"], name: "index_follows_on_follower_uid"
   end
 
-  create_table "likes", force: :cascade do |t|
+  create_table "likes", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "pin_id", null: false
+    t.uuid "pin_id", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_uid"
     t.index ["pin_id"], name: "index_likes_on_pin_id"
   end
 
-  create_table "pins", force: :cascade do |t|
+  create_table "pins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
     t.integer "reposts_count"
     t.string "title"
     t.datetime "updated_at", null: false
     t.uuid "user_uid"
+    t.index ["user_uid"], name: "index_pins_on_user_uid"
   end
 
-  create_table "reposts", force: :cascade do |t|
+  create_table "reposts", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "pin_id", null: false
+    t.uuid "pin_id", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_uid"
     t.index ["pin_id"], name: "index_reposts_on_pin_id"
   end
 
-  create_table "saved_pins", force: :cascade do |t|
-    t.bigint "collection_id", null: false
+  create_table "saved_pins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.uuid "collection_id", null: false
     t.datetime "created_at", null: false
-    t.bigint "pin_id", null: false
+    t.uuid "pin_id", null: false
     t.datetime "updated_at", null: false
-    t.string "user_uid"
+    t.uuid "user_uid"
     t.index ["collection_id"], name: "index_saved_pins_on_collection_id"
     t.index ["pin_id"], name: "index_saved_pins_on_pin_id"
     t.index ["user_uid"], name: "index_saved_pins_on_user_uid"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", primary_key: "uid", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
     t.string "password_digest"
-    t.string "string"
-    t.uuid "uid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "updated_at", null: false
     t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -130,4 +131,5 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_20_114517) do
   add_foreign_key "reposts", "users", column: "user_uid", primary_key: "uid"
   add_foreign_key "saved_pins", "collections"
   add_foreign_key "saved_pins", "pins"
+  add_foreign_key "saved_pins", "users", column: "user_uid", primary_key: "uid"
 end

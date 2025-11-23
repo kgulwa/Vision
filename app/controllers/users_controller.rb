@@ -16,7 +16,9 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
+      session[:user_uid] = @user.uid
       session[:user_id] = @user.uid
+      session["user_id"] = @user.uid
       redirect_to root_path, notice: "Account created successfully!"
     else
       render :new, status: :unprocessable_content
@@ -35,7 +37,7 @@ class UsersController < ApplicationController
 
   def destroy
     @user.destroy
-    session[:user_id] = nil
+    session.delete(:user_uid)
     redirect_to root_path, notice: "Account deleted successfully."
   end
 
