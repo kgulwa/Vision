@@ -17,8 +17,6 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       session[:user_uid] = @user.uid
-      session[:user_id] = @user.uid
-      session["user_id"] = @user.uid
       redirect_to root_path, notice: "Account created successfully!"
     else
       render :new, status: :unprocessable_content
@@ -29,7 +27,7 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      redirect_to @user, notice: "Profile updated successfully!"
+      redirect_to user_path(@user.uid), notice: "Profile updated successfully!"
     else
       render :edit, status: :unprocessable_content
     end
@@ -64,7 +62,9 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    @user = User.find_by(uid: params[:id])
+    uid = params[:id] || params[:user_id] || params[:uid]
+    @user = User.find_by(uid: uid)
+    redirect_to root_path, alert: "User not found." unless @user
   end
 
   def user_params

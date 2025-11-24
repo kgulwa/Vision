@@ -1,11 +1,15 @@
 class ApplicationController < ActionController::Base
   allow_browser versions: :modern
   stale_when_importmap_changes
+
   helper_method :current_user, :logged_in?
+
   before_action :prevent_view_caching
 
   def current_user
-    @current_user ||= User.find_by(uid: session[:user_id]) if session[:user_id]
+    return @current_user if defined?(@current_user)
+    uid = session[:user_uid]
+    @current_user = User.find_by(uid: uid)
   end
 
   def logged_in?

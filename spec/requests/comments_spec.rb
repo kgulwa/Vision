@@ -6,13 +6,13 @@ RSpec.describe CommentsController, type: :request do
 
   before do
     post login_path, params: { username: user.username, password: "password" }
-    follow_redirect! 
+    expect(session[:user_uid]).to eq(user.uid) # ensure login worked
   end
 
   it "creates a comment" do
     expect {
       post pin_comments_path(pin),
-        params: { comment: { content: "Hello", parent_id: nil } }
+        params: { comment: { content: "Hello" } }
     }.to change { Comment.count }.by(1)
   end
 

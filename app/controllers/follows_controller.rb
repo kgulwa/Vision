@@ -1,21 +1,25 @@
 class FollowsController < ApplicationController
   before_action :require_login
+  before_action :set_user
 
   def create
-    @user = User.find_by(uid: params[:user_id])
     current_user.follow(@user)
-    redirect_to @user, notice: "You are now following #{@user.username}!"
+    redirect_to user_path(@user.uid), notice: "You are now following #{@user.username}!"
   end
 
   def destroy
-    @user = User.find_by(uid: params[:user_id])
     current_user.unfollow(@user)
-    redirect_to @user, notice: "You unfollowed #{@user.username}."
+    redirect_to user_path(@user.uid), notice: "You unfollowed #{@user.username}."
   end
 
   private
 
-  def require_login
-    redirect_to login_path, alert: "You must be logged in to follow users." unless logged_in?
+  def set_user
+    uid = params[:user_uid] || params[:uid] || params[:id]
+    @user = User.find_by(uid: uid)
+
+    if @user.nil?
+      redirect_to root_path, alert: "User not found"
+    end
   end
 end

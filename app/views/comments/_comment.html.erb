@@ -1,28 +1,32 @@
 <div class="p-3 border rounded-lg bg-gray-50">
-  <!-- Main Comment -->
   <div class="flex flex-col">
     <div class="flex justify-between items-start">
       <p class="flex-1">
         <strong><%= comment.user&.username || "Deleted User" %>:</strong>
         <%= comment.content %>
       </p>
+
       <div class="flex space-x-3">
         <% if current_user == comment.user %>
-          <%= link_to "Edit", edit_pin_comment_path(comment.pin, comment),
+
+          <%= link_to "Edit",
+              edit_pin_comment_path(comment.pin, comment),   <!-- FIXED -->
               class: "text-blue-600 text-sm" %>
+
           <%= button_to "Delete",
-              pin_comment_path(comment.pin, comment),
+              pin_comment_path(comment.pin, comment),        <!-- FIXED -->
               method: :delete,
               data: { confirm: "Delete this comment?" },
               class: "text-red-600 text-sm" %>
+
         <% end %>
+
         <%= link_to "Reply",
-            new_pin_comment_path(comment.pin, parent_id: comment.id),
+            new_pin_comment_path(comment.pin, parent_id: comment.uid),  <!-- UID here is correct -->
             class: "text-gray-600 text-sm" %>
       </div>
     </div>
 
-    <!-- Replies Section -->
     <% if comment.replies.any? %>
       <div class="ml-6 mt-2 border-l-2 border-gray-200 pl-4 space-y-2">
         <% comment.replies.each do |reply| %>

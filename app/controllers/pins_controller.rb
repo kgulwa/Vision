@@ -8,20 +8,27 @@ class PinsController < ApplicationController
   end
 
   def show
-    redirect_to pins_path, alert: "Pin not found" and return unless @pin.user.present?
+    unless @pin.user.present?
+      redirect_to pins_path, alert: "Pin not found"
+      return
+    end
+
     @comments = @pin.comments.includes(:user, :replies).select do |comment|
-      comment.user.present? && (comment.parent.nil? || comment.parent.user.present?)
+      comment.user.present? &&
+        (comment.parent.nil? || comment.parent.user.present?)
     end
   end
 
-  def new; @pin = Pin.new; end
+  def new
+    @pin = Pin.new
+  end
 
   def create
     @pin = current_user.pins.build(pin_params)
     if @pin.save
-      redirect_to pins_path, notice: "Pin posted successfully!"
+      redirect_to pin_path(@pin.uid), notice: "Pin posted successfully!"
     else
-      flash.now[:alert] = "Failed to post pin. Please check the form."
+      flash.now[:alert] = "Failed to post pin."
       render :new, status: :unprocessable_entity
     end
   end
@@ -30,7 +37,7 @@ class PinsController < ApplicationController
 
   def update
     if @pin.update(pin_params)
-      redirect_to @pin, notice: "Pin updated successfully!"
+      redirect_to pin_path(@pin.uid), notice: "Pin updated successfully!"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -45,15 +52,26 @@ class PinsController < ApplicationController
     @query = params[:query]
     @pins = if @query.present?
               Pin.where("title LIKE ? OR description LIKE ?", "%#{@query}%", "%#{@query}%")
-                 .includes(:user).from_existing_users.recent
+                 .includes(:user)
+                 .from_existing_users
+                 .recent
             else
               Pin.none
             end
   end
 
   private
-  def set_pin; @pin = Pin.find(params[:id]); end
-  def pin_params; params.require(:pin).permit(:title, :description, :image); end
+
+  def set_pin
+    uid = params[:uid] || params[:pin_uid] || params[:id]
+    @pin = Pin.find_by(uid: uid)
+    redirect_to pins_path, alert: "Pin not found" if @pin.nil?
+  end
+
+  def pin_params
+    params.require(:pin).permit(:title, :description, :image)
+  end
+
   def authorize_user
     redirect_to pins_path, alert: "You can only edit your own pins." unless @pin.user == current_user
   end

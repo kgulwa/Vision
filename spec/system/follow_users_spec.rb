@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Following users", type: :system do
-  let(:user) { create(:user, password: 'password123') }
+  let(:user) { create(:user, password: "password123", password_confirmation: "password123") }
   let(:other_user) { create(:user) }
 
   before do

@@ -4,55 +4,51 @@ class CommentsController < ApplicationController
   before_action :set_comment, only: [:edit, :update, :destroy]
 
   def new
-    @comment = @pin.comments.new(parent_id: params[:parent_id])
+    @comment = @pin.comments.new(parent_uid: params[:parent_id])
   end
 
   def create
     @comment = @pin.comments.build(comment_params)
     @comment.user_uid = current_user.uid
-    @comment.parent_id = params[:parent_id] if params[:parent_id]
+    @comment.parent_uid = params[:parent_id] if params[:parent_id]
 
     if @comment.save
-      redirect_to @pin, notice: "Comment was successfully created."
+      redirect_to pin_path(@pin.uid), notice: "Comment created."
     else
-      redirect_to @pin, alert: "Unable to create comment: #{@comment.errors.full_messages.join(', ')}"
+      redirect_to pin_path(@pin.uid), alert: @comment.errors.full_messages.join(", ")
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @comment.update(comment_params)
-      redirect_to @pin, notice: "Comment was successfully updated."
+      redirect_to pin_path(@pin.uid), notice: "Comment updated."
     else
-      redirect_to @pin, alert: "Unable to update comment: #{@comment.errors.full_messages.join(', ')}"
+      redirect_to pin_path(@pin.uid), alert: @comment.errors.full_messages.join(", ")
     end
   end
 
   def destroy
-    if @comment.user_uid == current_user.uid
-      @comment.destroy
-    end
-
-    redirect_to @pin
+    @comment.destroy if @comment.user_uid == current_user.uid
+    redirect_to pin_path(@pin.uid)
   end
 
   private
 
-  def require_login
-    redirect_to login_path unless logged_in?
-  end
-
   def set_pin
-    @pin = Pin.find(params[:pin_id])
+    
+    uid = params[:pin_uid]
+
+    @pin = Pin.find_by(uid: uid)
+    redirect_to pins_path, alert: "Pin not found" if @pin.nil?
   end
 
   def set_comment
-    @comment = @pin.comments.find(params[:id])
+    @comment = @pin.comments.find_by(uid: params[:uid])
   end
 
   def comment_params
-    params.require(:comment).permit(:content, :parent_id)
+    params.require(:comment).permit(:content, :parent_uid)
   end
 end

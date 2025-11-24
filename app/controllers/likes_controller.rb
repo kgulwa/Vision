@@ -15,10 +15,8 @@ class LikesController < ApplicationController
   private
 
   def set_pin
-    @pin = Pin.find(params[:pin_id])
-  end
-
-  def require_login
-    redirect_to login_path, alert: "You must be logged in to like pins." unless logged_in?
+    uid = params[:pin_uid] || params[:uid]
+    @pin = Pin.find_by(uid: uid)
+    redirect_to pins_path, alert: "Pin not found" if @pin.nil?
   end
 end

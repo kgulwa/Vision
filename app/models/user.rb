@@ -2,6 +2,11 @@ class User < ApplicationRecord
   self.primary_key = :uid
   has_secure_password
 
+  def to_param
+    uid
+  end
+  
+
   # Validations
   validates :username, presence: true, uniqueness: { case_sensitive: true }
   validates :email,
@@ -16,8 +21,6 @@ class User < ApplicationRecord
   has_many :likes, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
   has_many :reposts, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
   has_many :collections, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
-
-  # FIX: This association now matches saved_pin.rb
   has_many :saved_pins, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
 
   has_many :liked_pins, through: :likes, source: :pin
@@ -25,12 +28,20 @@ class User < ApplicationRecord
   has_many :saved_pins_collections, through: :saved_pins, source: :collection
 
   # Following system
-  has_many :active_follows, class_name: "Follow", foreign_key: :follower_uid, primary_key: :uid, dependent: :destroy
-  has_many :passive_follows, class_name: "Follow", foreign_key: :followed_uid, primary_key: :uid, dependent: :destroy
+  has_many :active_follows, class_name: "Follow",
+                           foreign_key: :follower_uid,
+                           primary_key: :uid,
+                           dependent: :destroy
+
+  has_many :passive_follows, class_name: "Follow",
+                            foreign_key: :followed_uid,
+                            primary_key: :uid,
+                            dependent: :destroy
+
   has_many :following, through: :active_follows, source: :followed
   has_many :followers, through: :passive_follows, source: :follower
 
-  # Helper methods
+  # Helper methods...
   def follow(user)
     following << user unless self == user || following.include?(user)
   end
@@ -64,28 +75,24 @@ class User < ApplicationRecord
   end
 
   def reposted?(pin)
-    reposts.exists?(pin_id: pin.id)
+    reposts.exists?(pin_uid: pin.uid)
   end
 
   # Saved pins
   def save_pin(pin, collection_name = "Default")
     collection = collections.find_or_create_by(name: collection_name)
-    saved_pins.find_or_create_by(pin: pin, collection: collection)
+    saved_pins.find_or_create_by(pin_uid: pin.uid, collection_uid: collection.uid)
   end
 
   def unsave(pin)
-    saved_pins.where(pin: pin).destroy_all
+    saved_pins.where(pin_uid: pin.uid).destroy_all
   end
 
   def saved?(pin)
-    saved_pins.exists?(pin_id: pin.id)
+    saved_pins.exists?(pin_uid: pin.uid)
   end
 
   private
-
-  def downcase_email
-    self.email = email.downcase if email.present?
-  end
 
   def password_required?
     password_digest.nil? || !password.blank?

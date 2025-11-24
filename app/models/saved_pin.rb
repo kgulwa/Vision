@@ -1,9 +1,13 @@
 class SavedPin < ApplicationRecord
-  belongs_to :pin
-  belongs_to :collection
+  self.primary_key = :uid
 
-  # A SavedPin does NOT directly belong to a user.
-  # User comes through collection, so no belongs_to :user here.
+  def to_param
+    uid
+  end
 
-  validates :pin_id, uniqueness: { scope: :collection_id }
+  belongs_to :pin,        foreign_key: :pin_uid,        primary_key: :uid
+  belongs_to :collection, foreign_key: :collection_uid, primary_key: :uid
+  belongs_to :user,       foreign_key: :user_uid,        primary_key: :uid
+
+  validates :pin_uid, uniqueness: { scope: :collection_uid }
 end

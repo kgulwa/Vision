@@ -1,4 +1,3 @@
-# This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
@@ -19,26 +18,14 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 RSpec.configure do |config|
-  # Only enable ActiveRecord support if using ActiveRecord
   config.use_active_record = true
-
-  # Include fixture support if needed
   config.include ActiveRecord::TestFixtures
-
-  # Use transactional fixtures (recommended for most tests)
   config.use_transactional_fixtures = true
 
-  # Automatically infer spec type from file location (e.g., model, controller, request)
   config.infer_spec_type_from_file_location!
-
-  # Filter out Rails gems from backtraces
   config.filter_rails_from_backtrace!
 
-  # Include FactoryBot methods for convenience
   config.include FactoryBot::Syntax::Methods
-
-  # Include Devise test helpers if using Devise (optional)
-  # config.include Devise::Test::IntegrationHelpers, type: :request
 end
 
 # Configure Shoulda Matchers for RSpec + Rails
@@ -46,5 +33,20 @@ Shoulda::Matchers.configure do |config|
   config.integrate do |with|
     with.test_framework :rspec
     with.library :rails
+  end
+end
+
+# ============================================
+# ✅ FIX: Disable Selenium for system specs
+# Use Rack::Test instead of a full browser
+# ============================================
+require 'capybara/rails'
+
+Capybara.default_driver = :rack_test
+Capybara.javascript_driver = :rack_test
+
+RSpec.configure do |config|
+  config.before(:each, type: :system) do
+    driven_by(:rack_test)
   end
 end
