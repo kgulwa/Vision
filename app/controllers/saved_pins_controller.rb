@@ -3,9 +3,8 @@ class SavedPinsController < ApplicationController
   before_action :set_pin
 
   def create
-    # Choose collection
-    if params[:collection_uid].present?
-      collection = current_user.collections.find_by(uid: params[:collection_uid])
+    if params[:collection_id].present?
+      collection = current_user.collections.find_by(id: params[:collection_id])
 
     elsif params[:new_collection_name].present?
       collection = current_user.collections.create!(name: params[:new_collection_name])
@@ -15,28 +14,28 @@ class SavedPinsController < ApplicationController
     end
 
     SavedPin.find_or_create_by!(
-      pin_uid: @pin.uid,
-      collection_uid: collection.uid,
-      user_uid: current_user.uid
+      pin_id: @pin.id,
+      collection_id: collection.id,
+      user_id: current_user.id
     )
 
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to pin_path(@pin.uid), notice: "Saved to #{collection.name}!" }
+      format.html { redirect_to pin_path(@pin.id), notice: "Saved to #{collection.name}!" }
     end
   end
 
   def destroy
-    @saved_pin = SavedPin.find_by(uid: params[:uid])
+    @saved_pin = SavedPin.find_by(id: params[:id])
+    saved_pin_pin = @saved_pin&.pin
     @saved_pin&.destroy
-    redirect_to pin_path(@saved_pin.pin_uid), notice: "Pin removed."
+    redirect_to pin_path(saved_pin_pin.id), notice: "Pin removed."
   end
 
   private
 
   def set_pin
-    uid = params[:pin_uid] # The route ensures this is present
-    @pin = Pin.find_by(uid: uid)
-    redirect_to pins_path, alert: "Pin not found" if @pin.nil?
+    @pin = Pin.find_by(id: params[:pin_id])
+    redirect_to pins_path, alert: "Pin not found" unless @pin
   end
 end

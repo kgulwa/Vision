@@ -1,0 +1,28 @@
+<div class="max-w-xl mx-auto px-4 pt-6">
+  <h1 class="text-xl font-semibold mb-4">Search Users</h1>
+
+  <%= form_with url: user_search_path, method: :get, local: true do %>
+    <input
+      type="text"
+      name="query"
+      placeholder="Search users..."
+      value="<%= params[:query] %>"
+      class="w-full border px-4 py-2 rounded-lg mb-4"
+    />
+  <% end %>
+
+  <% if @users.any? %>
+    <div class="space-y-3">
+      <% @users.each do |user| %>
+        <%= link_to user_path(user), class: "flex items-center space-x-3 p-3 bg-white rounded-xl shadow hover:bg-gray-50" do %>
+          <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
+            <%= user.username.first.upcase %>
+          </div>
+          <span class="font-medium"><%= user.username %></span>
+        <% end %>
+      <% end %>
+    </div>
+  <% elsif params[:query].present? %>
+    <p class="text-gray-500">No users found.</p>
+  <% end %>
+</div>

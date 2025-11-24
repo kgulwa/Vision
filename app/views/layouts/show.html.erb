@@ -20,7 +20,7 @@
         
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
-          <%= link_to @pin.user, class: "flex items-center space-x-3 hover:bg-gray-50 rounded-lg p-2 -m-2" do %>
+          <%= link_to user_path(@pin.user), class: "flex items-center space-x-3 hover:bg-gray-50 rounded-lg p-2 -m-2" do %>
             <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
               <%= @pin.user.username[0].upcase %>
             </div>
@@ -122,7 +122,7 @@
           <div class="space-y-4">
             <% @comments.each do |comment| %>
               <div class="flex space-x-3">
-                <%= link_to comment.user, class: "flex-shrink-0" do %>
+                <%= link_to user_path(comment.user), class: "flex-shrink-0" do %>
                   <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
                     <%= comment.user.username[0].upcase %>
                   </div>

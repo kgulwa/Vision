@@ -15,8 +15,7 @@ class LikesController < ApplicationController
   private
 
   def set_pin
-    uid = params[:pin_uid] || params[:uid]
-    @pin = Pin.find_by(uid: uid)
-    redirect_to pins_path, alert: "Pin not found" if @pin.nil?
+    @pin = Pin.find_by(id: params[:pin_id] || params[:id])
+    redirect_to pins_path, alert: "Pin not found" unless @pin
   end
 end

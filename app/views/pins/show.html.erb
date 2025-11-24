@@ -30,14 +30,14 @@
           <% if logged_in? %>
             <% if @pin.user == current_user %>
               <div class="flex space-x-2">
-                <%= link_to edit_pin_path(@pin.uid), class: "px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg" do %>Edit<% end %>
-                <%= button_to pin_path(@pin.uid), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg" do %>Delete<% end %>
+                <%= link_to edit_pin_path(@pin), class: "px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg" do %>Edit<% end %>
+                <%= button_to pin_path(@pin), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg" do %>Delete<% end %>
               </div>
             <% else %>
               <% if current_user.following?(@pin.user) %>
-                <%= button_to user_follow_path(@pin.user.uid), method: :delete, class: "px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50" do %>Following<% end %>
+                <%= button_to user_follow_path(@pin.user), method: :delete, class: "px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50" do %>Following<% end %>
               <% else %>
-                <%= button_to user_follow_path(@pin.user.uid), method: :post, class: "px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700" do %>Follow<% end %>
+                <%= button_to user_follow_path(@pin.user), method: :post, class: "px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700" do %>Follow<% end %>
               <% end %>
             <% end %>
           <% end %>
@@ -54,21 +54,21 @@
           <div class="flex items-center space-x-4 mb-6 pb-6 border-b">
 
             <% if current_user.liked?(@pin) %>
-              <%= button_to pin_like_path(@pin.uid), method: :delete, class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
+              <%= button_to pin_like_path(@pin), method: :delete, class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
                 ❤️ <span><%= @pin.likes_count %></span>
               <% end %>
             <% else %>
-              <%= button_to pin_like_path(@pin.uid), method: :post, class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
+              <%= button_to pin_like_path(@pin), method: :post, class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
                 🤍 <span><%= @pin.likes_count %></span>
               <% end %>
             <% end %>
 
             <% if current_user.reposted?(@pin) %>
-              <%= button_to pin_repost_path(@pin.uid), method: :delete, class: "flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200" do %>
+              <%= button_to pin_repost_path(@pin), method: :delete, class: "flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200" do %>
                 🔁 <span><%= @pin.reposts_count %></span>
               <% end %>
             <% else %>
-              <%= button_to pin_repost_path(@pin.uid), method: :post, class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
+              <%= button_to pin_repost_path(@pin), method: :post, class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
                 🔁 <span><%= @pin.reposts_count %></span>
               <% end %>
             <% end %>
@@ -90,7 +90,7 @@
 
                   <% if current_user.collections.any? %>
                     <% current_user.collections.each do |collection| %>
-                      <%= button_to pin_saved_pins_path(@pin.uid, collection_id: collection.uid),
+                      <%= button_to pin_saved_pins_path(@pin, collection_id: collection.id),
                           method: :post,
                           class: "w-full text-left px-4 py-2 rounded hover:bg-gray-100" do %>
                         <%= collection.name %>
@@ -103,7 +103,7 @@
 
                 <div class="p-2">
                   <%= form_with url: collections_path, method: :post, local: true do |f| %>
-                    <%= hidden_field_tag :pin_id, @pin.uid %>
+                    <%= hidden_field_tag :pin_id, @pin.id %>
                     <%= f.text_field :name, placeholder: "New collection", class: "w-full border px-3 py-1 rounded mb-2" %>
                     <%= f.submit "Create & Save", class: "w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700" %>
                   <% end %>
@@ -116,7 +116,7 @@
         <% end %>
 
         <div class="flex-1 overflow-y-auto max-h-[400px]">
-          <h3 class="font-semibold mb-4">Comments (<%= @pin.comments.where(parent_uid: nil).count %>)</h3>
+          <h3 class="font-semibold mb-4">Comments (<%= @pin.comments.where(parent_id: nil).count %>)</h3>
 
           <% if logged_in? %>
             <%= form_with model: [@pin, Comment.new], class: "mb-6" do |f| %>
@@ -132,7 +132,7 @@
             <% end %>
           <% end %>
 
-          <% @pin.comments.where(parent_uid: nil).order(created_at: :asc).each do |comment| %>
+          <% @pin.comments.where(parent_id: nil).order(created_at: :asc).each do |comment| %>
             <%= render partial: "pins/comment", locals: { comment: comment } %>
           <% end %>
 

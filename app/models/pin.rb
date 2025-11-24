@@ -1,17 +1,18 @@
 class Pin < ApplicationRecord
-  self.primary_key = :uid
+  # Primary key is now :id (default), so remove any custom PK
+  # self.primary_key = :id  # Not needed unless you want to be explicit
 
+  # Slugs / param should use `id`
   def to_param
-    uid
+    id
   end
-  
 
-  belongs_to :user, foreign_key: :user_uid, primary_key: :uid, optional: true
+  belongs_to :user, foreign_key: :user_id
 
-  has_many :comments, foreign_key: :pin_uid, primary_key: :uid, dependent: :destroy
-  has_many :likes, foreign_key: :pin_uid, primary_key: :uid, dependent: :destroy
-  has_many :reposts, foreign_key: :pin_uid, primary_key: :uid, dependent: :destroy
-  has_many :saved_pins, foreign_key: :pin_uid, primary_key: :uid, dependent: :destroy
+  has_many :comments, foreign_key: :pin_id, dependent: :destroy
+  has_many :likes, foreign_key: :pin_id, dependent: :destroy
+  has_many :reposts, foreign_key: :pin_id, dependent: :destroy
+  has_many :saved_pins, foreign_key: :pin_id, dependent: :destroy
 
   has_one_attached :image
 

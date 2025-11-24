@@ -16,7 +16,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      session[:user_uid] = @user.uid
+      session[:user_id] = @user.id
       redirect_to root_path, notice: "Account created successfully!"
     else
       render :new, status: :unprocessable_content
@@ -27,7 +27,7 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      redirect_to user_path(@user.uid), notice: "Profile updated successfully!"
+      redirect_to user_path(@user.id), notice: "Profile updated successfully!"
     else
       render :edit, status: :unprocessable_content
     end
@@ -35,10 +35,26 @@ class UsersController < ApplicationController
 
   def destroy
     @user.destroy
-    session.delete(:user_uid)
+    session.delete(:user_id)
     redirect_to root_path, notice: "Account deleted successfully."
   end
 
+  # -------------------------
+  # SEARCH USERS
+  # -------------------------
+  def search
+    @query = params[:query]
+
+    @users = if @query.present?
+               User.where("username ILIKE ?", "%#{@query}%")
+             else
+               []
+             end
+  end
+
+  # -------------------------
+  # CHECK ENDPOINTS (AJAX)
+  # -------------------------
   def check_email
     email = params[:email]&.downcase
     render json: { available: email.present? && !User.exists?(email: email) }
@@ -62,8 +78,7 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    uid = params[:id] || params[:user_id] || params[:uid]
-    @user = User.find_by(uid: uid)
+    @user = User.find_by(id: params[:id])
     redirect_to root_path, alert: "User not found." unless @user
   end
 

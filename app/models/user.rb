@@ -1,100 +1,82 @@
 class User < ApplicationRecord
-  self.primary_key = :uid
   has_secure_password
 
-  def to_param
-    uid
-  end
-  
+  # ============================================================
+  # BASE ASSOCIATIONS (must come before dependent feature logic)
+  # ============================================================
 
-  # Validations
-  validates :username, presence: true, uniqueness: { case_sensitive: true }
-  validates :email,
-            presence: true,
-            uniqueness: { case_sensitive: false },
-            format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :password, presence: true, length: { minimum: 6 }, if: :password_required?
+  has_many :pins, dependent: :nullify
+  has_many :collections, dependent: :destroy
+  has_many :comments, dependent: :nullify
+  has_many :likes, dependent: :destroy
+  has_many :reposts, dependent: :destroy
+  has_many :saved_pins, dependent: :destroy
 
-  # Associations
-  has_many :pins, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
-  has_many :comments, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
-  has_many :likes, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
-  has_many :reposts, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
-  has_many :collections, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
-  has_many :saved_pins, foreign_key: :user_uid, primary_key: :uid, dependent: :destroy
+  # ======================
+  # FOLLOW SYSTEM
+  # ======================
 
-  has_many :liked_pins, through: :likes, source: :pin
-  has_many :reposted_pins, through: :reposts, source: :pin
-  has_many :saved_pins_collections, through: :saved_pins, source: :collection
+  # People the user follows
+  has_many :follows, foreign_key: :follower_id, dependent: :destroy
+  has_many :followings, through: :follows, source: :followed
 
-  # Following system
-  has_many :active_follows, class_name: "Follow",
-                           foreign_key: :follower_uid,
-                           primary_key: :uid,
-                           dependent: :destroy
+  # People who follow this user
+  has_many :inverse_follows,
+           class_name: "Follow",
+           foreign_key: :followed_id,
+           dependent: :destroy
+  has_many :followers, through: :inverse_follows, source: :follower
 
-  has_many :passive_follows, class_name: "Follow",
-                            foreign_key: :followed_uid,
-                            primary_key: :uid,
-                            dependent: :destroy
-
-  has_many :following, through: :active_follows, source: :followed
-  has_many :followers, through: :passive_follows, source: :follower
-
-  # Helper methods...
-  def follow(user)
-    following << user unless self == user || following.include?(user)
+  def following?(other_user)
+    followings.exists?(id: other_user.id)
   end
 
-  def unfollow(user)
-    following.delete(user)
+  def follow(other_user)
+    follows.find_or_create_by(followed_id: other_user.id)
   end
 
-  def following?(user)
-    following.include?(user)
+  def unfollow(other_user)
+    follows.where(followed_id: other_user.id).destroy_all
+  end
+
+  # ======================
+  # LIKE SYSTEM
+  # ======================
+
+  def liked?(pin)
+    likes.exists?(pin_id: pin.id)
   end
 
   def like(pin)
-    liked_pins << pin unless liked_pins.include?(pin)
+    likes.find_or_create_by(pin_id: pin.id)
   end
 
   def unlike(pin)
-    liked_pins.delete(pin)
+    likes.where(pin_id: pin.id).destroy_all
   end
 
-  def liked?(pin)
-    liked_pins.include?(pin)
-  end
-
-  def repost(pin)
-    reposted_pins << pin unless reposted_pins.include?(pin)
-  end
-
-  def unrepost(pin)
-    reposted_pins.delete(pin)
-  end
+  # ======================
+  # REPOST SYSTEM
+  # ======================
 
   def reposted?(pin)
-    reposts.exists?(pin_uid: pin.uid)
+    reposts.exists?(pin_id: pin.id)
   end
 
-  # Saved pins
-  def save_pin(pin, collection_name = "Default")
-    collection = collections.find_or_create_by(name: collection_name)
-    saved_pins.find_or_create_by(pin_uid: pin.uid, collection_uid: collection.uid)
-  end
+  # These must be defined AFTER :reposts
+  has_many :reposted_pins, through: :reposts, source: :pin
 
-  def unsave(pin)
-    saved_pins.where(pin_uid: pin.uid).destroy_all
-  end
+  # ======================
+  # SAVED PINS SYSTEM
+  # ======================
 
   def saved?(pin)
-    saved_pins.exists?(pin_uid: pin.uid)
+    saved_pins.exists?(pin_id: pin.id)
   end
 
-  private
+  # ======================
+  # VALIDATIONS
+  # ======================
 
-  def password_required?
-    password_digest.nil? || !password.blank?
-  end
+  validates :email, presence: true, uniqueness: true
 end

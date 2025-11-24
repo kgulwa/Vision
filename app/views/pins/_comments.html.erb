@@ -1,5 +1,5 @@
 <div class="space-y-4">
-  <% pin.comments.where(parent_id: nil).where.not(user_uid: nil).order(created_at: :asc).each do |comment| %>
+  <% pin.comments.where(parent_id: nil).where.not(user_id: nil).order(created_at: :asc).each do |comment| %>
     <%= render partial: "pins/comment", locals: { comment: comment } %>
   <% end %>
 

@@ -8,8 +8,8 @@ class ApplicationController < ActionController::Base
 
   def current_user
     return @current_user if defined?(@current_user)
-    uid = session[:user_uid]
-    @current_user = User.find_by(uid: uid)
+    id = session[:user_id]
+    @current_user = User.find_by(id: id)
   end
 
   def logged_in?

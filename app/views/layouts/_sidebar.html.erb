@@ -14,7 +14,7 @@
       <span class="text-sm">Explore</span>
     <% end %>
 
-    <%= link_to current_user, class: "flex items-center space-x-4 px-3 py-2.5 rounded-lg hover:bg-gray-100 transition-colors #{current_page?(current_user) ? 'bg-gray-100 font-semibold' : ''}" do %>
+    <%= link_to user_path(current_user), class: "flex items-center space-x-4 px-3 py-2.5 rounded-lg hover:bg-gray-100 transition-colors #{current_page?(current_user) ? 'bg-gray-100 font-semibold' : ''}" do %>
       <svg class="w-5 h-5 #{current_page?(current_user) ? 'text-red-600' : 'text-gray-700'}" fill="currentColor" viewBox="0 0 20 20">
         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
       </svg>
@@ -29,7 +29,7 @@
 
     <% if current_user.following.any? %>
       <% current_user.following.limit(8).each do |user| %>
-        <%= link_to user, class: "flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" do %>
+        <%= link_to user_path(user), class: "flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" do %>
           <div class="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
             <%= user.username[0].upcase %>
           </div>

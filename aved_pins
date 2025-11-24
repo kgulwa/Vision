@@ -1,0 +1,15 @@
+                                 Table "public.reposts"
+   Column   |              Type              | Collation | Nullable |      Default      
+------------+--------------------------------+-----------+----------+-------------------
+ uid        | uuid                           |           | not null | gen_random_uuid()
+ pin_uid    | uuid                           |           | not null | 
+ user_uid   | uuid                           |           | not null | 
+ created_at | timestamp(6) without time zone |           | not null | 
+ updated_at | timestamp(6) without time zone |           | not null | 
+ id         | uuid                           |           | not null | gen_random_uuid()
+Indexes:
+    "reposts_pkey" PRIMARY KEY, btree (uid)
+    "index_reposts_on_user_uid_and_pin_uid" UNIQUE, btree (user_uid, pin_uid)
+Foreign-key constraints:
+    "fk_rails_a53a333861" FOREIGN KEY (pin_uid) REFERENCES pins(uid)
+

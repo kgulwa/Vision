@@ -1,9 +1,7 @@
 class ApplicationRecord < ActiveRecord::Base
-  self.primary_key = :uid
-  primary_abstract_class
+  self.abstract_class = true
 
   def to_param
-    uid
+    id
   end
-  
 end

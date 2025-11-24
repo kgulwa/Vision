@@ -1,14 +1,14 @@
 Rails.application.routes.draw do
   root 'sessions#home'
 
-  resources :pins, param: :uid do
-    resources :comments, param: :uid
+  resources :pins do
+    resources :comments
     resource :like, only: [:create, :destroy]
     resource :repost, only: [:create, :destroy]
-    resources :saved_pins, only: [:create, :destroy], param: :uid
+    resources :saved_pins, only: [:create, :destroy]
   end
 
-  resources :users, param: :uid do
+  resources :users do
     resource :follow, only: [:create, :destroy]
     collection do
       get :check_email
@@ -18,13 +18,14 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :collections, only: [:show, :create], param: :uid
+  resources :collections, only: [:show, :create]
 
   get '/login', to: 'sessions#new', as: :login
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy', as: :logout
 
   get '/search', to: 'pins#search', as: :search
+  get '/search/users', to:  'search#users', as: :user_search
 
   get "up" => "rails/health#show", as: :rails_health_check
 end

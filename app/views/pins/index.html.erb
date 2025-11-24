@@ -16,7 +16,7 @@
     <div class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-2 [column-fill:_balance] px-2">
       <% @pins.each do |pin| %>
         <div class="break-inside-avoid mb-2">
-          <%= link_to pin_path(pin.uid), class: "block rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02]" do %>
+          <%= link_to pin_path(pin), class: "block rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02]" do %>
             <% if pin.image.attached? %>
               <%= image_tag pin.image, class: "w-full h-auto rounded-xl" %>
             <% else %>
