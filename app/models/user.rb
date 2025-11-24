@@ -1,9 +1,7 @@
 class User < ApplicationRecord
   has_secure_password
 
-  # ============================================================
-  # BASE ASSOCIATIONS (must come before dependent feature logic)
-  # ============================================================
+
 
   has_many :pins, dependent: :nullify
   has_many :collections, dependent: :destroy
@@ -11,10 +9,12 @@ class User < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :reposts, dependent: :destroy
   has_many :saved_pins, dependent: :destroy
+  has_many :search_histories, dependent: :destroy
 
-  # ======================
+
+ 
   # FOLLOW SYSTEM
-  # ======================
+  
 
   # People the user follows
   has_many :follows, foreign_key: :follower_id, dependent: :destroy
@@ -39,9 +39,9 @@ class User < ApplicationRecord
     follows.where(followed_id: other_user.id).destroy_all
   end
 
-  # ======================
+  
   # LIKE SYSTEM
-  # ======================
+  
 
   def liked?(pin)
     likes.exists?(pin_id: pin.id)
@@ -55,9 +55,9 @@ class User < ApplicationRecord
     likes.where(pin_id: pin.id).destroy_all
   end
 
-  # ======================
+  
   # REPOST SYSTEM
-  # ======================
+  
 
   def reposted?(pin)
     reposts.exists?(pin_id: pin.id)
@@ -66,17 +66,17 @@ class User < ApplicationRecord
   # These must be defined AFTER :reposts
   has_many :reposted_pins, through: :reposts, source: :pin
 
-  # ======================
+  
   # SAVED PINS SYSTEM
-  # ======================
+  
 
   def saved?(pin)
     saved_pins.exists?(pin_id: pin.id)
   end
 
-  # ======================
+ 
   # VALIDATIONS
-  # ======================
+  
 
   validates :email, presence: true, uniqueness: true
 end
