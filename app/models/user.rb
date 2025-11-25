@@ -36,7 +36,7 @@ class User < ApplicationRecord
     follows.where(followed_id: other_user.id).destroy_all
   end
 
-  # LIKE SYSTEM
+  
   def liked?(pin)
     likes.exists?(pin_id: pin.id)
   end
@@ -49,14 +49,14 @@ class User < ApplicationRecord
     likes.where(pin_id: pin.id).destroy_all
   end
 
-  # REPOST SYSTEM
+  
   def reposted?(pin)
     reposts.exists?(pin_id: pin.id)
   end
 
   has_many :reposted_pins, through: :reposts, source: :pin
 
-  # SAVED PINS SYSTEM
+  
   def saved?(pin)
     saved_pins.exists?(pin_id: pin.id)
   end

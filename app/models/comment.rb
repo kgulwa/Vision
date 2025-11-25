@@ -1,5 +1,5 @@
 class Comment < ApplicationRecord
-  # Primary key is now :id automatically
+  
 
   def to_param
     id
@@ -10,7 +10,7 @@ class Comment < ApplicationRecord
 
   validates :content, presence: true
 
-  # Replies (self-join)
+  
   belongs_to :parent,
              class_name: "Comment",
              optional: true,
@@ -21,7 +21,7 @@ class Comment < ApplicationRecord
            foreign_key: :parent_id,
            dependent: :destroy
 
-  # Scopes
+  
   scope :from_existing_users, -> { where.not(user_id: nil) }
   scope :recent, -> { order(created_at: :desc) }
 end

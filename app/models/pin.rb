@@ -1,8 +1,7 @@
 class Pin < ApplicationRecord
-  # Primary key is now :id (default), so remove any custom PK
-  # self.primary_key = :id  # Not needed unless you want to be explicit
+  
 
-  # Slugs / param should use `id`
+  
   def to_param
     id
   end
@@ -18,11 +17,11 @@ class Pin < ApplicationRecord
 
   validates :title, presence: true
 
-  # Scopes
+  
   scope :recent, -> { order(created_at: :desc) }
   scope :from_existing_users, -> { joins(:user) }
 
-  # Count methods
+ 
   def comments_count
     comments.from_existing_users.count
   end
