@@ -3,14 +3,14 @@ require "rails_helper"
 RSpec.describe "RepostsController", type: :request do
   let(:user)      { create(:user) }
   let(:pin_owner) { create(:user) }
-  let(:pin)       { create(:pin, user_uid: pin_owner.uid) }
+  let(:pin)       { create(:pin, user: pin_owner) }
 
   before do
-    # Log the user in
     post login_path, params: {
       username: user.username,
       password: "password"
     }
+    expect(session[:user_id]).to eq(user.id)
   end
 
   describe "POST /pins/:pin_id/repost" do
@@ -23,7 +23,7 @@ RSpec.describe "RepostsController", type: :request do
     end
 
     it "does not repost the same pin twice" do
-      Repost.create!(pin: pin, user_uid: user.uid)
+      Repost.create!(pin: pin, user: user)
 
       expect {
         post pin_repost_path(pin)
@@ -33,7 +33,7 @@ RSpec.describe "RepostsController", type: :request do
 
   describe "DELETE /pins/:pin_id/repost" do
     it "removes a repost" do
-      Repost.create!(pin: pin, user_uid: user.uid)
+      Repost.create!(pin: pin, user: user)
 
       expect {
         delete pin_repost_path(pin)

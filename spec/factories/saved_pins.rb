@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :saved_pin do
-    pin { nil }
-    collection { nil }
+    association :pin
+    association :collection
+    association :user
   end
 end

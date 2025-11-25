@@ -6,31 +6,31 @@ RSpec.describe "UsersController", type: :request do
 
   describe "GET /users/:id/edit" do
     it "redirects if not logged in" do
-      get edit_user_path(user.uid)
+      get edit_user_path(user.id)
       expect(response).to redirect_to(root_path)
     end
   end
 
   describe "PATCH /users/:id" do
     before do
-      # Login user
       post login_path, params: {
         username: user.username,
         password: "password"
       }
+      expect(session[:user_id]).to eq(user.id)
     end
 
     it "updates the profile when logged in" do
-      patch user_path(user.uid), params: {
+      patch user_path(user.id), params: {
         user: { username: "newname" }
       }
 
-      expect(response).to redirect_to(user_path(user.uid))
+      expect(response).to redirect_to(user_path(user.id))
       expect(user.reload.username).to eq("newname")
     end
 
     it "does not allow updating another user's profile" do
-      patch user_path(other_user.uid), params: {
+      patch user_path(other_user.id), params: {
         user: { username: "hacked" }
       }
 
@@ -49,7 +49,10 @@ RSpec.describe "UsersController", type: :request do
 
     it "deletes the account when logged in" do
       expect {
-        delete user_path(user.uid)
+        delete user_path(user.id)
       }.to change(User, :count).by(-1)
 
-      e
+      expect(response).to redirect_to(root_path)
+    end
+  end
+end

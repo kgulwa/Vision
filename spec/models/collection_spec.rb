@@ -3,13 +3,13 @@ require "rails_helper"
 RSpec.describe Collection, type: :model do
   let(:user) { create(:user) }
 
-  it "is valid with a name and user_uid" do
-    collection = Collection.new(name: "My Collection", user_uid: user.uid)
+  it "is valid with a name and user_id" do
+    collection = Collection.new(name: "My Collection", user: user)
     expect(collection).to be_valid
   end
 
   it "is invalid without a name" do
-    collection = Collection.new(user_uid: user.uid)
+    collection = Collection.new(user: user)
     expect(collection).not_to be_valid
   end
 
@@ -19,14 +19,9 @@ RSpec.describe Collection, type: :model do
       expect(association.macro).to eq(:belongs_to)
     end
 
-    it "uses uid as the primary key" do
+    it "uses id as the primary key (default)" do
       association = Collection.reflect_on_association(:user)
-      expect(association.options[:primary_key]).to eq(:uid)
-    end
-
-    it "uses uid as the primary key" do
-      association = Collection.reflect_on_association(:user)
-      expect(association.options[:primary_key]).to eq(:uid)
+      expect(association.options[:primary_key]).to eq(nil)
     end
   end
 end

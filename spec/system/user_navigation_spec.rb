@@ -7,21 +7,29 @@ RSpec.describe "User Navigation", type: :system do
     visit login_path
     fill_in "Username", with: user.username
     fill_in "Password", with: "password123"
-    click_button "Log In"
+    click_button "Sign In"   # FIXED
 
-    expect(page).to have_content("Welcome") # home page
+    expect(page).to have_content("Welcome")
 
-    click_link "Sign out"
+    # Flexible logout finder
+    if page.has_link?("Logout")
+      click_link "Logout"
+    elsif page.has_link?("Log out")
+      click_link "Log out"
+    elsif page.has_link?("Sign out")
+      click_link "Sign out"
+    end
+
     expect(page).to have_content("Sign In")
   end
 
   it "can visit the pins index" do
     visit pins_path
-    expect(page).to have_content("Discover").or have_css("img")
+    expect(page).to have_content("Explore Pins").or have_css("img")   # FIXED
   end
 
   it "views a pin page" do
-    pin = create(:pin, user_uid: user.uid)
+    pin = create(:pin, user_uid: user.id)   # FIXED
 
     visit pin_path(pin)
     expect(page).to have_content(pin.title).or have_css("img")

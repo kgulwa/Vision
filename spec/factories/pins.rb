@@ -2,7 +2,8 @@ FactoryBot.define do
   factory :pin do
     title { "Test Pin" }
     description { "Test description" }
-    user_uid { create(:user).uid }
+
+    association :user  
 
     after(:build) do |pin|
       pin.image.attach(

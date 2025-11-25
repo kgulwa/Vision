@@ -7,7 +7,7 @@ RSpec.describe "Follows", type: :request do
   before do
     post login_path,
          params: { username: user.username, password: "password" }
-    expect(session[:user_uid]).to eq(user.uid)
+    expect(session[:user_id]).to eq(user.id)
   end
 
   it "follows another user" do

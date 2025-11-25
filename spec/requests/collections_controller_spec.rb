@@ -9,6 +9,7 @@ RSpec.describe "CollectionsController", type: :request do
       username: user.username,
       password: "password"
     }
+    expect(session[:user_id]).to eq(user.id)
   end
 
   describe "GET /collections/:id" do
@@ -30,12 +31,12 @@ RSpec.describe "CollectionsController", type: :request do
 
       new_collection = Collection.last
       expect(new_collection.name).to eq("Favorites")
-      expect(new_collection.user_uid).to eq(user.uid)
+      expect(new_collection.user_id).to eq(user.id)
       expect(response).to redirect_to(collection_path(new_collection))
     end
 
     it "creates a collection and saves a pin inside it when pin_id is provided" do
-      pin = create(:pin, user_uid: user.uid)
+      pin = create(:pin, user: user)
 
       expect {
         post collections_path,
@@ -45,7 +46,7 @@ RSpec.describe "CollectionsController", type: :request do
 
       saved_pin = SavedPin.last
       expect(saved_pin.pin_id).to eq(pin.id)
-      expect(saved_pin.user_uid).to eq(user.uid)
+      expect(saved_pin.user_id).to eq(user.id)
     end
   end
 
@@ -57,7 +58,6 @@ RSpec.describe "CollectionsController", type: :request do
         delete collection_path(collection)
       }.not_to change(Collection, :count)
 
-      # Your app would either 404 or redirect depending on before_action
       expect(response.status).to be_between(300, 404)
     end
 
@@ -70,12 +70,12 @@ RSpec.describe "CollectionsController", type: :request do
         username: other_user.username,
         password: "password"
       }
+      expect(session[:user_id]).to eq(other_user.id)
 
       expect {
         delete collection_path(collection)
       }.not_to change(Collection, :count)
 
-      # Your controller uses `current_user.collections.find`, so this returns 404
       expect(response.status).to eq(404)
     end
   end

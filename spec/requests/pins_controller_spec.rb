@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "PinsController", type: :request do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
+
   let(:valid_params) do
     {
       pin: {
@@ -13,11 +14,11 @@ RSpec.describe "PinsController", type: :request do
   end
 
   before do
-    # Logs in default user
     post login_path, params: {
       username: user.username,
       password: "password"
     }
+    expect(session[:user_id]).to eq(user.id)
   end
 
   describe "POST /pins" do
@@ -26,14 +27,14 @@ RSpec.describe "PinsController", type: :request do
         post pins_path, params: valid_params
       }.to change(Pin, :count).by(1)
 
-      expect(Pin.last.user_uid).to eq(user.uid)
+      expect(Pin.last.user_id).to eq(user.id)
       expect(response).to redirect_to(pins_path)
     end
   end
 
   describe "PATCH /pins/:id" do
     it "prevents updating someone else's pin" do
-      pin = create(:pin, user_uid: other_user.uid)
+      pin = create(:pin, user: other_user)
 
       patch pin_path(pin), params: { pin: { title: "Hacked" } }
 
@@ -45,7 +46,7 @@ RSpec.describe "PinsController", type: :request do
 
   describe "DELETE /pins/:id" do
     it "deletes a pin when the owner is logged in" do
-      pin = create(:pin, user_uid: user.uid)
+      pin = create(:pin, user: user)
 
       expect {
         delete pin_path(pin)
@@ -55,7 +56,7 @@ RSpec.describe "PinsController", type: :request do
     end
 
     it "does NOT allow another user to delete the pin" do
-      pin = create(:pin, user_uid: user.uid)
+      pin = create(:pin, user: user)
 
       delete logout_path
 
@@ -63,6 +64,7 @@ RSpec.describe "PinsController", type: :request do
         username: other_user.username,
         password: "password"
       }
+      expect(session[:user_id]).to eq(other_user.id)
 
       expect {
         delete pin_path(pin)

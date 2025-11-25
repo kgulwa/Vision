@@ -3,17 +3,18 @@ require "rails_helper"
 RSpec.describe "SavedPinsController", type: :request do
   let(:user)      { create(:user) }
   let(:pin_owner) { create(:user) }
-  let(:pin)       { create(:pin, user_uid: pin_owner.uid) }
+  let(:pin)       { create(:pin, user: pin_owner) }
 
   before do
     post login_path, params: {
       username: user.username,
       password: "password"
     }
+    expect(session[:user_id]).to eq(user.id)
   end
 
   describe "POST /pins/:pin_id/saved_pins" do
-    it "saves a pin to a collection" do
+    it "saves a pin to a new collection" do
       expect {
         post pin_saved_pins_path(pin), params: { new_collection_name: "Favorites" }
       }.to change(SavedPin, :count).by(1)
@@ -21,13 +22,13 @@ RSpec.describe "SavedPinsController", type: :request do
       expect(response).to redirect_to(pin_path(pin))
     end
 
-    it "does not save the same pin twice" do
+    it "does not save the same pin twice in the same collection" do
       collection = user.collections.create!(name: "Favorites")
 
       SavedPin.create!(
-        user_uid: user.uid,
-        pin_id: pin.id,
-        collection_id: collection.id
+        user: user,
+        pin: pin,
+        collection: collection
       )
 
       expect {
@@ -48,9 +49,9 @@ RSpec.describe "SavedPinsController", type: :request do
     it "removes a saved pin" do
       collection = user.collections.create!(name: "Favorites")
       saved_pin = SavedPin.create!(
-        user_uid: user.uid,
-        pin_id: pin.id,
-        collection_id: collection.id
+        user: user,
+        pin: pin,
+        collection: collection
       )
 
       expect {

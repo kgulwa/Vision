@@ -2,14 +2,14 @@ require "rails_helper"
 
 RSpec.describe "LikesController", type: :request do
   let(:user) { create(:user) }
-  let(:pin)  { create(:pin, user_uid: user.uid) }
+  let(:pin)  { create(:pin, user: user) }
 
   before do
-    # Log in user
     post login_path, params: {
       username: user.username,
       password: "password"
     }
+    expect(session[:user_id]).to eq(user.id)
   end
 
   describe "POST /pins/:pin_id/like" do
@@ -32,7 +32,7 @@ RSpec.describe "LikesController", type: :request do
 
   describe "DELETE /pins/:pin_id/like" do
     it "unlikes a pin" do
-      Like.create!(pin: pin, user_uid: user.uid)
+      Like.create!(pin: pin, user: user)
 
       expect {
         delete pin_like_path(pin)
