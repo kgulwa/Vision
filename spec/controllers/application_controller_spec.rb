@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe ApplicationController, type: :controller do
-  # Create a controller that inherits from ApplicationController
   controller(ApplicationController) do
     before_action :require_login, only: :protected_action
 
@@ -14,7 +13,7 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
-  # Inject routes so RSpec can call the actions
+
   before do
     routes.draw do
       get "protected_action" => "anonymous#protected_action"

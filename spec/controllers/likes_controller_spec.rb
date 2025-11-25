@@ -5,7 +5,6 @@ RSpec.describe LikesController, type: :controller do
   let(:pin)  { Pin.new(id: 1, title: "Test Pin", description: "Test pin description", user: user) }
 
   before do
-    # Save without validations (skip image requirement)
     pin.save(validate: false)
   end
 

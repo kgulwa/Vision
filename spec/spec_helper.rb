@@ -1,4 +1,3 @@
-# --- SimpleCov Setup ---
 require 'simplecov'
 SimpleCov.start 'rails' do
   enable_coverage :branch

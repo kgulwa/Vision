@@ -36,10 +36,7 @@ Shoulda::Matchers.configure do |config|
   end
 end
 
-# ============================================
-# ✅ FIX: Disable Selenium for system specs
-# Use Rack::Test instead of a full browser
-# ============================================
+
 require 'capybara/rails'
 
 Capybara.default_driver = :rack_test

@@ -1,4 +1,3 @@
-# spec/factories/users.rb
 FactoryBot.define do
   factory :user do
     username { "test_#{SecureRandom.hex(3)}" }
