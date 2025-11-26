@@ -1,28 +1,39 @@
 class User < ApplicationRecord
   has_secure_password
+  has_one_attached :avatar
 
+  # ---- PIN SYSTEM ----
   has_many :pins, dependent: :nullify
-  has_many :collections, dependent: :destroy
-  has_many :comments, dependent: :nullify
-  has_many :likes, dependent: :destroy
-  has_many :reposts, dependent: :destroy
   has_many :saved_pins, dependent: :destroy
+  has_many :collections, dependent: :destroy
+
+  # ---- COMMENTS ----
+  has_many :comments, dependent: :nullify
+
+  # ---- LIKES ----
+  has_many :likes, dependent: :destroy
+
+  # ---- REPOSTS ----
+  has_many :reposts, dependent: :destroy
+  has_many :reposted_pins, through: :reposts, source: :pin
+
+  # ---- SEARCH HISTORY ----
   has_many :search_histories, dependent: :destroy
-  has_many :followed_users, foreign_key: :follower_id, class_name: "Follow"
-  has_many :following, through: :followed_users, source: :followed
 
-  has_many :follower_users, foreign_key: :followed_id, class_name: "Follow"
-  has_many :followers, through: :follower_users, source: :follower
+  # ---- FOLLOW SYSTEM ----
 
-  # FOLLOW SYSTEM
+  # People *I* follow
   has_many :follows, foreign_key: :follower_id, dependent: :destroy
   has_many :followings, through: :follows, source: :followed
 
+  # People who follow *me*
   has_many :inverse_follows,
-            class_name: "Follow",
-            foreign_key: :followed_id,
-            dependent: :destroy
+           class_name: "Follow",
+           foreign_key: :followed_id,
+           dependent: :destroy
   has_many :followers, through: :inverse_follows, source: :follower
+
+  # ---- METHODS ----
 
   def following?(other_user)
     followings.exists?(id: other_user.id)
@@ -36,7 +47,6 @@ class User < ApplicationRecord
     follows.where(followed_id: other_user.id).destroy_all
   end
 
-  
   def liked?(pin)
     likes.exists?(pin_id: pin.id)
   end
@@ -49,19 +59,16 @@ class User < ApplicationRecord
     likes.where(pin_id: pin.id).destroy_all
   end
 
-  
   def reposted?(pin)
     reposts.exists?(pin_id: pin.id)
   end
 
-  has_many :reposted_pins, through: :reposts, source: :pin
-
-  
   def saved?(pin)
     saved_pins.exists?(pin_id: pin.id)
   end
 
-  
+  # ---- VALIDATIONS ----
+
   validates :username, presence: true, uniqueness: { case_sensitive: true }
 
   validates :email,
@@ -69,5 +76,12 @@ class User < ApplicationRecord
             uniqueness: { case_sensitive: false },
             format: { with: URI::MailTo::EMAIL_REGEXP }
 
-  validates :password, length: { minimum: 6 }, if: -> { password.present? }
+  # Password validations
+  validates :password, presence: true, length: { minimum: 6 }, on: :create
+  validates :password, length: { minimum: 6 }, allow_blank: true, on: :update
+
+  # 🔥 Proper confirmation validation
+  validates :password_confirmation,
+            presence: true,
+            if: -> { password.present? }
 end

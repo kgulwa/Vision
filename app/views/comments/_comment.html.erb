@@ -1,14 +1,23 @@
 <div class="p-3 border rounded-lg bg-gray-50">
   <div class="flex flex-col">
-    <div class="flex justify-between items-start">
-      <p class="flex-1">
-        <strong><%= comment.user&.username || "Deleted User" %>:</strong>
-        <%= comment.content %>
-      </p>
 
+    <!-- MAIN COMMENT -->
+    <div class="flex justify-between items-start">
+      <div class="flex flex-1 space-x-3">
+
+        <!-- USER AVATAR -->
+        <%= user_avatar(comment.user, size: 36, class_name: "mr-2") %>
+
+        <!-- COMMENT TEXT -->
+        <p class="flex-1">
+          <strong><%= comment.user&.username || "Deleted User" %>:</strong>
+          <%= comment.content %>
+        </p>
+      </div>
+
+      <!-- ACTION BUTTONS -->
       <div class="flex space-x-3">
         <% if current_user == comment.user %>
-
           <%= link_to "Edit",
               edit_pin_comment_path(comment.pin, comment),
               class: "text-blue-600 text-sm" %>
@@ -18,7 +27,6 @@
               method: :delete,
               data: { confirm: "Delete this comment?" },
               class: "text-red-600 text-sm" %>
-
         <% end %>
 
         <%= link_to "Reply",
@@ -27,10 +35,16 @@
       </div>
     </div>
 
+    <!-- REPLIES -->
     <% if comment.replies.any? %>
       <div class="ml-6 mt-2 border-l-2 border-gray-200 pl-4 space-y-2">
         <% comment.replies.each do |reply| %>
-          <div class="p-2 bg-gray-100 rounded-lg">
+          <div class="flex space-x-3 p-2 bg-gray-100 rounded-lg">
+
+            <!-- REPLY AVATAR -->
+            <%= user_avatar(reply.user, size: 28) %>
+
+            <!-- REPLY TEXT -->
             <p>
               <strong><%= reply.user&.username || "Deleted User" %>:</strong>
               <%= reply.content %>
@@ -39,5 +53,6 @@
         <% end %>
       </div>
     <% end %>
+
   </div>
 </div>

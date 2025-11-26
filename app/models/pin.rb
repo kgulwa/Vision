@@ -4,6 +4,7 @@ class Pin < ApplicationRecord
   
   def to_param
     id
+    
   end
 
   belongs_to :user, foreign_key: :user_id

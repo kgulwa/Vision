@@ -17,13 +17,14 @@
       <h2 class="text-gray-600 text-lg font-semibold">Recent Searches</h2>
 
       <%= button_to "Clear", clear_search_history_path,
-          method: :delete,
-          class: "text-sm text-red-600 hover:text-red-800" %>
+            method: :delete,
+            class: "text-sm text-red-600 hover:text-red-800" %>
     </div>
 
     <div class="flex flex-col gap-2 mb-6">
       <% @history.each do |item| %>
-        <%= link_to user_search_path(query: item.query), class: "text-gray-800 hover:text-black font-medium" do %>
+        <%= link_to user_search_path(query: item.query),
+              class: "text-gray-800 hover:text-black font-medium" do %>
           <%= item.query.capitalize %>
         <% end %>
       <% end %>
@@ -33,11 +34,27 @@
   <% if @users.any? %>
     <div class="space-y-3">
       <% @users.each do |user| %>
-        <%= link_to user_path(user), class: "flex items-center space-x-3 p-3 bg-white rounded-xl shadow hover:bg-gray-50" do %>
-          <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
-            <%= user.username.first.upcase %>
+        <%= link_to user_path(user),
+              class: "flex items-center space-x-4 p-4 bg-white rounded-xl shadow hover:shadow-md hover:bg-gray-50 transition" do %>
+
+          <!-- ⭐ FIXED AVATAR -->
+          <div class="flex-shrink-0">
+            <%= user_avatar(user, size: 48) %>
           </div>
-          <span class="font-medium"><%= user.username %></span>
+
+          <!-- USER INFO -->
+          <div class="flex flex-col">
+            <span class="font-semibold text-gray-900 text-lg">
+              <%= user.username %>
+            </span>
+
+            <% if user.email.present? %>
+              <span class="text-gray-500 text-sm">
+                <%= user.email %>
+              </span>
+            <% end %>
+          </div>
+
         <% end %>
       <% end %>
     </div>

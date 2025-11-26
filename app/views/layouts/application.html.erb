@@ -4,15 +4,26 @@
     <title>Vision</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-visit-control" content="reload">
+
+    <!-- 🚫 Disable autofill everywhere -->
+    <meta name="autocomplete" content="off">
+    <meta name="autofill" content="off">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <style>
+      input[type="password"] {
+        autocomplete: new-password !important;
+      }
+    </style>
   </head>
 
-  <body class="bg-white text-gray-900">
+  <body class="bg-white text-gray-900" autocomplete="off">
     <%= render 'layouts/header' %>
 
     <main class="pt-14">
@@ -40,7 +51,7 @@
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-black text-white flex justify-around py-2 border-t border-gray-700 z-50">
-      <!-- Home -->
+
       <%= link_to root_path, class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
         <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 2L2 8h3v8h10V8h3L10 2z"/>
@@ -48,7 +59,6 @@
         Home
       <% end %>
 
-      <!-- Explore -->
       <%= link_to pins_path, class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -57,7 +67,6 @@
         Explore
       <% end %>
 
-      <!-- Search -->
       <%= link_to user_search_path, class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"/>
@@ -65,7 +74,6 @@
         Search
       <% end %>
 
-      <!-- Create -->
       <%= link_to new_pin_path, class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -73,7 +81,6 @@
         Create
       <% end %>
 
-      <!-- Inbox -->
       <%= link_to "#", class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10a2 2 0 00-2-2H5a2 2 0 00-2 2v8h18v-8zM5 10l7 5 7-5"/>
@@ -81,7 +88,6 @@
         Inbox
       <% end %>
 
-      <!-- Saved -->
       <%= link_to "#", class: "flex flex-col items-center text-xs hover:text-red-400 transition" do %>
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -90,5 +96,16 @@
         Saved
       <% end %>
     </nav>
+
+    <!-- 🛑 Autofill killer -->
+    <script>
+      window.onload = function() {
+        document.querySelectorAll("input[type=password]").forEach((i) => {
+          i.value = "";
+          i.setAttribute("autocomplete", "new-password");
+        });
+      };
+    </script>
+
   </body>
 </html>

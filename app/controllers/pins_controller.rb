@@ -55,7 +55,7 @@ class PinsController < ApplicationController
     end
   end
 
-  -
+
   def destroy
     
     @pin.image.purge if @pin.image.attached?

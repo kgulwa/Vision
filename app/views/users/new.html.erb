@@ -1,97 +1,56 @@
-<div class="min-h-screen flex items-center justify-center py-12 px-4 bg-gray-50">
-  <div class="max-w-md w-full">
-    <div class="text-center mb-8">
-      <%= link_to root_path, class: "inline-flex items-center space-x-2 mb-6" do %>
-        <svg class="w-12 h-12 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-          <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-        </svg>
-        <span class="text-2xl font-bold text-gray-900">Vision</span>
-      <% end %>
-      <h2 class="text-3xl font-bold text-gray-900">Create your account</h2>
-      <p class="mt-2 text-gray-600">Join Vision and start sharing</p>
-    </div>
+<div class="max-w-xl mx-auto bg-white rounded-xl shadow-lg p-8">
+  <h1 class="text-3xl font-bold text-gray-900 mb-6">Create Account</h1>
 
-    <div class="bg-white rounded-xl shadow-lg p-8">
-      <%= form_with model: @user, local: true, class: "space-y-6" do |f| %>
+  <%= form_with model: @user, local: true, html: { multipart: true }, class: "space-y-6" do |f| %>
 
-        <!-- ✅ Display Error Messages -->
-        <% if @user.errors.any? %>
-          <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg mb-4">
-            <h3 class="font-semibold mb-2">
-              <%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:
-            </h3>
-            <ul class="list-disc list-inside space-y-1">
-              <% @user.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
-
-        <!-- Username Field -->
-        <div data-controller="username-validation">
-          <%= f.label :username, class: "block text-sm font-medium text-gray-700 mb-2" %>
-          <%= f.text_field :username,
-              autofocus: true,
-              data: {
-                username_validation_target: "input",
-                action: "input->username-validation#validate"
-              },
-              class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors",
-              placeholder: "Choose a username" %>
-          <p data-username-validation-target="error" class="mt-1 text-sm text-red-600 hidden"></p>
-        </div>
-
-        <!-- Email Field -->
-        <div data-controller="email-validation">
-          <%= f.label :email, class: "block text-sm font-medium text-gray-700 mb-2" %>
-          <%= f.email_field :email,
-              data: {
-                email_validation_target: "input",
-                action: "input->email-validation#validate"
-              },
-              class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors",
-              placeholder: "your@email.com" %>
-          <p data-email-validation-target="error" class="mt-1 text-sm text-red-600 hidden"></p>
-        </div>
-
-        <!-- Password Fields -->
-        <div data-controller="password-validation">
-          <div class="mb-4">
-            <%= f.label :password, class: "block text-sm font-medium text-gray-700 mb-2" %>
-            <%= f.password_field :password,
-                data: {
-                  password_validation_target: "password",
-                  action: "input->password-validation#validatePassword"
-                },
-                class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors",
-                placeholder: "Create a password (min. 6 characters)" %>
-            <p data-password-validation-target="passwordError" class="mt-1 text-sm text-red-600 hidden"></p>
-          </div>
-
-          <div>
-            <%= f.label :password_confirmation, "Confirm Password", class: "block text-sm font-medium text-gray-700 mb-2" %>
-            <%= f.password_field :password_confirmation,
-                data: {
-                  password_validation_target: "confirmation",
-                  action: "input->password-validation#validateConfirmation"
-                },
-                class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors",
-                placeholder: "Confirm your password" %>
-            <p data-password-validation-target="confirmationError" class="mt-1 text-sm text-red-600 hidden"></p>
-          </div>
-        </div>
-
-        <%= f.submit "Sign Up", class: "w-full px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 cursor-pointer transition-colors" %>
-      <% end %>
-
-      <div class="mt-6 text-center">
-        <p class="text-sm text-gray-600">
-          Already have an account?
-          <%= link_to "Sign In", login_path, class: "font-medium text-red-600 hover:text-red-700" %>
-        </p>
+    <% if @user.errors.any? %>
+      <div class="bg-red-50 border border-red-200 p-4 rounded-lg">
+        <h3 class="text-red-800 font-semibold mb-2">
+          <%= pluralize(@user.errors.count, "error") %> prevented signup:
+        </h3>
+        <ul class="list-disc list-inside text-red-700">
+          <% @user.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
       </div>
+    <% end %>
+
+    <!-- Profile Picture -->
+    <div>
+      <%= f.label :avatar, "Profile Picture", class: "block text-sm font-medium text-gray-700 mb-2" %>
+
+      <%= f.file_field :avatar,
+            accept: "image/*",
+            class: "w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer" %>
     </div>
-  </div>
+
+    <!-- Username -->
+    <div>
+      <%= f.label :username, class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :username, class: "w-full px-4 py-2 border border-gray-300 rounded-lg" %>
+    </div>
+
+    <!-- Email -->
+    <div>
+      <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+      <%= f.email_field :email, class: "w-full px-4 py-2 border border-gray-300 rounded-lg" %>
+    </div>
+
+    <!-- Password -->
+    <div>
+      <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
+      <%= f.password_field :password, class: "w-full px-4 py-2 border border-gray-300 rounded-lg" %>
+    </div>
+
+    <!-- Confirm password -->
+    <div>
+      <%= f.label :password_confirmation, "Confirm Password", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.password_field :password_confirmation, class: "w-full px-4 py-2 border border-gray-300 rounded-lg" %>
+    </div>
+
+    <%= f.submit "Sign Up",
+          class: "w-full px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 cursor-pointer" %>
+
+  <% end %>
 </div>

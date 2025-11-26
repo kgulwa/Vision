@@ -6,24 +6,32 @@ class ApplicationController < ActionController::Base
 
   before_action :prevent_view_caching
 
+  # Return the currently logged-in user (or nil)
   def current_user
     return @current_user if defined?(@current_user)
-    id = session[:user_id]
-    @current_user = User.find_by(id: id)
+
+    if session[:user_id].present?
+      @current_user = User.find_by(id: session[:user_id])
+    else
+      @current_user = nil
+    end
   end
 
+  # Boolean for login status
   def logged_in?
     !!current_user
   end
 
   private
 
+  # ⭐⭐ IMPORTANT FIX: the `and return` stops the action from continuing
   def require_login
     unless logged_in?
-      redirect_to login_path, alert: "You must be logged in to access this page."
+      redirect_to login_path, alert: "You must be logged in to access this page." and return
     end
   end
 
+  # Prevent sensitive views from being cached
   def prevent_view_caching
     response.headers["Cache-Control"] = "no-store" if logged_in?
   end
