@@ -1,43 +1,65 @@
 <div class="p-3 border rounded-lg bg-gray-50">
-  <div class="flex justify-between items-start gap-3">
-    
-    <!-- COMMENT TEXT -->
-    <p class="flex-1">
-      <strong><%= comment.user&.username || "Deleted User" %>:</strong>
-      <%= comment.content %>
-    </p>
+  <div class="flex items-start gap-3">
 
-    <!-- BUTTONS FIXED TO TOP RIGHT -->
-    <div class="flex flex-col items-end space-y-1 mt-0">
-      <% if current_user == comment.user %>
-        <%= link_to "Edit",
-            edit_pin_comment_path(comment.pin, comment),
-            class: "text-blue-600 text-sm" %>
-
-        <%= button_to "Delete",
-            pin_comment_path(comment.pin, comment),
-            method: :delete,
-            data: { confirm: "Delete this comment?" },
-            class: "text-red-600 text-sm" %>
-      <% end %>
-
-      <%= link_to "Reply",
-          new_pin_comment_path(comment.pin, parent_id: comment.id),
-          class: "text-gray-600 text-sm" %>
+    <!-- AVATAR -->
+    <div class="w-10 h-10 flex-shrink-0">
+      <%= user_avatar(comment.user, size: 40) %>
     </div>
-  </div>
 
-  <!-- Show Replies -->
-  <% if comment.replies.any? %>
-    <div class="ml-6 mt-2 border-l-2 border-gray-200 pl-4 space-y-2">
-      <% comment.replies.each do |reply| %>
-        <div class="p-2 bg-gray-100 rounded-lg">
-          <p>
-            <strong><%= reply.user&.username || "Deleted User" %>:</strong>
-            <%= reply.content %>
-          </p>
+    <!-- COMMENT + ACTIONS -->
+    <div class="flex-1">
+
+      <!-- ONE LINE: COMMENT LEFT, BUTTONS RIGHT -->
+      <div class="flex items-start justify-between">
+
+        <!-- COMMENT TEXT -->
+        <p class="flex-1 pr-4">
+          <strong><%= comment.user&.username || "Deleted User" %>:</strong>
+          <%= comment.content %>
+        </p>
+
+        <!-- ACTION BUTTONS ON THE RIGHT -->
+        <div class="flex items-center gap-3 text-sm whitespace-nowrap">
+
+          <% if current_user == comment.user %>
+            <%= link_to "Edit",
+                edit_pin_comment_path(comment.pin, comment),
+                class: "text-blue-600 hover:underline" %>
+
+            <%= button_to "Delete",
+                pin_comment_path(comment.pin, comment),
+                method: :delete,
+                data: { confirm: "Delete this comment?" },
+                class: "text-red-600 hover:underline bg-transparent p-0 border-0" %>
+          <% end %>
+
+          <%= link_to "Reply",
+              new_pin_comment_path(comment.pin, parent_id: comment.id),
+              class: "text-gray-600 hover:underline" %>
+
+        </div>
+      </div>
+
+      <!-- REPLIES -->
+      <% if comment.replies.any? %>
+        <div class="ml-10 mt-3 border-l-2 border-gray-200 pl-4 space-y-3">
+          <% comment.replies.each do |reply| %>
+            <div class="flex items-start gap-3 p-2 bg-gray-100 rounded-lg">
+
+              <div class="w-8 h-8">
+                <%= user_avatar(reply.user, size: 32) %>
+              </div>
+
+              <p>
+                <strong><%= reply.user&.username || "Deleted User" %>:</strong>
+                <%= reply.content %>
+              </p>
+
+            </div>
+          <% end %>
         </div>
       <% end %>
+
     </div>
-  <% end %>
+  </div>
 </div>

@@ -16,11 +16,13 @@
 
       <div class="p-6 flex flex-col">
 
+        <!-- ⭐ PIN OWNER WITH AVATAR -->
         <div class="flex items-center justify-between mb-6">
           <%= link_to @pin.user, class: "flex items-center space-x-3 hover:bg-gray-50 rounded-lg p-2 -m-2" do %>
-            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-              <%= @pin.user.username[0].upcase %>
-            </div>
+
+            <!-- AVATAR INSTEAD OF INITIAL -->
+            <%= user_avatar(@pin.user, size: 48) %>
+
             <div>
               <div class="font-semibold text-gray-900"><%= @pin.user.username %></div>
               <div class="text-sm text-gray-500"><%= @pin.user.followers.count %> followers</div>
@@ -121,9 +123,10 @@
           <% if logged_in? %>
             <%= form_with model: [@pin, Comment.new], class: "mb-6" do |f| %>
               <div class="flex space-x-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-full text-white flex items-center justify-center">
-                  <%= current_user.username[0].upcase %>
-                </div>
+
+                <!-- ⭐ CURRENT USER AVATAR -->
+                <%= user_avatar(current_user, size: 40) %>
+
                 <div class="flex-1">
                   <%= f.text_area :content, rows: 3, placeholder: "Add a comment...", class: "w-full border p-2 rounded" %>
                   <%= f.submit "Comment", class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded" %>

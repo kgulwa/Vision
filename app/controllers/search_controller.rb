@@ -15,9 +15,11 @@ class SearchController < ApplicationController
       end
     end
 
-    # Search results
+    # Search results WITH AVATARS LOADED
     @users = if @query.present?
-               User.where("username ILIKE ?", "%#{@query}%")
+               User
+                 .with_attached_avatar   # ← ⭐ THIS FIXES THE ISSUE!
+                 .where("username ILIKE ?", "%#{@query}%")
              else
                User.none
              end
