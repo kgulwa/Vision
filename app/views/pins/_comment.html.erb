@@ -18,7 +18,7 @@
           <%= comment.content %>
         </p>
 
-        <!-- ACTION BUTTONS RIGHT SIDE -->
+        <!-- ACTION BUTTONS RIGHT -->
         <div class="flex items-center gap-3 text-sm whitespace-nowrap">
 
           <% if current_user == comment.user %>
@@ -33,15 +33,14 @@
                 class: "text-red-600 hover:underline bg-transparent p-0 border-0" %>
           <% end %>
 
-          <!-- OPEN INLINE REPLY FORM -->
+          <!-- REPLY BUTTON -->
           <button 
             onclick="document.getElementById('reply-form-<%= comment.id %>').classList.toggle('hidden')"
-            class="text-gray-600 hover:underline"
-          >
+            class="text-gray-600 hover:underline">
             Reply
           </button>
-        </div>
 
+        </div>
       </div>
 
       <!-- INLINE REPLY FORM -->
@@ -53,10 +52,23 @@
           <div class="flex gap-2">
             <%= user_avatar(current_user, size: 32) %>
 
-            <%= f.text_area :content, 
-                rows: 2, 
-                class: "w-full border p-2 rounded",
-                placeholder: "Reply to #{comment.user&.username || 'Deleted User'}..." %>
+            <!-- ⭐ TEXTAREA WITH INLINE MENTIONS SUPPORT -->
+            <div class="relative w-full" data-controller="mentions">
+
+              <%= f.text_area :content,
+                  rows: 2,
+                  class: "w-full border p-2 rounded",
+                  placeholder: "Reply to #{comment.user&.username || 'Deleted User'}...",
+                  data: {
+                    action: "input->mentions#search",
+                    mentions_target: "input"
+                  } %>
+
+              <!-- ⭐ DROPDOWN -->
+              <div data-mentions-target="dropdown"
+                   class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow-lg hidden z-50"></div>
+
+            </div>
           </div>
 
           <%= f.submit "Reply", class: "mt-2 px-3 py-1 bg-blue-600 text-white rounded" %>

@@ -1,15 +1,15 @@
 source "https://rubygems.org"
+
 gem "rails", "~> 8.1.1"
-gem "propshaft"
+gem "propshaft", "~> 1.3"  
 gem "puma", ">= 5.0"
-gem "importmap-rails"
 gem "turbo-rails"
 gem "stimulus-rails"
 gem "jbuilder"
+gem "jsbundling-rails"
 gem "bcrypt", "~> 3.1.7"
 gem "tzinfo-data", platforms: %i[windows jruby]
-# Use PostgreSQL as the database for Active Record
-gem 'pg'
+gem "pg"                      # PostgreSQL
 gem "bootsnap", require: false
 gem "image_processing", "~> 1.2"
 

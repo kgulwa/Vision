@@ -46,6 +46,7 @@
                   Delete
                 <% end %>
               </div>
+
             <% else %>
               <% if current_user.following?(@pin.user) %>
                 <%= button_to user_follow_path(@pin.user),
@@ -150,14 +151,14 @@
           </div>
         <% end %>
 
-        <!-- COMMENTS SECTION -->
+        <!-- COMMENTS -->
         <div class="flex-1 overflow-y-auto max-h-[400px]">
 
           <h3 class="font-semibold mb-4">
             Comments (<%= @pin.comments.where(parent_id: nil).count %>)
           </h3>
 
-          <!-- NEW COMMENT FORM -->
+          <!-- NEW COMMENT -->
           <% if logged_in? %>
             <%= form_with model: [@pin, Comment.new], class: "mb-6" do |f| %>
               <div class="flex space-x-3">
@@ -165,14 +166,30 @@
                 <%= user_avatar(current_user, size: 40) %>
 
                 <div class="flex-1">
-                  <%= f.text_area :content,
-                      rows: 3,
-                      placeholder: "Add a comment...",
-                      class: "w-full border p-2 rounded" %>
+
+                  <!-- ⭐ ENABLE MENTIONS HERE -->
+                  <div class="relative w-full" data-controller="mentions">
+
+                    <%= f.text_area :content,
+                        rows: 3,
+                        placeholder: "Add a comment...",
+                        class: "w-full border p-2 rounded",
+                        data: {
+                          action: "input->mentions#search",
+                          mentions_target: "input"
+                        } %>
+
+                    <!-- DROPDOWN -->
+                    <div data-mentions-target="dropdown"
+                         class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50">
+                    </div>
+
+                  </div>
 
                   <%= f.submit "Comment",
                       class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded" %>
                 </div>
+
               </div>
             <% end %>
           <% end %>

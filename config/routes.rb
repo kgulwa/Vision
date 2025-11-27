@@ -24,10 +24,12 @@ Rails.application.routes.draw do
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy', as: :logout
 
-  # Searching
   get '/search', to: 'pins#search', as: :search
   get '/search/users', to: 'search#users', as: :user_search
   delete '/search/clear_history', to: 'search#clear_history', as: :clear_search_history
+
+  # Mentions autocomplete
+  get '/mentions', to: 'mentions#index'
 
   get "up" => "rails/health#show", as: :rails_health_check
 end
