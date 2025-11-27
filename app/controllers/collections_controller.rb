@@ -20,15 +20,20 @@ class CollectionsController < ApplicationController
     @saved_pins = @collection.saved_pins.includes(:pin)
   end
 
+  # NEW: Saved page
+  def saved
+    @collections = current_user.collections.includes(:saved_pins, :pins)
+  end
+
   def destroy
     @collection.destroy
-    redirect_to collections_path, notice: "Collection deleted."
+    redirect_to saved_path, notice: "Collection deleted."
   end
 
   private
 
   def set_collection
     @collection = current_user.collections.find_by(id: params[:id])
-    redirect_to collections_path, alert: "Collection not found" unless @collection
+    redirect_to saved_path, alert: "Collection not found" unless @collection
   end
 end

@@ -2,25 +2,25 @@ class User < ApplicationRecord
   has_secure_password
   has_one_attached :avatar
 
-  # ---- PIN SYSTEM ----
+  #  PIN SYSTEM 
   has_many :pins, dependent: :nullify
   has_many :saved_pins, dependent: :destroy
   has_many :collections, dependent: :destroy
 
-  # ---- COMMENTS ----
+  #  COMMENTS 
   has_many :comments, dependent: :nullify
 
-  # ---- LIKES ----
+  #  LIKES 
   has_many :likes, dependent: :destroy
 
-  # ---- REPOSTS ----
+  #  REPOSTS 
   has_many :reposts, dependent: :destroy
   has_many :reposted_pins, through: :reposts, source: :pin
 
-  # ---- SEARCH HISTORY ----
+  #  SEARCH HISTORY 
   has_many :search_histories, dependent: :destroy
 
-  # ---- FOLLOW SYSTEM ----
+  #  FOLLOW SYSTEM 
 
   # People *I* follow
   has_many :follows, foreign_key: :follower_id, dependent: :destroy
@@ -33,7 +33,18 @@ class User < ApplicationRecord
            dependent: :destroy
   has_many :followers, through: :inverse_follows, source: :follower
 
-  # ---- METHODS ----
+  #  NOTIFICATIONS 
+
+  # Notifications I *receive*
+  has_many :notifications, dependent: :destroy
+
+  # Notifications I *cause* (likes, follows, comments, mentions)
+  has_many :sent_notifications,
+           class_name: "Notification",
+           foreign_key: :actor_id,
+           dependent: :destroy
+
+  #  METHODS 
 
   def following?(other_user)
     followings.exists?(id: other_user.id)
@@ -67,8 +78,7 @@ class User < ApplicationRecord
     saved_pins.exists?(pin_id: pin.id)
   end
 
-  # ---- VALIDATIONS ----
-
+  #  VALIDATIONS 
   validates :username, presence: true, uniqueness: { case_sensitive: true }
 
   validates :email,

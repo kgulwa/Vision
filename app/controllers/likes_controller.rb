@@ -4,6 +4,18 @@ class LikesController < ApplicationController
 
   def create
     current_user.like(@pin)
+
+    # 🔔 Notify pin owner (unless they liked their own pin)
+    if @pin.user_id != current_user.id
+      Notification.create!(
+        user: @pin.user,                 # receiver
+        actor: current_user,              # who liked
+        action: "liked your post",
+        notifiable: @pin,
+        read: false
+      )
+    end
+
     redirect_to @pin, notice: "Pin liked!"
   end
 

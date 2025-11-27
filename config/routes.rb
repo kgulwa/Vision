@@ -20,16 +20,32 @@ Rails.application.routes.draw do
 
   resources :collections, only: [:show, :create]
 
+  # SAVED COLLECTION PAGE
+  get "/saved", to: "collections#saved", as: :saved
+
+  # AUTH
   get '/login', to: 'sessions#new', as: :login
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy', as: :logout
 
+  # SEARCH
   get '/search', to: 'pins#search', as: :search
   get '/search/users', to: 'search#users', as: :user_search
   delete '/search/clear_history', to: 'search#clear_history', as: :clear_search_history
 
-  # Mentions autocomplete
+  # MENTIONS AUTOCOMPLETE
   get '/mentions', to: 'mentions#index'
+
+  # NOTIFICATIONS ⭐ (missing before!)
+  resources :notifications, only: [:index] do
+    member do
+      patch :mark_as_read   # /notifications/:id/mark_as_read
+    end
+
+    collection do
+      patch :mark_all_read  # /notifications/mark_all_read
+    end
+  end
 
   get "up" => "rails/health#show", as: :rails_health_check
 end

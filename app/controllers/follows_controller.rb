@@ -4,6 +4,18 @@ class FollowsController < ApplicationController
 
   def create
     current_user.follow(@user)
+
+    # 🔔 Notify user they gained a follower
+    if @user.id != current_user.id
+      Notification.create!(
+        user: @user,
+        actor: current_user,
+        action: "started following you",
+        notifiable: @user,
+        read: false
+      )
+    end
+
     redirect_to user_path(@user.id), notice: "You are now following #{@user.username}!"
   end
 

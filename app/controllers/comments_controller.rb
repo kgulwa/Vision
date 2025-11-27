@@ -13,6 +13,33 @@ class CommentsController < ApplicationController
     @comment.parent_id = params[:parent_id] if params[:parent_id]
 
     if @comment.save
+
+      # 🔔 Notify pin owner when someone comments
+      if @pin.user_id != current_user.id
+        Notification.create!(
+          user: @pin.user,
+          actor: current_user,
+          action: "commented on your post",
+          notifiable: @comment,
+          read: false
+        )
+      end
+
+      # 🔔 Notify parent comment owner if replying
+      if @comment.parent_id.present?
+        parent_user = Comment.find(@comment.parent_id).user
+
+        if parent_user.id != current_user.id && parent_user.id != @pin.user_id
+          Notification.create!(
+            user: parent_user,
+            actor: current_user,
+            action: "replied to your comment",
+            notifiable: @comment,
+            read: false
+          )
+        end
+      end
+
       redirect_to pin_path(@pin.id), notice: "Comment created."
     else
       redirect_to pin_path(@pin.id), alert: @comment.errors.full_messages.join(", ")

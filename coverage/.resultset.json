@@ -68,6 +68,11 @@
           0,
           0,
           null,
+          null,
+          0,
+          0,
+          0,
+          null,
           0,
           0,
           0,
@@ -563,7 +568,6 @@
           0,
           0,
           null,
-          null,
           0,
           0,
           null,
@@ -579,17 +583,30 @@
           null,
           0,
           null,
-          null,
           0,
           0,
           null,
           0,
           null,
           0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
           null,
           0,
           null,
-          null,
+          0,
+          0,
+          0,
+          0,
           0,
           0,
           0,
@@ -599,6 +616,22 @@
       },
       "/home/konkecodes/vision/app/helpers/comments_helper.rb": {
         "lines": [
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
           0,
           0
         ],
@@ -695,6 +728,16 @@
           0,
           0,
           null,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/home/konkecodes/vision/app/models/notification.rb": {
+        "lines": [
+          0,
+          0,
+          0,
           0,
           0
         ],
@@ -867,6 +910,6 @@
         "branches": {}
       }
     },
-    "timestamp": 1764245316
+    "timestamp": 1764262168
   }
 }

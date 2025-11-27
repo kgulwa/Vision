@@ -5,19 +5,28 @@ class SavedPinsController < ApplicationController
   def create
     if params[:collection_id].present?
       collection = current_user.collections.find_by(id: params[:collection_id])
-
     elsif params[:new_collection_name].present?
       collection = current_user.collections.create!(name: params[:new_collection_name])
-
     else
       collection = current_user.collections.find_or_create_by!(name: "Default")
     end
 
-    SavedPin.find_or_create_by!(
+    saved = SavedPin.find_or_create_by!(
       pin_id: @pin.id,
       collection_id: collection.id,
       user_id: current_user.id
     )
+
+    # 🔔 Notify pin owner their post was saved
+    if @pin.user_id != current_user.id
+      Notification.create!(
+        user: @pin.user,
+        actor: current_user,
+        action: "saved your post",
+        notifiable: @pin,
+        read: false
+      )
+    end
 
     respond_to do |format|
       format.turbo_stream

@@ -23,7 +23,7 @@
       <%= yield %>
     </main>
 
-    <!-- Bottom Navigation -->
+    <!-- BOTTOM NAVIGATION -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md z-50">
       <div class="flex justify-around items-center py-3 text-gray-700 text-sm">
 
@@ -39,7 +39,7 @@
           <span>Explore</span>
         <% end %>
 
-        <!-- SEARCH (FIXED) -->
+        <!-- SEARCH -->
         <%= link_to user_search_path, class: "flex flex-col items-center hover:text-blue-600" do %>
           <span class="text-xl">🔍</span>
           <span>Search</span>
@@ -51,10 +51,22 @@
           <span>Create</span>
         <% end %>
 
-        <!-- SAVED (we can link later) -->
-        <%= link_to "#", class: "flex flex-col items-center hover:text-blue-600" do %>
+        <!-- SAVED -->
+        <%= link_to saved_path, class: "flex flex-col items-center hover:text-blue-600" do %>
           <span class="text-xl">🔖</span>
           <span>Saved</span>
+        <% end %>
+
+        <!-- NOTIFICATIONS -->
+        <%= link_to notifications_path, class: "flex flex-col items-center hover:text-blue-600 relative" do %>
+          <span class="text-xl">🔔</span>
+          <span>Alerts</span>
+
+          <% if unread_notifications_count > 0 %>
+            <span class="absolute top-0 right-3 bg-red-600 text-white text-xs rounded-full px-1">
+              <%= unread_notifications_count %>
+            </span>
+          <% end %>
         <% end %>
 
       </div>
