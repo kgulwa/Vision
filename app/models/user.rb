@@ -3,12 +3,12 @@ class User < ApplicationRecord
   has_one_attached :avatar
 
   #  PIN SYSTEM 
-  has_many :pins, dependent: :nullify
+  has_many :pins, dependent: :destroy
   has_many :saved_pins, dependent: :destroy
   has_many :collections, dependent: :destroy
 
   #  COMMENTS 
-  has_many :comments, dependent: :nullify
+  has_many :comments, dependent: :destroy
 
   #  LIKES 
   has_many :likes, dependent: :destroy

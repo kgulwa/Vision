@@ -18,6 +18,16 @@
   <body class="bg-white text-gray-900" autocomplete="off">
     <%= render 'layouts/header' %>
 
+    <!-- FLASH MESSAGES -->
+    <turbo-frame id="flash">
+      <% flash.each do |type, message| %>
+        <div class="mx-4 mt-4 p-3 rounded text-white 
+                    <%= type.to_s == 'notice' ? 'bg-green-600' : 'bg-red-600' %>">
+          <%= message %>
+        </div>
+      <% end %>
+    </turbo-frame>
+
     <!-- Push content above the bottom nav -->
     <main class="pt-14 mb-24">
       <%= yield %>
