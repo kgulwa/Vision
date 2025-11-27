@@ -10,13 +10,10 @@ RSpec.describe SessionsController, type: :controller do
     end
 
     context "when logged in" do
+      let(:user) { User.create!(username: "test", email: "test@example.com", password: "password", password_confirmation: "password") }
+
       before do
-        @user = User.create!(
-          username: "test",
-          email: "test@example.com",
-          password: "password"
-        )
-        session[:user_id] = @user.id
+        session[:user_id] = user.id
       end
 
       it "returns success" do
@@ -31,18 +28,18 @@ RSpec.describe SessionsController, type: :controller do
       user = User.create!(
         username: "john",
         email: "john@example.com",
-        password: "password"
+        password: "password",
+        password_confirmation: "password"
       )
 
       post :create, params: { username: "john", password: "password" }
 
       expect(session[:user_id]).to eq(user.id)
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(pins_path)
     end
 
     it "renders :new with invalid credentials" do
       post :create, params: { username: "fake", password: "wrong" }
-
       expect(response.status).to eq(422)
     end
   end

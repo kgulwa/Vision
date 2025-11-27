@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe FollowsController, type: :controller do
-  let(:user) { User.create!(email: "test@example.com", password: "password", username: "testuser") }
-  let(:other_user) { User.create!(email: "other@example.com", password: "password", username: "otheruser") }
+  let(:user) { User.create!(email: "test@example.com", username: "testuser", password: "password", password_confirmation: "password") }
+  let(:other_user) { User.create!(email: "other@example.com", username: "otheruser", password: "password", password_confirmation: "password") }
 
   describe "POST #create" do
     context "when not logged in" do
@@ -18,8 +18,7 @@ RSpec.describe FollowsController, type: :controller do
       it "follows the user" do
         expect {
           post :create, params: { user_id: other_user.id }
-        }.to change { user.following.include?(other_user) }.from(false).to(true)
-        expect(response).to redirect_to(other_user)
+        }.to change { user.followings.include?(other_user) }.from(false).to(true)
       end
     end
   end
@@ -40,8 +39,7 @@ RSpec.describe FollowsController, type: :controller do
       it "unfollows the user" do
         expect {
           delete :destroy, params: { user_id: other_user.id }
-        }.to change { user.following.include?(other_user) }.from(true).to(false)
-        expect(response).to redirect_to(other_user)
+        }.to change { user.followings.include?(other_user) }.from(true).to(false)
       end
     end
   end

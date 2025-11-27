@@ -2,8 +2,23 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   describe "following functionality" do
-    let(:user) { create(:user) }
-    let(:other_user) { create(:user) }
+    let(:user) do
+      User.create!(
+        username: "userA",
+        email: "a@example.com",
+        password: "password",
+        password_confirmation: "password"
+      )
+    end
+
+    let(:other_user) do
+      User.create!(
+        username: "userB",
+        email: "b@example.com",
+        password: "password",
+        password_confirmation: "password"
+      )
+    end
 
     it "can follow another user" do
       expect(user.following?(other_user)).to be false
@@ -14,14 +29,14 @@ RSpec.describe User, type: :model do
 
     it "cannot follow the same user twice" do
       user.follow(other_user)
-      expect { user.follow(other_user) }.not_to change { user.following.count }
+      expect { user.follow(other_user) }.not_to change { user.followings.count }
     end
 
     it "cannot follow themselves" do
-      expect { user.follow(user) }.not_to change { user.following.count }
+      expect { user.follow(user) }.not_to change { user.followings.count }
     end
 
-    it "can unfollow a followed user" do
+    it "can unfollow a user" do
       user.follow(other_user)
       user.unfollow(other_user)
       expect(user.following?(other_user)).to be false

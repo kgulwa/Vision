@@ -1,12 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe LikesController, type: :controller do
-  let(:user) { User.create!(email: "test@example.com", username: "testuser", password: "password") }
-  let(:pin)  { Pin.new(id: 1, title: "Test Pin", description: "Test pin description", user: user) }
-
-  before do
-    pin.save(validate: false)
-  end
+  let(:user) { User.create!(email: "test@example.com", username: "testuser", password: "password", password_confirmation: "password") }
+  let(:pin)  { Pin.create!(title: "Test Pin", description: "Test pin description", user: user) }
 
   describe "POST #create" do
     context "when not logged in" do

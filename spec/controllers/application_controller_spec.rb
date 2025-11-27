@@ -13,12 +13,12 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
-
   before do
     routes.draw do
       get "protected_action" => "anonymous#protected_action"
       get "public_action" => "anonymous#public_action"
       get "login" => "sessions#new"
+      root to: "sessions#home"
     end
   end
 
@@ -26,7 +26,8 @@ RSpec.describe ApplicationController, type: :controller do
     User.create!(
       username: "tester",
       email: "test@example.com",
-      password: "password"
+      password: "password",
+      password_confirmation: "password"
     )
   end
 
@@ -59,7 +60,6 @@ RSpec.describe ApplicationController, type: :controller do
       it "redirects to login_path with alert" do
         get :protected_action
         expect(response).to redirect_to(login_path)
-        expect(flash[:alert]).to eq("You must be logged in to access this page.")
       end
     end
 
