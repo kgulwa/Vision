@@ -18,12 +18,47 @@
   <body class="bg-white text-gray-900" autocomplete="off">
     <%= render 'layouts/header' %>
 
-    <main class="pt-14">
+    <!-- Push content above the bottom nav -->
+    <main class="pt-14 mb-24">
       <%= yield %>
     </main>
 
     <!-- Bottom Navigation -->
-    <!-- (Keep your bottom nav here, unchanged) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md z-50">
+      <div class="flex justify-around items-center py-3 text-gray-700 text-sm">
+
+        <!-- HOME -->
+        <%= link_to root_path, class: "flex flex-col items-center hover:text-blue-600" do %>
+          <span class="text-xl">🏠</span>
+          <span>Home</span>
+        <% end %>
+
+        <!-- EXPLORE -->
+        <%= link_to pins_path, class: "flex flex-col items-center hover:text-blue-600" do %>
+          <span class="text-xl">🧭</span>
+          <span>Explore</span>
+        <% end %>
+
+        <!-- SEARCH (FIXED) -->
+        <%= link_to user_search_path, class: "flex flex-col items-center hover:text-blue-600" do %>
+          <span class="text-xl">🔍</span>
+          <span>Search</span>
+        <% end %>
+
+        <!-- CREATE -->
+        <%= link_to new_pin_path, class: "flex flex-col items-center hover:text-blue-600" do %>
+          <span class="text-xl">➕</span>
+          <span>Create</span>
+        <% end %>
+
+        <!-- SAVED (we can link later) -->
+        <%= link_to "#", class: "flex flex-col items-center hover:text-blue-600" do %>
+          <span class="text-xl">🔖</span>
+          <span>Saved</span>
+        <% end %>
+
+      </div>
+    </nav>
 
   </body>
 </html>
