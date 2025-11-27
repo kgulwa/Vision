@@ -69,7 +69,7 @@
         <div class="mb-6">
           <h1 class="text-3xl font-bold text-gray-900 mb-3"><%= @pin.title %></h1>
           <% if @pin.description.present? %>
-            <p class="text-gray-600"><%= @pin.description %></p>
+            <p class="text-gray-600"><%= render_with_mentions(@pin.description) %></p>
           <% end %>
         </div>
 

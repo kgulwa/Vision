@@ -1,3 +1,4 @@
+<!-- app/views/pins/_comment.html.erb -->
 <div class="p-3 border rounded-lg bg-gray-50">
   <div class="flex flex-col">
 
@@ -11,7 +12,7 @@
         <!-- COMMENT TEXT -->
         <p class="flex-1">
           <strong><%= comment.user&.username || "Deleted User" %>:</strong>
-          <%= comment.content %>
+          <%= render_with_mentions(comment.content) %>
         </p>
       </div>
 
@@ -47,7 +48,7 @@
             <!-- REPLY TEXT -->
             <p>
               <strong><%= reply.user&.username || "Deleted User" %>:</strong>
-              <%= reply.content %>
+              <%= render_with_mentions(reply.content) %>
             </p>
           </div>
         <% end %>

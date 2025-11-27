@@ -15,7 +15,7 @@
         <!-- COMMENT TEXT -->
         <p class="flex-1 pr-4">
           <strong><%= comment.user&.username || "Deleted User" %>:</strong>
-          <%= comment.content %>
+          <%= format_comment(comment.content) %>
         </p>
 
         <!-- ACTION BUTTONS RIGHT -->
@@ -89,7 +89,7 @@
 
               <p>
                 <strong><%= reply.user&.username || "Deleted User" %>:</strong>
-                <%= reply.content %>
+                <%= format_comment(reply.content) %>
               </p>
 
             </div>
