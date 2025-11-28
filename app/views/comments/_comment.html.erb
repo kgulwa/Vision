@@ -12,7 +12,7 @@
         <!-- COMMENT TEXT -->
         <p class="flex-1">
           <strong><%= comment.user&.username || "Deleted User" %>:</strong>
-          <%= render_with_mentions(comment.content) %>
+          <%= format_comment(comment.content) %>
         </p>
       </div>
 
@@ -48,7 +48,7 @@
             <!-- REPLY TEXT -->
             <p>
               <strong><%= reply.user&.username || "Deleted User" %>:</strong>
-              <%= render_with_mentions(reply.content) %>
+              <%= format_comment(reply.content) %>
             </p>
           </div>
         <% end %>

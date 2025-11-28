@@ -4,7 +4,21 @@
   <%= form_with model: [@pin, @comment], local: true do |f| %>
     <div class="mb-4">
       <%= f.label :content, "Your Comment", class: "block text-sm font-medium" %>
-      <%= f.text_area :content, rows: 4, class: "w-full p-2 border rounded" %>
+
+      <!-- ⭐ ENABLE MENTIONS -->
+      <div class="relative w-full" data-controller="mentions">
+        <%= f.text_area :content,
+            rows: 4,
+            class: "w-full p-2 border rounded",
+            data: {
+              action: "input->mentions#search",
+              mentions_target: "input"
+            } %>
+
+        <div data-mentions-target="dropdown"
+             class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50">
+        </div>
+      </div>
     </div>
 
     <div class="flex justify-between">

@@ -3,7 +3,20 @@
 <%= form_with(model: [@pin, @comment], local: true) do |form| %>
   <%= form.hidden_field :parent_id, value: params[:parent_id] %>
 
-  <%= form.text_area :content, rows: 4, class: "w-full border p-2 rounded" %>
+  <!-- ⭐ ENABLE MENTIONS -->
+  <div class="relative w-full" data-controller="mentions">
+    <%= form.text_area :content,
+        rows: 4,
+        class: "w-full border p-2 rounded",
+        data: {
+          action: "input->mentions#search",
+          mentions_target: "input"
+        } %>
+
+    <div data-mentions-target="dropdown"
+         class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50">
+    </div>
+  </div>
 
   <div class="mt-3">
     <%= form.submit "Post Reply", class: "bg-black text-white px-4 py-2 rounded" %>
