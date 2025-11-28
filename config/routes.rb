@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   # MENTIONS AUTOCOMPLETE
   get '/mentions', to: 'mentions#index'
 
-  # NOTIFICATIONS ⭐ (missing before!)
+  # NOTIFICATIONS 
   resources :notifications, only: [:index] do
     member do
       patch :mark_as_read   # /notifications/:id/mark_as_read

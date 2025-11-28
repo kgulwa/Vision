@@ -1,9 +1,27 @@
 require "rails_helper"
 
 RSpec.describe NotificationsController, type: :controller do
-  let(:user) { create(:user) }
-  let(:actor) { create(:user) }
-  let(:pin) { create(:pin, user: user) }
+  let(:user) do
+    User.create!(
+      username: "userA",
+      email: "a@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+  end
+
+  let(:actor) do
+    User.create!(
+      username: "userB",
+      email: "b@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
+  end
+
+  let(:pin) do
+    Pin.create!(title: "Test", description: "Test desc", user: user)
+  end
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -31,7 +49,6 @@ RSpec.describe NotificationsController, type: :controller do
 
       get :index
 
-      # Confirm that at least one notification for the user exists
       expect(Notification.where(user: user).count).to be > 0
     end
 
@@ -54,7 +71,6 @@ RSpec.describe NotificationsController, type: :controller do
 
       get :index
 
-      # Check ordering by querying the DB instead of assigns
       ordered = Notification.where(user: user).order(created_at: :desc)
       expect(ordered.first).to eq(newer)
       expect(ordered.last).to eq(older)
@@ -70,7 +86,7 @@ RSpec.describe NotificationsController, type: :controller do
       )
 
       get :index
-      expect(notification.reload.read).to be true
+      expect(notification.reload.read).to be(true)
     end
   end
 end

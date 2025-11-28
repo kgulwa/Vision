@@ -40,4 +40,65 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(helper.current_user).to be_nil
     end
   end
+
+  # 🔥 NEW: unread notifications counter tests
+  describe "#unread_notifications_count" do
+    let(:user) do
+      User.create!(
+        username: "userA",
+        email: "a@example.com",
+        password: "password",
+        password_confirmation: "password"
+      )
+    end
+
+    let(:actor) do
+      User.create!(
+        username: "userB",
+        email: "b@example.com",
+        password: "password",
+        password_confirmation: "password"
+      )
+    end
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it "returns 0 when user has no unread notifications" do
+      expect(helper.unread_notifications_count).to eq(0)
+    end
+
+    it "returns count of unread notifications" do
+      Notification.create!(
+        user: user,
+        actor: actor,
+        action: "liked",
+        notifiable: actor,
+        read: false
+      )
+
+      Notification.create!(
+        user: user,
+        actor: actor,
+        action: "commented",
+        notifiable: actor,
+        read: false
+      )
+
+      expect(helper.unread_notifications_count).to eq(2)
+    end
+
+    it "ignores read notifications" do
+      Notification.create!(
+        user: user,
+        actor: actor,
+        action: "followed",
+        notifiable: actor,
+        read: true
+      )
+
+      expect(helper.unread_notifications_count).to eq(0)
+    end
+  end
 end

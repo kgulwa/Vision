@@ -52,7 +52,7 @@
           <div class="flex gap-2">
             <%= user_avatar(current_user, size: 32) %>
 
-            <!-- ⭐ TEXTAREA WITH INLINE MENTIONS SUPPORT -->
+            <!-- poi  TEXTAREA WITH INLINE MENTIONS SUPPORT -->
             <div class="relative w-full" data-controller="mentions">
 
               <%= f.text_area :content,
@@ -64,7 +64,7 @@
                     mentions_target: "input"
                   } %>
 
-              <!-- ⭐ DROPDOWN -->
+              <!--  DROPDOWN -->
               <div data-mentions-target="dropdown"
                    class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow-lg hidden z-50"></div>
 

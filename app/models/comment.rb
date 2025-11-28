@@ -21,7 +21,7 @@ class Comment < ApplicationRecord
   scope :from_existing_users, -> { where.not(user_id: nil) }
   scope :recent, -> { order(created_at: :desc) }
 
-  # ⭐ Enables mention notifications
+  
   after_create_commit :notify_mentioned_users
 
   private

@@ -2,6 +2,23 @@ class User < ApplicationRecord
   has_secure_password
   has_one_attached :avatar
 
+  #  VALIDATIONS 
+  validates :username, presence: true, uniqueness: { case_sensitive: true }
+
+  validates :email,
+            presence: true,
+            uniqueness: { case_sensitive: false },
+            format: { with: URI::MailTo::EMAIL_REGEXP }
+
+  # Password validations
+  validates :password, presence: true, length: { minimum: 6 }, on: :create
+  validates :password, length: { minimum: 6 }, allow_blank: true, on: :update
+
+  #  Proper confirmation validation
+  validates :password_confirmation,
+            presence: true,
+            if: -> { password.present? }
+
   #  PIN SYSTEM 
   has_many :pins, dependent: :destroy
   has_many :saved_pins, dependent: :destroy
@@ -78,20 +95,4 @@ class User < ApplicationRecord
     saved_pins.exists?(pin_id: pin.id)
   end
 
-  #  VALIDATIONS 
-  validates :username, presence: true, uniqueness: { case_sensitive: true }
-
-  validates :email,
-            presence: true,
-            uniqueness: { case_sensitive: false },
-            format: { with: URI::MailTo::EMAIL_REGEXP }
-
-  # Password validations
-  validates :password, presence: true, length: { minimum: 6 }, on: :create
-  validates :password, length: { minimum: 6 }, allow_blank: true, on: :update
-
-  # 🔥 Proper confirmation validation
-  validates :password_confirmation,
-            presence: true,
-            if: -> { password.present? }
 end

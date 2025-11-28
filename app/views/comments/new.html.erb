@@ -3,7 +3,7 @@
 <%= form_with(model: [@pin, @comment], local: true) do |form| %>
   <%= form.hidden_field :parent_id, value: params[:parent_id] %>
 
-  <!-- ⭐ ENABLE MENTIONS -->
+  <!--  ENABLE MENTIONS -->
   <div class="relative w-full" data-controller="mentions">
     <%= form.text_area :content,
         rows: 4,
