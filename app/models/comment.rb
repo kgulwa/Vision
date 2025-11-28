@@ -1,6 +1,4 @@
 class Comment < ApplicationRecord
-  
-
   def to_param
     id
   end
@@ -10,7 +8,6 @@ class Comment < ApplicationRecord
 
   validates :content, presence: true
 
-  
   belongs_to :parent,
              class_name: "Comment",
              optional: true,
@@ -21,7 +18,32 @@ class Comment < ApplicationRecord
            foreign_key: :parent_id,
            dependent: :destroy
 
-  
   scope :from_existing_users, -> { where.not(user_id: nil) }
   scope :recent, -> { order(created_at: :desc) }
+
+  # ⭐ Enables mention notifications
+  after_create_commit :notify_mentioned_users
+
+  private
+
+  def notify_mentioned_users
+    return if content.blank?
+
+    # Find all unique usernames
+    mentioned = content.scan(/@(\w+)/).flatten.uniq
+
+    mentioned.each do |username|
+      user = User.find_by(username: username)
+      next if user.nil?
+      next if user == self.user  # don't notify yourself
+
+      Notification.create!(
+        user: user,              # receiver
+        actor: self.user,        # person who commented
+        notifiable: self,        
+        action: "mention",       
+        read: false
+      )
+    end
+  end
 end
