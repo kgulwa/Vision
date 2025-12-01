@@ -10,11 +10,17 @@ Rails.application.routes.draw do
 
   resources :users do
     resource :follow, only: [:create, :destroy]
+
     collection do
       get :check_email
       get :check_username
       get :check_username_exists
       post :check_password
+    end
+
+    # ✅ TAGGED POSTS PAGE (Instagram-style)
+    member do
+      get :tagged
     end
   end
 

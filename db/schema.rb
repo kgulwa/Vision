@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_27_164927) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_01_184946) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -86,6 +86,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_27_164927) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "pin_tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "pin_id", null: false
+    t.uuid "tagged_by_id", null: false
+    t.uuid "tagged_user_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pin_id"], name: "index_pin_tags_on_pin_id"
+    t.index ["tagged_by_id"], name: "index_pin_tags_on_tagged_by_id"
+    t.index ["tagged_user_id"], name: "index_pin_tags_on_tagged_user_id"
+  end
+
   create_table "pins", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
@@ -139,6 +150,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_27_164927) do
   add_foreign_key "likes", "users"
   add_foreign_key "notifications", "users"
   add_foreign_key "notifications", "users", column: "actor_id"
+  add_foreign_key "pin_tags", "pins"
+  add_foreign_key "pin_tags", "users", column: "tagged_by_id"
+  add_foreign_key "pin_tags", "users", column: "tagged_user_id"
   add_foreign_key "pins", "users"
   add_foreign_key "reposts", "pins"
   add_foreign_key "reposts", "users"

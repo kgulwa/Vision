@@ -3,20 +3,16 @@ class PinsController < ApplicationController
   before_action :set_pin, only: [:show, :edit, :update, :destroy]
   before_action :authorize_user, only: [:edit, :update, :destroy]
 
-  
   def index
     @pins = Pin.includes(:user).from_existing_users.recent
   end
 
-  
   def show
-    
     unless @pin.user.present?
       redirect_to pins_path, alert: "Pin not found"
       return
     end
 
-    
     @comments = @pin.comments
                     .includes(:user, :replies)
                     .select do |comment|
@@ -25,16 +21,15 @@ class PinsController < ApplicationController
                     end
   end
 
-  
   def new
     @pin = Pin.new
   end
 
-  
   def create
     @pin = current_user.pins.build(pin_params)
 
     if @pin.save
+      create_pin_tags(@pin)
       redirect_to pin_path(@pin), notice: "Pin posted successfully!"
     else
       flash.now[:alert] = "Failed to post pin."
@@ -42,11 +37,9 @@ class PinsController < ApplicationController
     end
   end
 
-  
   def edit
   end
 
-  
   def update
     if @pin.update(pin_params)
       redirect_to pin_path(@pin), notice: "Pin updated successfully!"
@@ -55,16 +48,13 @@ class PinsController < ApplicationController
     end
   end
 
-
   def destroy
-    
     @pin.image.purge if @pin.image.attached?
 
     @pin.destroy
     redirect_to pins_path, notice: "Pin deleted successfully!"
   end
 
-  
   def search
     @query = params[:query]
 
@@ -79,20 +69,42 @@ class PinsController < ApplicationController
       end
   end
 
-  
   private
 
   def set_pin
-    
     @pin = Pin.find_by(id: params[:id])
     redirect_to pins_path, alert: "Pin not found" unless @pin
   end
 
   def pin_params
-    params.require(:pin).permit(:title, :description, :image)
+    params.require(:pin).permit(:title, :description, :image, tagged_user_ids: [])
   end
 
   def authorize_user
     redirect_to pins_path, alert: "You can only edit your own pins." unless @pin.user == current_user
+  end
+
+  def create_pin_tags(pin)
+    return unless params[:pin][:tagged_user_ids].present?
+
+    pin.pin_tags.destroy_all  # remove old tags if updating
+
+    params[:pin][:tagged_user_ids]
+      .reject(&:blank?)
+      .each do |user_id|
+
+      PinTag.create!(
+        pin: pin,
+        tagged_user_id: user_id,
+        tagged_by_id: current_user.id
+      )
+
+      Notification.create!(
+        user_id: user_id,
+        actor_id: current_user.id,
+        notifiable: pin,
+        action: "tagged_you"
+      )
+    end
   end
 end

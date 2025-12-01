@@ -1,6 +1,5 @@
 <%= form_with(model: pin) do |form| %>
   <% if pin.errors.any? %>
-    <!-- Display validation errors if the pin fails to save -->
     <div style="color: red;">
       <h2><%= pluralize(pin.errors.count, "error") %> prohibited this pin from being saved:</h2>
       <ul>
@@ -11,26 +10,59 @@
     </div>
   <% end %>
 
-  <!-- Title field -->
-  <div>
+  <!-- Title -->
+  <div class="mb-4">
     <%= form.label :title, style: "display: block;" %>
-    <%= form.text_field :title %>
+    <%= form.text_field :title, class: "w-full border p-2 rounded" %>
   </div>
 
-  <!-- Description field -->
-  <div>
+  <!-- Description -->
+  <div class="mb-4">
     <%= form.label :description, style: "display: block;" %>
-    <%= form.text_area :description %>
+    <%= form.text_area :description, class: "w-full border p-2 rounded" %>
   </div>
 
-  <!-- Image upload field -->
-  <div class="field">
+  <!-- Image -->
+  <div class="mb-4">
     <%= form.label :image %>
-    <%= form.file_field :image %> <!--added image upload support with Active Storage -->
+    <%= form.file_field :image, class: "w-full" %>
   </div>
 
-  <!-- Submit button -->
+  <!--  TAG PEOPLE  -->
+  <div data-controller="tag-people" class="mb-6">
+    <label class="block mb-2 font-semibold">Tag People</label>
+
+    <!-- Search box -->
+    <input 
+      type="text" 
+      placeholder="Search users..." 
+      class="border p-2 w-full rounded"
+      data-tag-people-target="search" 
+      data-action="input->tag-people#search"
+    >
+
+    <!-- Search results -->
+    <div 
+      data-tag-people-target="results" 
+      class="bg-white border rounded mt-2 hidden"
+    ></div>
+
+    <!-- Selected users -->
+    <div 
+      data-tag-people-target="selected" 
+      class="flex flex-wrap gap-2 mt-3"
+    ></div>
+
+    <!-- Hidden inputs for submission -->
+    <div data-tag-people-target="hiddenFields"></div>
+  </div>
+
+  <!-- Submit -->
   <div>
-    <%= form.submit %>
+    <%= form.submit "Post Pin", class: "bg-red-500 text-white px-6 py-2 rounded-full" %>
+  </div>
+
+  <div class="mt-4">
+    <%= link_to "Back to Pins", pins_path, class: "text-red-500" %>
   </div>
 <% end %>

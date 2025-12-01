@@ -14,7 +14,7 @@ class CommentsController < ApplicationController
 
     if @comment.save
 
-      # 🔔 Notify pin owner when someone comments
+      #  Notify pin owner (unless commenting own pin)
       if @pin.user_id != current_user.id
         Notification.create!(
           user: @pin.user,
@@ -25,7 +25,7 @@ class CommentsController < ApplicationController
         )
       end
 
-      # 🔔 Notify parent comment owner if replying
+      #  Notify parent owner if replying
       if @comment.parent_id.present?
         parent_user = Comment.find(@comment.parent_id).user
 
@@ -38,6 +38,20 @@ class CommentsController < ApplicationController
             read: false
           )
         end
+      end
+
+      #  Notify ALL tagged users (except actor + owner)
+      @pin.tagged_users.each do |tagged|
+        next if tagged.id == current_user.id
+        next if tagged.id == @pin.user_id
+
+        Notification.create!(
+          user: tagged,
+          actor: current_user,
+          action: "commented on a post you're tagged in",
+          notifiable: @comment,
+          read: false
+        )
       end
 
       redirect_to pin_path(@pin.id), notice: "Comment created."

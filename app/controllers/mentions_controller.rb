@@ -4,7 +4,7 @@ class MentionsController < ApplicationController
   def index
     query = params[:q].to_s.downcase
 
-    users = User.where("LOWER(username) LIKE ?", "#{query}%")
+    users = User.where("LOWER(username) LIKE ?", "%#{query}%")
                 .limit(10)
 
     results = users.map do |u|

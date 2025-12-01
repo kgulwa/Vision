@@ -27,3 +27,7 @@ application.register("save-modal", SaveModalController)
 
 import UsernameValidationController from "./username_validation_controller"
 application.register("username-validation", UsernameValidationController)
+
+import TagPeopleController from "./tag_people_controller"
+application.register("tag-people", TagPeopleController)
+

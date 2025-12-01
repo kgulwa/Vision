@@ -1,0 +1,29 @@
+<!-- app/views/users/tagged.html.erb -->
+<h1 class="text-2xl font-semibold mb-4"><%= @user.username %>'s Tagged Pins</h1>
+
+<% if @pins.any? %>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <% @pins.each do |pin| %>
+      <div class="break-inside-avoid mb-4 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow bg-white">
+        <%= link_to pin_path(pin) do %>
+          <% if pin.image.attached? %>
+            <%= image_tag url_for(pin.image), class: "w-full h-48 object-cover" %>
+          <% else %>
+            <div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">
+              <span>No image</span>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div class="p-3">
+          <h3 class="font-medium text-lg"><%= link_to pin.title, pin_path(pin) %></h3>
+          <p class="text-sm text-gray-600 mt-1">
+            by <%= link_to pin.user.username, user_path(pin.user) if pin.user %>
+          </p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p><%= @user.username %> is not tagged in any pins yet.</p>
+<% end %>

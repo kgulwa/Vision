@@ -4,6 +4,32 @@ class RepostsController < ApplicationController
 
   def create
     @pin.reposts.find_or_create_by!(user_id: current_user.id)
+
+    #  Notify pin owner (unless reposting your own pin)
+    if @pin.user_id != current_user.id
+      Notification.create!(
+        user: @pin.user,
+        actor: current_user,
+        action: "reposted your pin",
+        notifiable: @pin,
+        read: false
+      )
+    end
+
+    #  Notify ALL tagged users (except reposting user + owner)
+    @pin.tagged_users.each do |tagged|
+      next if tagged.id == current_user.id
+      next if tagged.id == @pin.user_id
+
+      Notification.create!(
+        user: tagged,
+        actor: current_user,
+        action: "reposted a post you're tagged in",
+        notifiable: @pin,
+        read: false
+      )
+    end
+
     redirect_to pin_path(@pin.id), notice: "Reposted!"
   end
 

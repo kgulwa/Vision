@@ -1,12 +1,20 @@
 class UsersController < ApplicationController
-  before_action :require_login, only: [:edit, :update, :destroy]
-  before_action :set_user,      only: [:show, :edit, :update, :destroy]
+  before_action :require_login,  only: [:edit, :update, :destroy]
+  before_action :set_user,       only: [:show, :edit, :update, :destroy, :tagged]
   before_action :authorize_user, only: [:edit, :update, :destroy]
 
   def show
     @pins = @user.pins.order(created_at: :desc)
     @reposted_pins = @user.reposted_pins.order(created_at: :desc)
     @collections = @user.collections
+  end
+
+  # ✅ Instagram-style TAGGED POSTS page
+  def tagged
+    @pins = @user.tagged_pins
+                 .includes(:user)
+                 .from_existing_users
+                 .recent
   end
 
   def new
@@ -52,12 +60,12 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    # we use find (with uuid or id)
+    # We use find with UUID or ID
     @user = User.find(params[:id])
   end
 
   def authorize_user
-    return if action_name == "show"
+    return if action_name == "show" || action_name == "tagged"
 
     unless @user == current_user
       redirect_to root_path, alert: "You can only edit your own profile."

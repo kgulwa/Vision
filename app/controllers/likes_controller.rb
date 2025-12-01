@@ -5,12 +5,25 @@ class LikesController < ApplicationController
   def create
     current_user.like(@pin)
 
-    # 🔔 Notify pin owner (unless they liked their own pin)
+    # Notify pin owner (unless liking own pin)
     if @pin.user_id != current_user.id
       Notification.create!(
-        user: @pin.user,                 # receiver
-        actor: current_user,              # who liked
+        user: @pin.user,
+        actor: current_user,
         action: "liked your post",
+        notifiable: @pin,
+        read: false
+      )
+    end
+
+    #  Notify ALL tagged users (except the actor)
+    @pin.tagged_users.each do |tagged|
+      next if tagged.id == current_user.id
+
+      Notification.create!(
+        user: tagged,
+        actor: current_user,
+        action: "liked a post you're tagged in",
         notifiable: @pin,
         read: false
       )
