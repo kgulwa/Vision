@@ -4,7 +4,6 @@
   <div class="flex items-center justify-between mb-8">
     <div class="flex items-center space-x-4">
 
-      
       <% if @user.avatar.attached? %>
         <%= image_tag url_for(@user.avatar),
               class: "rounded-full shadow object-cover",
@@ -40,8 +39,7 @@
     <% end %>
   </div>
 
-
-  
+  <!-- TABS -->
   <div class="flex space-x-6 border-b mb-6">
     <button data-tab-target="pins"
             class="py-2 font-semibold text-blue-600 border-b-2 border-blue-600">
@@ -51,6 +49,11 @@
     <button data-tab-target="reposts"
             class="py-2 font-semibold text-gray-600 hover:text-blue-600">
       Reposts
+    </button>
+
+    <button data-tab-target="tagged"
+            class="py-2 font-semibold text-gray-600 hover:text-blue-600">
+      Tagged
     </button>
 
     <% if @user == current_user %>
@@ -113,6 +116,36 @@
     </div>
 
 
+    <!-- Tagged Grid -->
+    <div id="tab-tagged" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
+      <% @tagged_pins.each do |pin| %>
+        <%= link_to pin_path(pin), class: "block relative" do %>
+
+          <% if pin.image.attached? %>
+            <%= image_tag pin.image,
+                class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+          <% else %>
+            <div class="w-full h-48 md:h-60 bg-gray-200 rounded-lg flex items-center justify-center">
+              <span class="text-gray-400">No image</span>
+            </div>
+          <% end %>
+
+          <!-- Little tag icon like Instagram -->
+          <div class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+            Tagged
+          </div>
+
+        <% end %>
+      <% end %>
+
+      <% if @tagged_pins.empty? %>
+        <p class="col-span-full text-center text-gray-500 py-10">
+          No tagged posts yet.
+        </p>
+      <% end %>
+    </div>
+
+
     <!-- Collections Grid -->
     <% if @user == current_user %>
       <div id="tab-collections" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -136,12 +169,12 @@
   </div>
 </div>
 
-
 <script>
   const buttons = document.querySelectorAll("[data-tab-target]");
   const tabs = {
     pins: document.getElementById("tab-pins"),
     reposts: document.getElementById("tab-reposts"),
+    tagged: document.getElementById("tab-tagged"),
     collections: document.getElementById("tab-collections"),
   };
 
@@ -153,6 +186,7 @@
       });
 
       btn.classList.add("text-blue-600", "border-b-2", "border-blue-600");
+
       Object.values(tabs).forEach(tab => tab?.classList.add("hidden"));
 
       const target = btn.dataset.tabTarget;

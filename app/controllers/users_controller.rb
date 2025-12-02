@@ -7,14 +7,16 @@ class UsersController < ApplicationController
     @pins = @user.pins.order(created_at: :desc)
     @reposted_pins = @user.reposted_pins.order(created_at: :desc)
     @collections = @user.collections
+
+    # LOAD TAGGED PINS FOR THE TAB
+    @tagged_pins = @user.tagged_pins.includes(:user).order(created_at: :desc)
   end
 
-  # ✅ Instagram-style TAGGED POSTS page
+  # TAGGED PAGE (separate route)
   def tagged
     @pins = @user.tagged_pins
                  .includes(:user)
-                 .from_existing_users
-                 .recent
+                 .order(created_at: :desc)
   end
 
   def new
@@ -32,13 +34,12 @@ class UsersController < ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     cleaned = user_params.dup
 
-    # If password blank, do not update password fields
+    # Prevent blank password validation errors
     if cleaned[:password].blank?
       cleaned.delete(:password)
       cleaned.delete(:password_confirmation)
@@ -60,12 +61,12 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    # We use find with UUID or ID
-    @user = User.find(params[:id])
+    @user = User.find(params[:id]) # Works with UUID
   end
 
   def authorize_user
-    return if action_name == "show" || action_name == "tagged"
+    # Allow visiting tagged + show
+    return if %w[show tagged].include?(action_name)
 
     unless @user == current_user
       redirect_to root_path, alert: "You can only edit your own profile."
