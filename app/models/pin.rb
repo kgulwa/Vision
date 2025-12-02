@@ -20,4 +20,17 @@ class Pin < ApplicationRecord
 
   scope :recent, -> { order(created_at: :desc) }
   scope :from_existing_users, -> { joins(:user) }
+
+  
+  # COUNTERS FOR HOVER OVERLAY
+  
+ 
+  def likes_count
+    likes.count
+  end
+
+  
+  def comments_count
+    comments.count
+  end
 end

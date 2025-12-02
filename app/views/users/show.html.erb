@@ -64,62 +64,13 @@
     <% end %>
   </div>
 
-
   <!-- Tab Contents -->
   <div class="space-y-8">
 
     <!-- Pins Grid -->
     <div id="tab-pins" class="grid grid-cols-2 md:grid-cols-3 gap-6">
       <% @pins.each do |pin| %>
-        <%= link_to pin_path(pin), class: "block" do %>
-          <% if pin.image.attached? %>
-            <%= image_tag pin.image,
-                class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
-          <% else %>
-            <div class="w-full h-48 md:h-60 bg-gray-200 rounded-lg flex items-center justify-center">
-              <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-            </div>
-          <% end %>
-        <% end %>
-      <% end %>
-
-      <% if @pins.empty? %>
-        <p class="col-span-full text-center text-gray-500 py-10">No pins yet.</p>
-      <% end %>
-    </div>
-
-
-    <!-- Reposts Grid -->
-    <div id="tab-reposts" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
-      <% @reposted_pins.each do |pin| %>
-        <%= link_to pin_path(pin), class: "block" do %>
-          <% if pin.image.attached? %>
-            <%= image_tag pin.image,
-                class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
-          <% else %>
-            <div class="w-full h-48 md:h-60 bg-gray-200 rounded-lg flex items-center justify-center">
-              <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-            </div>
-          <% end %>
-        <% end %>
-      <% end %>
-
-      <% if @reposted_pins.empty? %>
-        <p class="col-span-full text-center text-gray-500 py-10">No reposts yet.</p>
-      <% end %>
-    </div>
-
-
-    <!-- Tagged Grid -->
-    <div id="tab-tagged" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
-      <% @tagged_pins.each do |pin| %>
-        <%= link_to pin_path(pin), class: "block relative" do %>
+        <%= link_to pin_path(pin), class: "block relative group" do %>
 
           <% if pin.image.attached? %>
             <%= image_tag pin.image,
@@ -130,8 +81,73 @@
             </div>
           <% end %>
 
-          <!-- Little tag icon like Instagram -->
-          <div class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+          <!-- Hover overlay -->
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 
+                      transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
+            <span>❤️ <%= pin.likes.count %></span>
+            <span>💬 <%= pin.comments.count %></span>
+          </div>
+
+        <% end %>
+      <% end %>
+
+      <% if @pins.empty? %>
+        <p class="col-span-full text-center text-gray-500 py-10">No pins yet.</p>
+      <% end %>
+    </div>
+
+    <!-- Reposts Grid -->
+    <div id="tab-reposts" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
+      <% @reposted_pins.each do |pin| %>
+        <%= link_to pin_path(pin), class: "block relative group" do %>
+
+          <% if pin.image.attached? %>
+            <%= image_tag pin.image,
+                class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+          <% else %>
+            <div class="w-full h-48 md:h-60 bg-gray-200 rounded-lg flex items-center justify-center">
+              <span class="text-gray-400">No image</span>
+            </div>
+          <% end %>
+
+          <!-- Hover overlay -->
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 
+                      transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
+            <span>❤️ <%= pin.likes.count %></span>
+            <span>💬 <%= pin.comments.count %></span>
+          </div>
+
+        <% end %>
+      <% end %>
+
+      <% if @reposted_pins.empty? %>
+        <p class="col-span-full text-center text-gray-500 py-10">No reposts yet.</p>
+      <% end %>
+    </div>
+
+    <!-- Tagged Grid -->
+    <div id="tab-tagged" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
+      <% @tagged_pins.each do |pin| %>
+        <%= link_to pin_path(pin), class: "block relative group" do %>
+
+          <% if pin.image.attached? %>
+            <%= image_tag pin.image,
+                class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+          <% else %>
+            <div class="w-full h-48 md:h-60 bg-gray-200 rounded-lg flex items-center justify-center">
+              <span class="text-gray-400">No image</span>
+            </div>
+          <% end %>
+
+          <!-- Hover overlay -->
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 
+                      transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
+            <span>❤️ <%= pin.likes.count %></span>
+            <span>💬 <%= pin.comments.count %></span>
+          </div>
+
+          <!-- “Tagged” badge -->
+          <div class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
             Tagged
           </div>
 
@@ -144,7 +160,6 @@
         </p>
       <% end %>
     </div>
-
 
     <!-- Collections Grid -->
     <% if @user == current_user %>
