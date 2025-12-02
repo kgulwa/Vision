@@ -26,19 +26,22 @@ class PinsController < ApplicationController
   end
 
   def create
+    Rails.logger.info "⭐ PARAMS: #{params.inspect}"
+
     @pin = current_user.pins.build(pin_params)
 
+    # ❤️ DISABLE TURBO to avoid missing template errors
     if @pin.save
       create_pin_tags(@pin)
       redirect_to pin_path(@pin), notice: "Pin posted successfully!"
     else
+      Rails.logger.info "❌ PIN SAVE FAILED: #{@pin.errors.full_messages}"
       flash.now[:alert] = "Failed to post pin."
       render :new, status: :unprocessable_entity
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @pin.update(pin_params)
@@ -50,7 +53,6 @@ class PinsController < ApplicationController
 
   def destroy
     @pin.image.purge if @pin.image.attached?
-
     @pin.destroy
     redirect_to pins_path, notice: "Pin deleted successfully!"
   end
@@ -87,7 +89,7 @@ class PinsController < ApplicationController
   def create_pin_tags(pin)
     return unless params[:pin][:tagged_user_ids].present?
 
-    pin.pin_tags.destroy_all  # remove old tags if updating
+    pin.pin_tags.destroy_all
 
     params[:pin][:tagged_user_ids]
       .reject(&:blank?)

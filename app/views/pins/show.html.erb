@@ -82,13 +82,13 @@
               <%= button_to pin_like_path(@pin),
                   method: :delete,
                   class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
-                ❤️ <span><%= @pin.likes_count %></span>
+                ❤️ <span><%= @pin.likes.count %></span>
               <% end %>
             <% else %>
               <%= button_to pin_like_path(@pin),
                   method: :post,
                   class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
-                🤍 <span><%= @pin.likes_count %></span>
+                🤍 <span><%= @pin.likes.count %></span>
               <% end %>
             <% end %>
 
