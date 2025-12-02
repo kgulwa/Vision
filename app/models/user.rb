@@ -3,7 +3,7 @@ class User < ApplicationRecord
   has_one_attached :avatar
 
   
-  # VALIDATIONS (FIXED)
+  # VALIDATIONS 
   
   # Only validate username/email uniqueness on CREATE
   validates :username,
@@ -66,15 +66,12 @@ class User < ApplicationRecord
            foreign_key: :actor_id,
            dependent: :destroy
 
-  # ---------------------------------------
+  
   # TAGGING SYSTEM
-  # ---------------------------------------
   has_many :pin_tags, foreign_key: :tagged_user_id, dependent: :destroy
   has_many :tagged_pins, through: :pin_tags, source: :pin
 
-  # ---------------------------------------
   # METHODS
-  # ---------------------------------------
   def following?(other_user)
     followings.exists?(id: other_user.id)
   end

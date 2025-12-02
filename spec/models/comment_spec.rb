@@ -152,4 +152,86 @@ RSpec.describe Comment, type: :model do
       expect(reply.parent).to eq(comment)
     end
   end
+
+  # -------------------------------------------------------------
+  # 🔥 MENTION NOTIFICATION TESTS
+  # -------------------------------------------------------------
+  describe "mention notifications" do
+    let!(:mentioned_user) do
+      User.create!(
+        username: "john",
+        email: "john@example.com",
+        password: "password",
+        password_confirmation: "password"
+      )
+    end
+
+    it "creates a notification when a user is mentioned" do
+      c = Comment.create!(
+        content: "Hello @john",
+        user: user,
+        pin: pin
+      )
+
+      expect(Notification.count).to eq(1)
+
+      n = Notification.last
+      expect(n.user).to eq(mentioned_user)
+      expect(n.actor).to eq(user)
+      expect(n.action).to eq("mention")
+      expect(n.notifiable).to eq(c)
+    end
+
+    it "does NOT notify if the mentioned username does not exist" do
+      Comment.create!(
+        content: "Hello @no_such_user",
+        user: user,
+        pin: pin
+      )
+
+      expect(Notification.count).to eq(0)
+    end
+
+    it "does NOT notify yourself if you mention yourself" do
+      user.update(username: "selfie")
+
+      Comment.create!(
+        content: "Talking to myself @selfie",
+        user: user,
+        pin: pin
+      )
+
+      expect(Notification.count).to eq(0)
+    end
+
+    it "only sends one notification even if mentioned multiple times" do
+      Comment.create!(
+        content: "Hi @john, again @john !!!",
+        user: user,
+        pin: pin
+      )
+
+      expect(Notification.count).to eq(1)
+    end
+
+    it "notifies multiple different mentioned users" do
+      user2 = User.create!(
+        username: "amy",
+        email: "amy@example.com",
+        password: "password",
+        password_confirmation: "password"
+      )
+
+      c = Comment.create!(
+        content: "Hi @john and @amy!",
+        user: user,
+        pin: pin
+      )
+
+      expect(Notification.count).to eq(2)
+
+      receivers = Notification.pluck(:user_id)
+      expect(receivers).to include(mentioned_user.id, user2.id)
+    end
+  end
 end

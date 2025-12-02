@@ -18,7 +18,7 @@ Rails.application.routes.draw do
       post :check_password
     end
 
-    # ✅ TAGGED POSTS PAGE (Instagram-style)
+    
     member do
       get :tagged
     end
@@ -26,7 +26,7 @@ Rails.application.routes.draw do
 
   resources :collections, only: [:show, :create]
 
-  # SAVED COLLECTION PAGE
+  
   get "/saved", to: "collections#saved", as: :saved
 
   # AUTH
@@ -45,11 +45,11 @@ Rails.application.routes.draw do
   # NOTIFICATIONS 
   resources :notifications, only: [:index] do
     member do
-      patch :mark_as_read   # /notifications/:id/mark_as_read
+      patch :mark_as_read   
     end
 
     collection do
-      patch :mark_all_read  # /notifications/mark_all_read
+      patch :mark_all_read  
     end
   end
 
