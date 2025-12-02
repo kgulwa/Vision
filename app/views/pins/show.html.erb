@@ -97,13 +97,13 @@
               <%= button_to pin_repost_path(@pin),
                   method: :delete,
                   class: "flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200" do %>
-                🔁 <span><%= @pin.reposts_count %></span>
+                🔁 <span><%= @pin.reposts.count %></span>
               <% end %>
             <% else %>
               <%= button_to pin_repost_path(@pin),
                   method: :post,
                   class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
-                🔁 <span><%= @pin.reposts_count %></span>
+                🔁 <span><%= @pin.reposts.count %></span>
               <% end %>
             <% end %>
 
@@ -205,3 +205,22 @@
     </div>
   </div>
 </div>
+
+<!-- ⭐ AUTO-SCROLL + HIGHLIGHT ON LOAD -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const commentId = new URLSearchParams(window.location.search).get("comment_id");
+    if (!commentId) return;
+
+    const el = document.getElementById(`comment-${commentId}`);
+    if (!el) return;
+
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    el.classList.add("ring-4", "ring-yellow-400", "transition");
+
+    setTimeout(() => {
+      el.classList.remove("ring-4", "ring-yellow-400");
+    }, 2000);
+  });
+</script>

@@ -1,5 +1,6 @@
 <!-- app/views/pins/_comment.html.erb -->
-<div class="p-3 border rounded-lg bg-gray-50">
+<div id="comment-<%= comment.id %>" class="comment-block p-3 border rounded-lg bg-gray-50 transition-all duration-300">
+
   <div class="flex flex-col">
 
     <!-- MAIN COMMENT -->
@@ -40,7 +41,7 @@
     <% if comment.replies.any? %>
       <div class="ml-6 mt-2 border-l-2 border-gray-200 pl-4 space-y-2">
         <% comment.replies.each do |reply| %>
-          <div class="flex space-x-3 p-2 bg-gray-100 rounded-lg">
+          <div id="comment-<%= reply.id %>" class="comment-block flex space-x-3 p-2 bg-gray-100 rounded-lg transition-all duration-300">
 
             <!-- REPLY AVATAR -->
             <%= user_avatar(reply.user, size: 28) %>

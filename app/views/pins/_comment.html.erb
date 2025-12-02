@@ -1,104 +1,59 @@
-<div class="p-3 border rounded-lg bg-gray-50 mb-4">
+<!-- app/views/pins/_comment.html.erb -->
+<div id="comment-<%= comment.id %>" class="p-3 border rounded-lg bg-gray-50">
+  <div class="flex flex-col">
 
-  <div class="flex items-start gap-3">
+    <!-- MAIN COMMENT -->
+    <div class="flex justify-between items-start">
+      <div class="flex flex-1 space-x-3">
 
-    <!-- AVATAR -->
-    <div class="w-10 h-10 flex-shrink-0">
-      <%= user_avatar(comment.user, size: 40) %>
-    </div>
-
-    <div class="flex-1">
-
-      <!-- COMMENT + BUTTONS IN ONE LINE -->
-      <div class="flex justify-between items-start">
+        <!-- USER AVATAR -->
+        <%= user_avatar(comment.user, size: 36, class_name: "mr-2") %>
 
         <!-- COMMENT TEXT -->
-        <p class="flex-1 pr-4">
+        <p class="flex-1">
           <strong><%= comment.user&.username || "Deleted User" %>:</strong>
           <%= format_comment(comment.content) %>
         </p>
-
-        <!-- ACTION BUTTONS RIGHT -->
-        <div class="flex items-center gap-3 text-sm whitespace-nowrap">
-
-          <% if current_user == comment.user %>
-            <%= link_to "Edit",
-                edit_pin_comment_path(comment.pin, comment),
-                class: "text-blue-600 hover:underline" %>
-
-            <%= button_to "Delete",
-                pin_comment_path(comment.pin, comment),
-                method: :delete,
-                data: { turbo_confirm: "Delete this comment?" },
-                class: "text-red-600 hover:underline bg-transparent p-0 border-0" %>
-          <% end %>
-
-          <!-- REPLY BUTTON -->
-          <button 
-            onclick="document.getElementById('reply-form-<%= comment.id %>').classList.toggle('hidden')"
-            class="text-gray-600 hover:underline">
-            Reply
-          </button>
-
-        </div>
       </div>
 
-      <!-- INLINE REPLY FORM -->
-      <div id="reply-form-<%= comment.id %>" class="hidden mt-3">
+      <!-- ACTION BUTTONS -->
+      <div class="flex space-x-3">
+        <% if current_user == comment.user %>
+          <%= link_to "Edit",
+              edit_pin_comment_path(comment.pin, comment),
+              class: "text-blue-600 text-sm" %>
 
-        <%= form_with model: [comment.pin, Comment.new], local: true do |f| %>
-          <%= f.hidden_field :parent_id, value: comment.id %>
-
-          <div class="flex gap-2">
-            <%= user_avatar(current_user, size: 32) %>
-
-            <!-- poi  TEXTAREA WITH INLINE MENTIONS SUPPORT -->
-            <div class="relative w-full" data-controller="mentions">
-
-              <%= f.text_area :content,
-                  rows: 2,
-                  class: "w-full border p-2 rounded",
-                  placeholder: "Reply to #{comment.user&.username || 'Deleted User'}...",
-                  data: {
-                    action: "input->mentions#search",
-                    mentions_target: "input"
-                  } %>
-
-              <!--  DROPDOWN -->
-              <div data-mentions-target="dropdown"
-                   class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow-lg hidden z-50"></div>
-
-            </div>
-          </div>
-
-          <%= f.submit "Reply", class: "mt-2 px-3 py-1 bg-blue-600 text-white rounded" %>
+          <%= button_to "Delete",
+              pin_comment_path(comment.pin, comment),
+              method: :delete,
+              data: { confirm: "Delete this comment?" },
+              class: "text-red-600 text-sm" %>
         <% end %>
 
+        <%= link_to "Reply",
+            new_pin_comment_path(comment.pin, parent_id: comment.id),
+            class: "text-gray-600 text-sm" %>
       </div>
-
-      <!-- REPLIES SECTION -->
-      <% if comment.replies.any? %>
-        <div class="ml-10 mt-4 border-l-2 border-gray-200 pl-4 space-y-3">
-
-          <% comment.replies.each do |reply| %>
-            <div class="flex items-start gap-3 p-2 bg-gray-100 rounded-lg">
-
-              <div class="w-8 h-8">
-                <%= user_avatar(reply.user, size: 32) %>
-              </div>
-
-              <p>
-                <strong><%= reply.user&.username || "Deleted User" %>:</strong>
-                <%= format_comment(reply.content) %>
-              </p>
-
-            </div>
-          <% end %>
-
-        </div>
-      <% end %>
-
     </div>
-  </div>
 
+    <!-- REPLIES -->
+    <% if comment.replies.any? %>
+      <div class="ml-6 mt-2 border-l-2 border-gray-200 pl-4 space-y-2">
+        <% comment.replies.each do |reply| %>
+          <div id="comment-<%= reply.id %>" class="flex space-x-3 p-2 bg-gray-100 rounded-lg">
+
+            <!-- REPLY AVATAR -->
+            <%= user_avatar(reply.user, size: 28) %>
+
+            <!-- REPLY TEXT -->
+            <p>
+              <strong><%= reply.user&.username || "Deleted User" %>:</strong>
+              <%= format_comment(reply.content) %>
+            </p>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+  </div>
 </div>

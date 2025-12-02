@@ -21,10 +21,13 @@
             <%= link_to "View Post",
               pin_path(n.notifiable),
               class: "text-blue-600 underline ml-1" %>
+
           <% elsif n.notifiable.is_a?(Comment) %>
+            <!-- pass comment_id so pins#show can auto-scroll to it -->
             <%= link_to "View Comment",
-              pin_path(n.notifiable.pin_id),
+              pin_path(n.notifiable.pin_id, comment_id: n.notifiable.id),
               class: "text-blue-600 underline ml-1" %>
+
           <% elsif n.notifiable.is_a?(User) %>
             <%= link_to "View Profile",
               user_path(n.actor),

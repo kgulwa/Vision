@@ -2,10 +2,9 @@ class User < ApplicationRecord
   has_secure_password
   has_one_attached :avatar
 
-  # ---------------------------------------
+  
   # VALIDATIONS (FIXED)
-  # ---------------------------------------
-
+  
   # Only validate username/email uniqueness on CREATE
   validates :username,
             presence: true,
@@ -26,9 +25,9 @@ class User < ApplicationRecord
     new_record? || password.present?
   end
 
-  # ---------------------------------------
+  
   # PIN SYSTEM
-  # ---------------------------------------
+  
   has_many :pins, dependent: :destroy
   has_many :saved_pins, dependent: :destroy
   has_many :collections, dependent: :destroy
@@ -46,9 +45,9 @@ class User < ApplicationRecord
   # SEARCH HISTORY
   has_many :search_histories, dependent: :destroy
 
-  # ---------------------------------------
+  
   # FOLLOW SYSTEM
-  # ---------------------------------------
+  
   has_many :follows, foreign_key: :follower_id, dependent: :destroy
   has_many :followings, through: :follows, source: :followed
 
@@ -58,9 +57,9 @@ class User < ApplicationRecord
            dependent: :destroy
   has_many :followers, through: :inverse_follows, source: :follower
 
-  # ---------------------------------------
+  
   # NOTIFICATIONS
-  # ---------------------------------------
+  
   has_many :notifications, dependent: :destroy
   has_many :sent_notifications,
            class_name: "Notification",
