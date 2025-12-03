@@ -1,3 +1,4 @@
+<%# Renders just the Follow / Following button for a given user %>
 <% if logged_in? && current_user != user %>
   <% if current_user.following?(user) %>
     <%= button_to user_follow_path(user),

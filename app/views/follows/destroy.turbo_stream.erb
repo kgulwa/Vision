@@ -1,0 +1,11 @@
+<turbo-stream action="replace" target="follow_button_<%= @user.id %>">
+  <template>
+    <%= render "users/follow_button", user: @user %>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="replace" target="follower_count_<%= @user.id %>">
+  <template>
+    <%= @user.followers.count %>
+  </template>
+</turbo-stream>

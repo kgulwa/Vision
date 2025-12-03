@@ -1,52 +1,46 @@
 <div class="max-w-5xl mx-auto py-8 px-4">
-
   <!-- Profile Header -->
-  <turbo-frame id="profile_header_<%= @user.id %>">
-    <div class="flex items-center justify-between mb-8">
-      <div class="flex items-center space-x-4">
-
-        <% if @user.avatar.attached? %>
-          <%= image_tag url_for(@user.avatar),
-                class: "rounded-full shadow object-cover",
-                width: 96,
-                height: 96 %>
-        <% else %>
-          <%= image_tag "default-avatar.png",
-                width: 96,
-                height: 96,
-                class: "rounded-full shadow" %>
-        <% end %>
-
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900"><%= @user.username %></h1>
-
-          <!-- Followers count WILL update instantly now -->
-          <p class="text-gray-600"><%= @user.followers.count %> followers</p>
-        </div>
+  <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center space-x-4">
+      <% if @user.avatar.attached? %>
+        <%= image_tag url_for(@user.avatar),
+              class: "rounded-full shadow object-cover",
+              width: 96,
+              height: 96 %>
+      <% else %>
+        <%= image_tag "default-avatar.png",
+              width: 96,
+              height: 96,
+              class: "rounded-full shadow" %>
+      <% end %>
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900"><%= @user.username %></h1>
+        <p class="text-gray-600">
+          <span id="follower_count_<%= @user.id %>"><%= @user.followers.count %></span> followers
+        </p>
       </div>
-
-      <!-- Follow button, still rendered inside the header Turbo Frame -->
-      <%= render "users/follow_button", user: @user %>
     </div>
-  </turbo-frame>
-
+    <!-- 🔥 FOLLOW BUTTON WRAPPED IN TURBO FRAME -->
+    <% if logged_in? && current_user != @user %>
+      <turbo-frame id="follow_button_<%= @user.id %>">
+        <%= render "users/follow_button", user: @user %>
+      </turbo-frame>
+    <% end %>
+  </div>
   <!-- TABS -->
   <div class="flex space-x-6 border-b mb-6">
     <button data-tab-target="pins"
             class="py-2 font-semibold text-blue-600 border-b-2 border-blue-600">
       Pins
     </button>
-
     <button data-tab-target="reposts"
             class="py-2 font-semibold text-gray-600 hover:text-blue-600">
       Reposts
     </button>
-
     <button data-tab-target="tagged"
             class="py-2 font-semibold text-gray-600 hover:text-blue-600">
       Tagged
     </button>
-
     <% if @user == current_user %>
       <button data-tab-target="collections"
               class="py-2 font-semibold text-gray-600 hover:text-blue-600">
@@ -54,15 +48,12 @@
       </button>
     <% end %>
   </div>
-
   <!-- Tab Contents -->
   <div class="space-y-8">
-
     <!-- Pins Grid -->
     <div id="tab-pins" class="grid grid-cols-2 md:grid-cols-3 gap-6">
       <% @pins.each do |pin| %>
         <%= link_to pin_path(pin), class: "block relative group" do %>
-
           <% if pin.image.attached? %>
             <%= image_tag pin.image,
                 class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
@@ -71,27 +62,22 @@
               <span class="text-gray-400">No image</span>
             </div>
           <% end %>
-
           <!-- Hover overlay -->
-          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                       transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
             <span>❤️ <%= pin.likes.count %></span>
             <span>💬 <%= pin.comments.count %></span>
           </div>
-
         <% end %>
       <% end %>
-
       <% if @pins.empty? %>
         <p class="col-span-full text-center text-gray-500 py-10">No pins yet.</p>
       <% end %>
     </div>
-
     <!-- Reposts Grid -->
     <div id="tab-reposts" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
       <% @reposted_pins.each do |pin| %>
         <%= link_to pin_path(pin), class: "block relative group" do %>
-
           <% if pin.image.attached? %>
             <%= image_tag pin.image,
                 class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
@@ -100,27 +86,22 @@
               <span class="text-gray-400">No image</span>
             </div>
           <% end %>
-
           <!-- Hover overlay -->
-          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                       transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
             <span>❤️ <%= pin.likes.count %></span>
             <span>💬 <%= pin.comments.count %></span>
           </div>
-
         <% end %>
       <% end %>
-
       <% if @reposted_pins.empty? %>
         <p class="col-span-full text-center text-gray-500 py-10">No reposts yet.</p>
       <% end %>
     </div>
-
     <!-- Tagged Grid -->
     <div id="tab-tagged" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
       <% @tagged_pins.each do |pin| %>
         <%= link_to pin_path(pin), class: "block relative group" do %>
-
           <% if pin.image.attached? %>
             <%= image_tag pin.image,
                 class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
@@ -129,29 +110,24 @@
               <span class="text-gray-400">No image</span>
             </div>
           <% end %>
-
           <!-- Hover overlay -->
-          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                       transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
             <span>❤️ <%= pin.likes.count %></span>
             <span>💬 <%= pin.comments.count %></span>
           </div>
-
-          <!-- “Tagged” badge -->
+          <!-- Tagged badge -->
           <div class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
             Tagged
           </div>
-
         <% end %>
       <% end %>
-
       <% if @tagged_pins.empty? %>
         <p class="col-span-full text-center text-gray-500 py-10">
           No tagged posts yet.
         </p>
       <% end %>
     </div>
-
     <!-- Collections Grid -->
     <% if @user == current_user %>
       <div id="tab-collections" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -163,7 +139,6 @@
             </div>
           <% end %>
         <% end %>
-
         <% if @user.collections.empty? %>
           <p class="col-span-full text-center text-gray-500 py-10">
             No collections yet.
@@ -171,10 +146,8 @@
         <% end %>
       </div>
     <% end %>
-
   </div>
 </div>
-
 <script>
   const buttons = document.querySelectorAll("[data-tab-target]");
   const tabs = {
@@ -183,18 +156,14 @@
     tagged: document.getElementById("tab-tagged"),
     collections: document.getElementById("tab-collections"),
   };
-
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
       buttons.forEach(b => {
         b.classList.remove("text-blue-600", "border-blue-600", "border-b-2");
         b.classList.add("text-gray-600");
       });
-
       btn.classList.add("text-blue-600", "border-b-2", "border-blue-600");
-
       Object.values(tabs).forEach(tab => tab?.classList.add("hidden"));
-
       const target = btn.dataset.tabTarget;
       tabs[target]?.classList.remove("hidden");
     });

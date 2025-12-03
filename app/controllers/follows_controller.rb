@@ -4,7 +4,6 @@ class FollowsController < ApplicationController
 
   def create
     current_user.follow(@user)
-
     # 🔔 Notify user they gained a follower
     if @user.id != current_user.id
       Notification.create!(
@@ -15,36 +14,47 @@ class FollowsController < ApplicationController
         read: false
       )
     end
-
     respond_to do |format|
-      # 🔥 Turbo Stream: updates the follow button only (NO RELOAD)
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "follow_button_#{@user.id}",
-          partial: "users/follow_button",
-          locals: { user: @user }
-        )
+        render turbo_stream: [
+          turbo_stream.replace(
+            "follow_button_#{@user.id}",
+            partial: "users/follow_button",
+            locals: { user: @user }
+          ),
+          turbo_stream.replace(
+            "follower_count_#{@user.id}",
+            @user.followers.count.to_s
+          )
+        ]
       end
-
-      # fallback for non-Turbo clients
-      format.html { redirect_to user_path(@user.id), notice: "You are now following #{@user.username}!" }
+      format.html do
+        redirect_to user_path(@user.id),
+                    notice: "You are now following #{@user.username}!"
+      end
     end
   end
 
   def destroy
     current_user.unfollow(@user)
-
     respond_to do |format|
-      # 🔥 Turbo Stream response
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "follow_button_#{@user.id}",
-          partial: "users/follow_button",
-          locals: { user: @user }
-        )
+        render turbo_stream: [
+          turbo_stream.replace(
+            "follow_button_#{@user.id}",
+            partial: "users/follow_button",
+            locals: { user: @user }
+          ),
+          turbo_stream.replace(
+            "follower_count_#{@user.id}",
+            @user.followers.count.to_s
+          )
+        ]
       end
-
-      format.html { redirect_to user_path(@user.id), notice: "You unfollowed #{@user.username}." }
+      format.html do
+        redirect_to user_path(@user.id),
+                    notice: "You unfollowed #{@user.username}."
+      end
     end
   end
 
