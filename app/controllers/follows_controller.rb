@@ -16,12 +16,36 @@ class FollowsController < ApplicationController
       )
     end
 
-    redirect_to user_path(@user.id), notice: "You are now following #{@user.username}!"
+    respond_to do |format|
+      # 🔥 Turbo Stream: updates the follow button only (NO RELOAD)
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          "follow_button_#{@user.id}",
+          partial: "users/follow_button",
+          locals: { user: @user }
+        )
+      end
+
+      # fallback for non-Turbo clients
+      format.html { redirect_to user_path(@user.id), notice: "You are now following #{@user.username}!" }
+    end
   end
 
   def destroy
     current_user.unfollow(@user)
-    redirect_to user_path(@user.id), notice: "You unfollowed #{@user.username}."
+
+    respond_to do |format|
+      # 🔥 Turbo Stream response
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          "follow_button_#{@user.id}",
+          partial: "users/follow_button",
+          locals: { user: @user }
+        )
+      end
+
+      format.html { redirect_to user_path(@user.id), notice: "You unfollowed #{@user.username}." }
+    end
   end
 
   private

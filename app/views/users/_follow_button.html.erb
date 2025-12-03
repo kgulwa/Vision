@@ -1,0 +1,17 @@
+<% if logged_in? && current_user != user %>
+  <% if current_user.following?(user) %>
+    <%= button_to user_follow_path(user),
+        method: :delete,
+        data: { turbo_stream: true },
+        class: "px-6 py-2 border border-gray-300 rounded-full hover:bg-gray-200" do %>
+      Following
+    <% end %>
+  <% else %>
+    <%= button_to user_follow_path(user),
+        method: :post,
+        data: { turbo_stream: true },
+        class: "px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700" do %>
+      Follow
+    <% end %>
+  <% end %>
+<% end %>
