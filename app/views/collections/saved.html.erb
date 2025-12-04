@@ -8,10 +8,32 @@
       <% @collections.each do |collection| %>
         <%= link_to collection_path(collection), class: "block" do %>
 
-          <div class="bg-gray-200 rounded-xl overflow-hidden shadow">
+          <!-- ⭐ 4-IMAGE THUMBNAIL GRID ⭐ -->
+          <div class="bg-gray-200 rounded-xl overflow-hidden shadow relative">
 
-            <% if collection.saved_pins.any? %>
-              <%= image_tag collection.saved_pins.first.pin.image, class: "w-full h-40 object-cover" %>
+            <% pins = collection.saved_pins.limit(4).map(&:pin) %>
+
+            <% if pins.any? %>
+              <div class="grid grid-cols-2 grid-rows-2 h-40">
+
+                <% pins.each do |pin| %>
+                  <div class="overflow-hidden">
+                    <% if pin.image.attached? %>
+                      <%= image_tag pin.image,
+                          class: "w-full h-full object-cover" %>
+                    <% else %>
+                      <div class="w-full h-full bg-gray-300"></div>
+                    <% end %>
+                  </div>
+                <% end %>
+
+                <!-- If fewer than 4 images, fill placeholders -->
+                <% (4 - pins.size).times do %>
+                  <div class="w-full h-full bg-gray-300"></div>
+                <% end %>
+
+              </div>
+
             <% else %>
               <div class="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-500">
                 No Pins
@@ -20,6 +42,7 @@
 
           </div>
 
+          <!-- COLLECTION NAME -->
           <p class="mt-2 font-semibold text-center"><%= collection.name %></p>
 
         <% end %>
