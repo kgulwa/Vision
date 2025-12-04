@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     resources :saved_pins, only: [:create, :destroy]
   end
 
-  # USERS — back to standard :id (uuid) routing
+  # USERS
   resources :users do
     resource :follow, only: [:create, :destroy]
 
@@ -24,7 +24,10 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :collections, only: [:show, :create]
+  # ⭐ UPDATED COLLECTION ROUTES
+  resources :collections, only: [:show, :create, :edit, :update, :destroy] do
+    delete "remove_pin/:saved_pin_id", to: "collections#remove_pin", as: :remove_pin
+  end
 
   get "/saved", to: "collections#saved", as: :saved
 
@@ -47,7 +50,7 @@ Rails.application.routes.draw do
       patch :mark_as_read
     end
 
-    collection do
+      collection do
       patch :mark_all_read
     end
   end
