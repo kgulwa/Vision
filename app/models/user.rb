@@ -2,10 +2,7 @@ class User < ApplicationRecord
   has_secure_password
   has_one_attached :avatar
 
-  
-  # VALIDATIONS 
-  
-  # Only validate username/email uniqueness on CREATE
+  # VALIDATIONS
   validates :username,
             presence: true,
             uniqueness: { case_sensitive: true },
@@ -17,7 +14,6 @@ class User < ApplicationRecord
             format: { with: URI::MailTo::EMAIL_REGEXP },
             on: :create
 
-  # Password validation only when needed
   validates :password, length: { minimum: 6 }, if: :password_required?
   validates :password_confirmation, presence: true, if: :password_required?
 
@@ -25,50 +21,58 @@ class User < ApplicationRecord
     new_record? || password.present?
   end
 
-  
-  # PIN SYSTEM
-  
-  has_many :pins, dependent: :destroy
-  has_many :saved_pins, dependent: :destroy
-  has_many :collections, dependent: :destroy
+  # PIN SYSTEM (all using id which is UUID)
+  has_many :pins, dependent: :destroy, foreign_key: :user_id, primary_key: :id
+  has_many :saved_pins, dependent: :destroy, foreign_key: :user_id, primary_key: :id
+  has_many :collections, dependent: :destroy, foreign_key: :user_id, primary_key: :id
 
   # COMMENTS
-  has_many :comments, dependent: :destroy
+  has_many :comments, dependent: :destroy, foreign_key: :user_id, primary_key: :id
 
   # LIKES
-  has_many :likes, dependent: :destroy
+  has_many :likes, dependent: :destroy, foreign_key: :user_id, primary_key: :id
 
   # REPOSTS
-  has_many :reposts, dependent: :destroy
+  has_many :reposts, dependent: :destroy, foreign_key: :user_id, primary_key: :id
   has_many :reposted_pins, through: :reposts, source: :pin
 
   # SEARCH HISTORY
-  has_many :search_histories, dependent: :destroy
+  has_many :search_histories, dependent: :destroy, foreign_key: :user_id, primary_key: :id
 
-  
-  # FOLLOW SYSTEM
-  
-  has_many :follows, foreign_key: :follower_id, dependent: :destroy
-  has_many :followings, through: :follows, source: :followed
+  # FOLLOW SYSTEM (using id — uuid)
+  has_many :follows,
+           foreign_key: :follower_id,
+           primary_key: :id,
+           dependent: :destroy
+
+  has_many :followings,
+           through: :follows,
+           source: :followed
 
   has_many :inverse_follows,
            class_name: "Follow",
            foreign_key: :followed_id,
+           primary_key: :id,
            dependent: :destroy
-  has_many :followers, through: :inverse_follows, source: :follower
 
-  
+  has_many :followers,
+           through: :inverse_follows,
+           source: :follower
+
   # NOTIFICATIONS
-  
-  has_many :notifications, dependent: :destroy
+  has_many :notifications, dependent: :destroy, foreign_key: :user_id, primary_key: :id
   has_many :sent_notifications,
            class_name: "Notification",
            foreign_key: :actor_id,
+           primary_key: :id,
            dependent: :destroy
 
-  
   # TAGGING SYSTEM
-  has_many :pin_tags, foreign_key: :tagged_user_id, dependent: :destroy
+  has_many :pin_tags,
+           foreign_key: :tagged_user_id,
+           primary_key: :id,
+           dependent: :destroy
+
   has_many :tagged_pins, through: :pin_tags, source: :pin
 
   # METHODS

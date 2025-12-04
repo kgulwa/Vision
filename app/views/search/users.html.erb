@@ -35,6 +35,7 @@
     <div class="space-y-3">
       <% @users.each do |user| %>
         <%= link_to user_path(user),
+              data: { turbo_action: "replace" },
               class: "flex items-center space-x-4 p-4 bg-white rounded-xl shadow hover:shadow-md hover:bg-gray-50 transition" do %>
 
       

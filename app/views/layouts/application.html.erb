@@ -3,10 +3,12 @@
   <head>
     <title>Vision</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="turbo-visit-control" content="reload">
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+
+    <!-- ⭐ REQUIRED FOR TURBO STREAMS TO WORK ⭐ -->
+    <%= turbo_include_tags %>
 
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>

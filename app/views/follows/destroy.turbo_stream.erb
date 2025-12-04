@@ -1,10 +1,12 @@
-<turbo-stream action="replace" target="follow_button_<%= @user.id %>">
+<% sanitized_uid = @user.uid.delete("-") %>
+
+<turbo-stream action="replace" target="follow_button_<%= sanitized_uid %>">
   <template>
-    <%= render "users/follow_button", user: @user %>
+    <%= render partial: "users/follow_button", formats: [:html], locals: { user: @user } %>
   </template>
 </turbo-stream>
 
-<turbo-stream action="replace" target="follower_count_<%= @user.id %>">
+<turbo-stream action="update" target="follower_count_<%= sanitized_uid %>">
   <template>
     <%= @user.followers.count %>
   </template>

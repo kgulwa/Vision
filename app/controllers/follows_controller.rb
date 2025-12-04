@@ -4,7 +4,8 @@ class FollowsController < ApplicationController
 
   def create
     current_user.follow(@user)
-    # 🔔 Notify user they gained a follower
+
+    # Notification
     if @user.id != current_user.id
       Notification.create!(
         user: @user,
@@ -14,54 +15,25 @@ class FollowsController < ApplicationController
         read: false
       )
     end
+
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.replace(
-            "follow_button_#{@user.id}",
-            partial: "users/follow_button",
-            locals: { user: @user }
-          ),
-          turbo_stream.replace(
-            "follower_count_#{@user.id}",
-            @user.followers.count.to_s
-          )
-        ]
-      end
-      format.html do
-        redirect_to user_path(@user.id),
-                    notice: "You are now following #{@user.username}!"
-      end
+      format.turbo_stream
+      format.html { redirect_to user_path(@user), notice: "You are now following #{@user.username}!" }
     end
   end
 
   def destroy
     current_user.unfollow(@user)
+
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.replace(
-            "follow_button_#{@user.id}",
-            partial: "users/follow_button",
-            locals: { user: @user }
-          ),
-          turbo_stream.replace(
-            "follower_count_#{@user.id}",
-            @user.followers.count.to_s
-          )
-        ]
-      end
-      format.html do
-        redirect_to user_path(@user.id),
-                    notice: "You unfollowed #{@user.username}."
-      end
+      format.turbo_stream
+      format.html { redirect_to user_path(@user), notice: "You unfollowed #{@user.username}." }
     end
   end
 
   private
 
   def set_user
-    @user = User.find_by(id: params[:user_id] || params[:id])
-    redirect_to root_path, alert: "User not found" unless @user
+    @user = User.find(params[:user_id])  # FIXED!
   end
 end

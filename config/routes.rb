@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     resources :saved_pins, only: [:create, :destroy]
   end
 
+  # USERS — back to standard :id (uuid) routing
   resources :users do
     resource :follow, only: [:create, :destroy]
 
@@ -18,7 +19,6 @@ Rails.application.routes.draw do
       post :check_password
     end
 
-    
     member do
       get :tagged
     end
@@ -26,7 +26,6 @@ Rails.application.routes.draw do
 
   resources :collections, only: [:show, :create]
 
-  
   get "/saved", to: "collections#saved", as: :saved
 
   # AUTH
@@ -42,14 +41,14 @@ Rails.application.routes.draw do
   # MENTIONS AUTOCOMPLETE
   get '/mentions', to: 'mentions#index'
 
-  # NOTIFICATIONS 
+  # NOTIFICATIONS
   resources :notifications, only: [:index] do
     member do
-      patch :mark_as_read   
+      patch :mark_as_read
     end
 
     collection do
-      patch :mark_all_read  
+      patch :mark_all_read
     end
   end
 

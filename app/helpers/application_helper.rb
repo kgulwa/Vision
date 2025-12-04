@@ -40,7 +40,7 @@ module ApplicationHelper
   end
 
   # -----------------------------
-  # RENDER @MENTIONS AS LINKS
+  # RENDER @MENTIONS AS LINKS (UID SAFE)
   # -----------------------------
   def render_with_mentions(text)
     return "" if text.blank?
@@ -50,8 +50,11 @@ module ApplicationHelper
       user = User.find_by(username: username)
 
       if user
-        link_to("@#{username}", user_path(user),
-          class: "text-blue-600 font-semibold hover:underline")
+        link_to(
+          "@#{username}",
+          user_path(user.uid), # 🔥 use UID for routing
+          class: "text-blue-600 font-semibold hover:underline"
+        )
       else
         mention
       end
@@ -64,6 +67,7 @@ module ApplicationHelper
   def unread_notifications_count
     return 0 unless current_user
 
+    # 🔥 FIXED — Use user_id, NOT user_uid
     current_user.notifications.where(read: false).count
   end
 end

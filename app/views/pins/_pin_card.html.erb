@@ -1,6 +1,8 @@
 <div class="break-inside-avoid mb-4 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition bg-white">
 
-  <%= link_to pin_path(pin), class: "block relative group" do %>
+  <%= link_to pin_path(pin),
+        data: { turbo_action: "replace" },
+        class: "block relative group" do %>
 
     <% if pin.image.attached? %>
       <%= image_tag url_for(pin.image), class: "w-full h-auto object-cover rounded-t-xl" %>

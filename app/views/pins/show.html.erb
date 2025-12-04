@@ -1,3 +1,5 @@
+<% sanitized_uid = @pin.user.uid.gsub("-", "") %>
+
 <div class="max-w-6xl mx-auto">
   <div class="bg-white rounded-xl shadow-lg overflow-hidden">
     <div class="grid md:grid-cols-2 gap-0">
@@ -21,7 +23,9 @@
 
         <!-- PIN OWNER -->
         <div class="flex items-center justify-between mb-6">
-          <%= link_to @pin.user, class: "flex items-center space-x-3 hover:bg-gray-50 rounded-lg p-2 -m-2" do %>
+          <%= link_to user_path(@pin.user),
+              data: { turbo_action: "replace" },
+              class: "flex items-center space-x-3 hover:bg-gray-50 rounded-lg p-2 -m-2" do %>
 
             <%= user_avatar(@pin.user, size: 48) %>
 
@@ -33,6 +37,7 @@
 
           <% if logged_in? %>
             <% if @pin.user == current_user %>
+
               <div class="flex space-x-2">
                 <%= link_to edit_pin_path(@pin),
                     class: "px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg" do %>
@@ -48,19 +53,12 @@
               </div>
 
             <% else %>
-              <% if current_user.following?(@pin.user) %>
-                <%= button_to user_follow_path(@pin.user),
-                    method: :delete,
-                    class: "px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50" do %>
-                  Following
-                <% end %>
-              <% else %>
-                <%= button_to user_follow_path(@pin.user),
-                    method: :post,
-                    class: "px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700" do %>
-                  Follow
-                <% end %>
-              <% end %>
+
+              <!-- ⭐ WRAPPED FOLLOW BUTTON FOR TURBO STREAM UPDATES -->
+              <div id="follow_button_<%= sanitized_uid %>">
+                <%= render "users/follow_button", user: @pin.user %>
+              </div>
+
             <% end %>
           <% end %>
         </div>
@@ -167,7 +165,7 @@
 
                 <div class="flex-1">
 
-                  <!--  ENABLE MENTIONS HERE -->
+                  <!-- ENABLE MENTIONS -->
                   <div class="relative w-full" data-controller="mentions">
 
                     <%= f.text_area :content,
@@ -179,10 +177,8 @@
                           mentions_target: "input"
                         } %>
 
-                    <!-- DROPDOWN -->
                     <div data-mentions-target="dropdown"
-                         class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50">
-                    </div>
+                         class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50"></div>
 
                   </div>
 
@@ -206,7 +202,6 @@
   </div>
 </div>
 
-<!-- ⭐ AUTO-SCROLL + HIGHLIGHT ON LOAD -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const commentId = new URLSearchParams(window.location.search).get("comment_id");

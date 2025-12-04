@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_02_062022) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_04_135100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -133,9 +133,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_02_062022) do
     t.datetime "created_at", null: false
     t.string "email"
     t.string "password_digest"
+    t.uuid "uid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "updated_at", null: false
     t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
