@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <!-- 🔥 FOLLOW BUTTON (Turbo Stream Enabled) -->
+    <!-- FOLLOW BUTTON Turbo Stream Enabled-->
     <% if logged_in? && current_user != @user %>
       <div id="follow_button_<%= sanitized_uid %>">
         <% if current_user.following?(@user) %>

@@ -34,6 +34,6 @@ class FollowsController < ApplicationController
   private
 
   def set_user
-    @user = User.find(params[:user_id])  # FIXED!
+    @user = User.find(params[:user_id])  
   end
 end

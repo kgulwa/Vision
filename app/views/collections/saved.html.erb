@@ -8,7 +8,7 @@
       <% @collections.each do |collection| %>
         <%= link_to collection_path(collection), class: "block" do %>
 
-          <!-- ⭐ 4-IMAGE THUMBNAIL GRID ⭐ -->
+          <!-- 4-IMAGE THUMBNAIL GRID -->
           <div class="bg-gray-200 rounded-xl overflow-hidden shadow relative">
 
             <% pins = collection.saved_pins.limit(4).map(&:pin) %>

@@ -21,7 +21,7 @@ class User < ApplicationRecord
     new_record? || password.present?
   end
 
-  # PIN SYSTEM (all using id which is UUID)
+  # PIN SYSTEM 
   has_many :pins, dependent: :destroy, foreign_key: :user_id, primary_key: :id
   has_many :saved_pins, dependent: :destroy, foreign_key: :user_id, primary_key: :id
   has_many :collections, dependent: :destroy, foreign_key: :user_id, primary_key: :id
