@@ -4,11 +4,30 @@
   <div class="bg-white rounded-xl shadow-lg overflow-hidden">
     <div class="grid md:grid-cols-2 gap-0">
 
-      <!-- LEFT SIDE IMAGE -->
+      <!-- LEFT SIDE MEDIA -->
       <div class="bg-gray-900">
-        <% if @pin.image.attached? %>
-          <%= image_tag @pin.image, class: "w-full h-full object-cover" %>
+
+        <% if @pin.file.attached? %>
+
+          <% if @pin.file.content_type.start_with?("video") %>
+            <!-- VIDEO -->
+            <video controls class="w-full h-full object-cover">
+              <source src="<%= url_for(@pin.file) %>" type="<%= @pin.file.content_type %>">
+            </video>
+
+          <% elsif @pin.file.content_type.start_with?("image") %>
+            <!-- IMAGE -->
+            <%= image_tag @pin.file, class: "w-full h-full object-cover" %>
+
+          <% else %>
+            <!-- Fallback for unknown file types -->
+            <div class="w-full h-96 bg-gray-700 flex items-center justify-center">
+              <p class="text-white">Unsupported file</p>
+            </div>
+          <% end %>
+
         <% else %>
+          <!-- NO MEDIA -->
           <div class="w-full h-96 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
             <svg class="w-32 h-32 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -16,6 +35,7 @@
             </svg>
           </div>
         <% end %>
+
       </div>
 
       <!-- RIGHT SIDE CONTENT -->

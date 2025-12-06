@@ -14,23 +14,43 @@ class Pin < ApplicationRecord
   has_many :pin_tags, dependent: :destroy
   has_many :tagged_users, through: :pin_tags, source: :tagged_user
 
-  has_one_attached :image
+  # ONE FILE FOR IMAGES OR VIDEOS
+  has_one_attached :file
 
   validates :title, presence: true
+  validate :acceptable_file
 
   scope :recent, -> { order(created_at: :desc) }
   scope :from_existing_users, -> { joins(:user) }
 
-  
-  # COUNTERS FOR HOVER OVERLAY
-  
- 
   def likes_count
     likes.count
   end
 
-  
   def comments_count
     comments.count
+  end
+
+  def acceptable_file
+    return unless file.attached?
+
+    # SIZE LIMIT
+    if file.blob.byte_size > 50.megabytes
+      errors.add(:file, "is too large. Max size is 50MB")
+    end
+
+    
+    acceptable_types = [
+      "image/png",
+      "image/jpeg",  
+      "image/heic",
+      "image/heif",
+      "video/mp4",
+      "video/quicktime" 
+    ]
+
+    unless acceptable_types.include?(file.blob.content_type)
+      errors.add(:file, "must be PNG, JPG, HEIC, MP4, or MOV")
+    end
   end
 end

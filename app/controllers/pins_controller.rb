@@ -30,7 +30,6 @@ class PinsController < ApplicationController
 
     @pin = current_user.pins.build(pin_params)
 
-    # ❤️ DISABLE TURBO to avoid missing template errors
     if @pin.save
       create_pin_tags(@pin)
       redirect_to pin_path(@pin), notice: "Pin posted successfully!"
@@ -52,7 +51,7 @@ class PinsController < ApplicationController
   end
 
   def destroy
-    @pin.image.purge if @pin.image.attached?
+    @pin.file.purge if @pin.file.attached?   # ✅ supports both images + videos
     @pin.destroy
     redirect_to pins_path, notice: "Pin deleted successfully!"
   end
@@ -79,7 +78,12 @@ class PinsController < ApplicationController
   end
 
   def pin_params
-    params.require(:pin).permit(:title, :description, :image, tagged_user_ids: [])
+    params.require(:pin).permit(
+      :title,
+      :description,
+      :file,              # ✅ CHANGED from :image → :file
+      tagged_user_ids: []
+    )
   end
 
   def authorize_user
