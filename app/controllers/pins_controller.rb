@@ -28,6 +28,7 @@ class PinsController < ApplicationController
   def create
     Rails.logger.info "⭐ PARAMS: #{params.inspect}"
 
+    # current_user.pins.build assigns user_uid automatically
     @pin = current_user.pins.build(pin_params)
 
     if @pin.save
@@ -51,7 +52,7 @@ class PinsController < ApplicationController
   end
 
   def destroy
-    @pin.file.purge if @pin.file.attached?   # ✅ supports both images + videos
+    @pin.file.purge if @pin.file.attached?
     @pin.destroy
     redirect_to pins_path, notice: "Pin deleted successfully!"
   end
@@ -77,12 +78,12 @@ class PinsController < ApplicationController
     redirect_to pins_path, alert: "Pin not found" unless @pin
   end
 
+  # Supports images + videos
   def pin_params
     params.require(:pin).permit(
       :title,
       :description,
-      :file,              # ✅ CHANGED from :image → :file
-      tagged_user_ids: []
+      :file,          # ✔️ unified uploader
     )
   end
 
@@ -90,23 +91,32 @@ class PinsController < ApplicationController
     redirect_to pins_path, alert: "You can only edit your own pins." unless @pin.user == current_user
   end
 
+  # ==========================================
+  # ✅ FIX — TAG USERS BY UID, NOT BY ID
+  # ==========================================
   def create_pin_tags(pin)
     return unless params[:pin][:tagged_user_ids].present?
 
+    # Remove old tags before adding new ones
     pin.pin_tags.destroy_all
 
     params[:pin][:tagged_user_ids]
       .reject(&:blank?)
-      .each do |user_id|
+      .each do |user_uid|
+
+      # 🔥 Find user using UID instead of ID
+      tagged_user = User.find_by(uid: user_uid)
+      next unless tagged_user   # Skip invalid UIDs to avoid crashes
 
       PinTag.create!(
         pin: pin,
-        tagged_user_id: user_id,
+        tagged_user_id: tagged_user.id,
         tagged_by_id: current_user.id
       )
 
+      # 🔔 Notify tagged user
       Notification.create!(
-        user_id: user_id,
+        user_id: tagged_user.id,
         actor_id: current_user.id,
         notifiable: pin,
         action: "tagged_you"

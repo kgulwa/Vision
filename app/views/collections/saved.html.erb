@@ -8,7 +8,7 @@
       <% @collections.each do |collection| %>
         <%= link_to collection_path(collection), class: "block" do %>
 
-          <!-- 4-IMAGE THUMBNAIL GRID -->
+          <!-- 4-ITEM THUMBNAIL GRID -->
           <div class="bg-gray-200 rounded-xl overflow-hidden shadow relative">
 
             <% pins = collection.saved_pins.limit(4).map(&:pin) %>
@@ -18,16 +18,32 @@
 
                 <% pins.each do |pin| %>
                   <div class="overflow-hidden">
-                    <% if pin.image.attached? %>
-                      <%= image_tag pin.image,
-                          class: "w-full h-full object-cover" %>
+
+                    <% if pin&.file&.attached? %>
+
+                      <% if pin.file.content_type.start_with?("image/") %>
+                        <!-- IMAGE -->
+                        <%= image_tag pin.file,
+                            class: "w-full h-full object-cover" %>
+
+                      <% elsif pin.file.content_type.start_with?("video/") %>
+                        <!-- VIDEO THUMBNAIL -->
+                        <video class="w-full h-full object-cover" muted>
+                          <source src="<%= url_for(pin.file) %>" type="<%= pin.file.content_type %>">
+                        </video>
+
+                      <% else %>
+                        <div class="w-full h-full bg-gray-300"></div>
+                      <% end %>
+
                     <% else %>
                       <div class="w-full h-full bg-gray-300"></div>
                     <% end %>
+
                   </div>
                 <% end %>
 
-                <!-- If fewer than 4 images, fill placeholders -->
+                <!-- If fewer than 4 items, fill placeholders -->
                 <% (4 - pins.size).times do %>
                   <div class="w-full h-full bg-gray-300"></div>
                 <% end %>

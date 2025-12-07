@@ -3,23 +3,22 @@ class RepostsController < ApplicationController
   before_action :set_pin
 
   def create
-    @pin.reposts.find_or_create_by!(user_id: current_user.id)
+    current_user.reposts.find_or_create_by(pin: @pin)
 
-    #  Notify pin owner (unless reposting your own pin)
-    if @pin.user_id != current_user.id
+    # Notify pin owner (unless reposting your own pin)
+    if @pin.user.uid != current_user.uid   # 🔥 FIXED: user_uid comparison
       Notification.create!(
         user: @pin.user,
         actor: current_user,
-        action: "reposted your pin",
+        action: "reposted your post",
         notifiable: @pin,
         read: false
       )
     end
 
-    #  Notify ALL tagged users (except reposting user + owner)
+    # Notify tagged users (except the actor)
     @pin.tagged_users.each do |tagged|
       next if tagged.id == current_user.id
-      next if tagged.id == @pin.user_id
 
       Notification.create!(
         user: tagged,
@@ -30,18 +29,18 @@ class RepostsController < ApplicationController
       )
     end
 
-    redirect_to pin_path(@pin.id), notice: "Reposted!"
+    redirect_to @pin, notice: "Pin reposted!"
   end
 
   def destroy
-    @pin.reposts.find_by(user_id: current_user.id)&.destroy
-    redirect_to pin_path(@pin.id), notice: "Repost removed."
+    current_user.reposts.where(pin: @pin).destroy_all
+    redirect_to @pin, notice: "Repost removed."
   end
 
   private
 
   def set_pin
-    @pin = Pin.find_by(id: params[:pin_id])
+    @pin = Pin.find_by(id: params[:pin_id] || params[:id])
     redirect_to pins_path, alert: "Pin not found" unless @pin
   end
 end

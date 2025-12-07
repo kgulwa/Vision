@@ -21,25 +21,51 @@ class User < ApplicationRecord
     new_record? || password.present?
   end
 
-  # PIN SYSTEM 
-  has_many :pins, dependent: :destroy, foreign_key: :user_id, primary_key: :id
-  has_many :saved_pins, dependent: :destroy, foreign_key: :user_id, primary_key: :id
-  has_many :collections, dependent: :destroy, foreign_key: :user_id, primary_key: :id
+  # PIN SYSTEM (updated: pins now use user_uid)
+  has_many :pins,
+           dependent: :destroy,
+           foreign_key: :user_uid,
+           primary_key: :uid
+
+  has_many :saved_pins,
+           dependent: :destroy,
+           foreign_key: :user_id,
+           primary_key: :id
+
+  has_many :collections,
+           dependent: :destroy,
+           foreign_key: :user_id,
+           primary_key: :id
 
   # COMMENTS
-  has_many :comments, dependent: :destroy, foreign_key: :user_id, primary_key: :id
+  has_many :comments,
+           dependent: :destroy,
+           foreign_key: :user_id,
+           primary_key: :id
 
   # LIKES
-  has_many :likes, dependent: :destroy, foreign_key: :user_id, primary_key: :id
+  has_many :likes,
+           dependent: :destroy,
+           foreign_key: :user_id,
+           primary_key: :id
 
   # REPOSTS
-  has_many :reposts, dependent: :destroy, foreign_key: :user_id, primary_key: :id
-  has_many :reposted_pins, through: :reposts, source: :pin
+  has_many :reposts,
+           dependent: :destroy,
+           foreign_key: :user_id,
+           primary_key: :id
+
+  has_many :reposted_pins,
+           through: :reposts,
+           source: :pin
 
   # SEARCH HISTORY
-  has_many :search_histories, dependent: :destroy, foreign_key: :user_id, primary_key: :id
+  has_many :search_histories,
+           dependent: :destroy,
+           foreign_key: :user_id,
+           primary_key: :id
 
-  # FOLLOW SYSTEM (using id — uuid)
+  # FOLLOW SYSTEM
   has_many :follows,
            foreign_key: :follower_id,
            primary_key: :id,
@@ -60,7 +86,11 @@ class User < ApplicationRecord
            source: :follower
 
   # NOTIFICATIONS
-  has_many :notifications, dependent: :destroy, foreign_key: :user_id, primary_key: :id
+  has_many :notifications,
+           dependent: :destroy,
+           foreign_key: :user_id,
+           primary_key: :id
+
   has_many :sent_notifications,
            class_name: "Notification",
            foreign_key: :actor_id,
@@ -68,12 +98,23 @@ class User < ApplicationRecord
            dependent: :destroy
 
   # TAGGING SYSTEM
-  has_many :pin_tags,
+  # -------------------------------------
+  # OPTION A (correct): delete tags when user is deleted
+  has_many :pin_tags_as_tagged,
+           class_name: "PinTag",
            foreign_key: :tagged_user_id,
            primary_key: :id,
            dependent: :destroy
 
-  has_many :tagged_pins, through: :pin_tags, source: :pin
+  has_many :pin_tags_as_author,
+           class_name: "PinTag",
+           foreign_key: :tagged_by_id,
+           primary_key: :id,
+           dependent: :destroy
+
+  has_many :tagged_pins,
+           through: :pin_tags_as_tagged,
+           source: :pin
 
   # METHODS
   def following?(other_user)

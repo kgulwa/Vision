@@ -23,7 +23,6 @@
       </div>
     </div>
 
-    <!-- FOLLOW BUTTON Turbo Stream Enabled-->
     <% if logged_in? && current_user != @user %>
       <div id="follow_button_<%= sanitized_uid %>">
         <% if current_user.following?(@user) %>
@@ -65,28 +64,36 @@
     <% end %>
   </div>
 
-  <!-- Tab Contents -->
   <div class="space-y-8">
 
-    <!-- Pins Grid -->
+    <!-- PINS GRID -->
     <div id="tab-pins" class="grid grid-cols-2 md:grid-cols-3 gap-6">
       <% @pins.each do |pin| %>
         <%= link_to pin_path(pin), class: "block relative group" do %>
-          <% if pin.image.attached? %>
-            <%= image_tag pin.image,
-                class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+
+          <% if pin.file&.attached? %>
+
+            <% if pin.file.content_type.starts_with?("video") %>
+              <video class="rounded-lg shadow object-cover w-full h-48 md:h-60" muted>
+                <source src="<%= url_for(pin.file) %>" type="<%= pin.file.content_type %>">
+              </video>
+            <% else %>
+              <%= image_tag pin.file,
+                  class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+            <% end %>
+
           <% else %>
             <div class="w-full h-48 md:h-60 bg-gray-200 rounded-lg flex items-center justify-center">
-              <span class="text-gray-400">No image</span>
+              <span class="text-gray-400">No file</span>
             </div>
           <% end %>
 
-          <!-- Hover overlay -->
           <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                       transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
             <span>❤️ <%= pin.likes.count %></span>
             <span>💬 <%= pin.comments.count %></span>
           </div>
+
         <% end %>
       <% end %>
 
@@ -95,25 +102,34 @@
       <% end %>
     </div>
 
-    <!-- Reposts Grid -->
+    <!-- REPOSTS GRID -->
     <div id="tab-reposts" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
       <% @reposted_pins.each do |pin| %>
         <%= link_to pin_path(pin), class: "block relative group" do %>
-          <% if pin.image.attached? %>
-            <%= image_tag pin.image,
-                class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+
+          <% if pin.file&.attached? %>
+
+            <% if pin.file.content_type.starts_with?("video") %>
+              <video class="rounded-lg shadow object-cover w-full h-48 md:h-60" muted>
+                <source src="<%= url_for(pin.file) %>" type="<%= pin.file.content_type %>">
+              </video>
+            <% else %>
+              <%= image_tag pin.file,
+                  class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+            <% end %>
+
           <% else %>
             <div class="w-full h-48 md:h-60 bg-gray-200 rounded-lg flex items-center justify-center">
-              <span class="text-gray-400">No image</span>
+              No file
             </div>
           <% end %>
 
-          <!-- Hover overlay -->
           <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                       transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
             <span>❤️ <%= pin.likes.count %></span>
             <span>💬 <%= pin.comments.count %></span>
           </div>
+
         <% end %>
       <% end %>
 
@@ -122,30 +138,38 @@
       <% end %>
     </div>
 
-    <!-- Tagged Grid -->
+    <!-- TAGGED GRID -->
     <div id="tab-tagged" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
       <% @tagged_pins.each do |pin| %>
         <%= link_to pin_path(pin), class: "block relative group" do %>
-          <% if pin.image.attached? %>
-            <%= image_tag pin.image,
-                class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+
+          <% if pin.file&.attached? %>
+
+            <% if pin.file.content_type.starts_with?("video") %>
+              <video class="rounded-lg shadow object-cover w-full h-48 md:h-60" muted>
+                <source src="<%= url_for(pin.file) %>" type="<%= pin.file.content_type %>">
+              </video>
+            <% else %>
+              <%= image_tag pin.file,
+                  class: "rounded-lg shadow object-cover w-full h-48 md:h-60" %>
+            <% end %>
+
           <% else %>
             <div class="w-full h-48 md:h-60 bg-gray-200 rounded-lg flex items-center justify-center">
-              <span class="text-gray-400">No image</span>
+              No file
             </div>
           <% end %>
 
-          <!-- Hover overlay -->
           <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                       transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
             <span>❤️ <%= pin.likes.count %></span>
             <span>💬 <%= pin.comments.count %></span>
           </div>
 
-          <!-- Tagged badge -->
           <div class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
             Tagged
           </div>
+
         <% end %>
       <% end %>
 
@@ -156,7 +180,7 @@
       <% end %>
     </div>
 
-    <!-- Collections Grid -->
+    <!-- COLLECTIONS GRID -->
     <% if @user == current_user %>
       <div id="tab-collections" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
         <% @user.collections.each do |collection| %>

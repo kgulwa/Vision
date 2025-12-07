@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_04_135100) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_07_210828) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -103,7 +103,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_135100) do
     t.integer "reposts_count"
     t.string "title"
     t.datetime "updated_at", null: false
-    t.uuid "user_id"
+    t.uuid "user_uid"
   end
 
   create_table "reposts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -155,7 +155,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_135100) do
   add_foreign_key "pin_tags", "pins"
   add_foreign_key "pin_tags", "users", column: "tagged_by_id"
   add_foreign_key "pin_tags", "users", column: "tagged_user_id"
-  add_foreign_key "pins", "users"
+  add_foreign_key "pins", "users", column: "user_uid"
+  add_foreign_key "pins", "users", column: "user_uid", primary_key: "uid"
   add_foreign_key "reposts", "pins"
   add_foreign_key "reposts", "users"
   add_foreign_key "saved_pins", "collections"

@@ -27,8 +27,19 @@
       <div class="relative group rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition">
 
         <%= link_to pin_path(pin) do %>
-          <% if pin.image.attached? %>
-            <%= image_tag pin.image, class: "w-full h-40 object-cover rounded-lg" %>
+
+          <% if pin.file.attached? %>
+
+            <% if pin.file.content_type.start_with?("image/") %>
+              <%= image_tag pin.file, class: "w-full h-40 object-cover rounded-lg" %>
+
+            <% elsif pin.file.content_type.start_with?("video/") %>
+              <video class="w-full h-40 object-cover rounded-lg" muted playsinline>
+                <source src="<%= url_for(pin.file) %>" type="<%= pin.file.content_type %>">
+              </video>
+
+            <% end %>
+
           <% else %>
             <div class="w-full h-40 bg-gray-200 rounded-lg flex items-center justify-center">
               <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

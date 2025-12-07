@@ -6,7 +6,7 @@ class LikesController < ApplicationController
     current_user.like(@pin)
 
     # Notify pin owner (unless liking own pin)
-    if @pin.user_id != current_user.id
+    if @pin.user.uid != current_user.uid   # 🔥 FIXED: user_uid instead of user_id
       Notification.create!(
         user: @pin.user,
         actor: current_user,
@@ -16,7 +16,7 @@ class LikesController < ApplicationController
       )
     end
 
-    #  Notify ALL tagged users (except the actor)
+    # Notify ALL tagged users (except the actor)
     @pin.tagged_users.each do |tagged|
       next if tagged.id == current_user.id
 
