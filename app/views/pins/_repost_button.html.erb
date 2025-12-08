@@ -1,0 +1,17 @@
+<turbo-frame id="repost_button_<%= pin.id %>">
+  <% if current_user.reposted?(pin) %>
+    <%= button_to pin_repost_path(pin),
+        method: :delete,
+        format: :turbo_stream,
+        class: "flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200" do %>
+      🔁 <span><%= pin.reposts.count %></span>
+    <% end %>
+  <% else %>
+    <%= button_to pin_repost_path(pin),
+        method: :post,
+        format: :turbo_stream,
+        class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
+      🔁 <span><%= pin.reposts.count %></span>
+    <% end %>
+  <% end %>
+</turbo-frame>

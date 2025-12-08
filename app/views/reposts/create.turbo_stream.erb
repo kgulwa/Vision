@@ -1,0 +1,6 @@
+<turbo-stream target="repost_button_<%= @pin.id %>">
+  <template>
+    <%# Re-render only the repost button %>
+    <%= render partial: "pins/repost_button", locals: { pin: @pin } %>
+  </template>
+</turbo-stream>
