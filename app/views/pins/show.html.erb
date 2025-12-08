@@ -20,7 +20,7 @@
             <%= image_tag @pin.file, class: "w-full h-full object-cover" %>
 
           <% else %>
-            <!-- Fallback for unknown file types -->
+            <!-- Fallback -->
             <div class="w-full h-96 bg-gray-700 flex items-center justify-center">
               <p class="text-white">Unsupported file</p>
             </div>
@@ -73,12 +73,9 @@
               </div>
 
             <% else %>
-
-              <!-- ⭐ WRAPPED FOLLOW BUTTON FOR TURBO STREAM UPDATES -->
               <div id="follow_button_<%= sanitized_uid %>">
                 <%= render "users/follow_button", user: @pin.user %>
               </div>
-
             <% end %>
           <% end %>
         </div>
@@ -95,20 +92,25 @@
         <% if logged_in? %>
           <div class="flex items-center space-x-4 mb-6 pb-6 border-b">
 
-            <!-- LIKE -->
-            <% if current_user.liked?(@pin) %>
-              <%= button_to pin_like_path(@pin),
-                  method: :delete,
-                  class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
-                ❤️ <span><%= @pin.likes.count %></span>
+            <!-- ⭐⭐⭐ LIKE (Turbo Frame) ⭐⭐⭐ -->
+            <turbo-frame id="like_button_<%= @pin.id %>">
+              <% if current_user.liked?(@pin) %>
+                <%= button_to pin_like_path(@pin),
+                    method: :delete,
+                    format: :turbo_stream,
+                    class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
+                  ❤️ <span><%= @pin.likes.count %></span>
+                <% end %>
+              <% else %>
+                <%= button_to pin_like_path(@pin),
+                    method: :post,
+                    format: :turbo_stream,
+                    class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
+                  🤍 <span><%= @pin.likes.count %></span>
+                <% end %>
               <% end %>
-            <% else %>
-              <%= button_to pin_like_path(@pin),
-                  method: :post,
-                  class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
-                🤍 <span><%= @pin.likes.count %></span>
-              <% end %>
-            <% end %>
+            </turbo-frame>
+            <!-- ⭐ END LIKE TURBO FRAME -->
 
             <!-- REPOST -->
             <% if current_user.reposted?(@pin) %>
@@ -125,7 +127,7 @@
               <% end %>
             <% end %>
 
-            <!-- SAVE MENU -->
+            <!-- SAVE MENU (unchanged) -->
             <div class="relative inline-block text-left">
               <button
                 onclick="document.getElementById('save-menu').classList.toggle('hidden')"
@@ -176,7 +178,6 @@
             Comments (<%= @pin.comments.where(parent_id: nil).count %>)
           </h3>
 
-          <!-- NEW COMMENT -->
           <% if logged_in? %>
             <%= form_with model: [@pin, Comment.new], class: "mb-6" do |f| %>
               <div class="flex space-x-3">
@@ -184,8 +185,6 @@
                 <%= user_avatar(current_user, size: 40) %>
 
                 <div class="flex-1">
-
-                  <!-- ENABLE MENTIONS -->
                   <div class="relative w-full" data-controller="mentions">
 
                     <%= f.text_area :content,
@@ -210,7 +209,6 @@
             <% end %>
           <% end %>
 
-          <!-- COMMENT LIST -->
           <% @pin.comments.where(parent_id: nil).order(created_at: :asc).each do |comment| %>
             <%= render partial: "pins/comment", locals: { comment: comment } %>
           <% end %>
