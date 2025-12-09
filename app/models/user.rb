@@ -21,7 +21,7 @@ class User < ApplicationRecord
     new_record? || password.present?
   end
 
-  # PIN SYSTEM (updated: pins now use user_uid)
+  # PIN SYSTEM
   has_many :pins,
            dependent: :destroy,
            foreign_key: :user_uid,
@@ -97,20 +97,18 @@ class User < ApplicationRecord
            primary_key: :id,
            dependent: :destroy
 
-  # TAGGING SYSTEM
-  # -------------------------------------
-  # OPTION A (correct): delete tags when user is deleted
+  # TAGGING SYSTEM 
   has_many :pin_tags_as_tagged,
            class_name: "PinTag",
            foreign_key: :tagged_user_id,
            primary_key: :id,
-           dependent: :destroy
+           dependent: :destroy #delete tag when user account gets deleted
 
   has_many :pin_tags_as_author,
            class_name: "PinTag",
            foreign_key: :tagged_by_id,
            primary_key: :id,
-           dependent: :destroy
+           dependent: :destroy #delete tag when user account gets deleted
 
   has_many :tagged_pins,
            through: :pin_tags_as_tagged,

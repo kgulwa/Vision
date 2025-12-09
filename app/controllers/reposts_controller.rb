@@ -6,7 +6,7 @@ class RepostsController < ApplicationController
     current_user.reposts.find_or_create_by(pin: @pin)
 
     # Notify pin owner (unless reposting your own pin)
-    if @pin.user.uid != current_user.uid   # 🔥 FIXED: user_uid comparison
+    if @pin.user.uid != current_user.uid   
       Notification.create!(
         user: @pin.user,
         actor: current_user,

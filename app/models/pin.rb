@@ -3,7 +3,7 @@ class Pin < ApplicationRecord
     id
   end
 
-  # IMPORTANT: use user_uid + user's uid as PK
+  
   belongs_to :user, foreign_key: :user_uid, primary_key: :uid
 
   has_many :comments, dependent: :destroy
@@ -15,10 +15,9 @@ class Pin < ApplicationRecord
   has_many :pin_tags, dependent: :destroy
   has_many :tagged_users, through: :pin_tags, source: :tagged_user
 
-  # ONE FILE FOR IMAGES OR VIDEOS
-  has_one_attached :file
+  has_one_attached :file #allows both images and videos
 
-  # BACKWARD COMPATIBILITY (Optional support for old image column)
+  
   def image
     file if file&.image?
   end
@@ -49,7 +48,7 @@ class Pin < ApplicationRecord
       errors.add(:file, "is too large. Max size is 50MB")
     end
 
-    acceptable_types = [
+    acceptable_types = [ #acceptable types of files
       "image/png",
       "image/jpeg",
       "image/heic",
@@ -59,7 +58,7 @@ class Pin < ApplicationRecord
     ]
 
     unless acceptable_types.include?(file.blob.content_type)
-      errors.add(:file, "must be PNG, JPG, HEIC, MP4, or MOV")
+      errors.add(:file, "must be PNG, JPG, HEIC, MP4, or MOV") #error message incase of invalid file type
     end
   end
 end
