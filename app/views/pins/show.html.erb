@@ -1,21 +1,29 @@
 <% sanitized_uid = @pin.user.uid.gsub("-", "") %>
+
 <div class="max-w-6xl mx-auto">
   <div class="bg-white rounded-xl shadow-lg overflow-hidden">
     <div class="grid md:grid-cols-2 gap-0">
+
       <!-- LEFT SIDE MEDIA -->
-      <div class="bg-gray-900">
+      <div class="bg-gray-900 relative">
         <% if @pin.file.attached? %>
-          <% if @pin.file.content_type.start_with?("video") %>
-            <video controls class="w-full h-full object-cover">
+
+          <% if @pin.file.video? %>
+            <!-- ⭐ SHOW VIDEO IMMEDIATELY (SHOW PAGE BEHAVIOR B) -->
+            <video autoplay controls class="w-full h-full object-cover">
               <source src="<%= url_for(@pin.file) %>" type="<%= @pin.file.content_type %>">
             </video>
-          <% elsif @pin.file.content_type.start_with?("image") %>
+
+          <% elsif @pin.file.image? %>
+            <!-- IMAGE -->
             <%= image_tag @pin.file, class: "w-full h-full object-cover" %>
+
           <% else %>
             <div class="w-full h-96 bg-gray-700 flex items-center justify-center">
               <p class="text-white">Unsupported file</p>
             </div>
           <% end %>
+
         <% else %>
           <div class="w-full h-96 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
             <svg class="w-32 h-32 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -25,8 +33,10 @@
           </div>
         <% end %>
       </div>
+
       <!-- RIGHT SIDE CONTENT -->
       <div class="p-6 flex flex-col">
+
         <!-- PIN OWNER -->
         <div class="flex items-center justify-between mb-6">
           <%= link_to user_path(@pin.user),
@@ -42,6 +52,7 @@
               </div>
             </div>
           <% end %>
+
           <% if logged_in? %>
             <% if @pin.user == current_user %>
               <div class="flex space-x-2">
@@ -63,6 +74,7 @@
             <% end %>
           <% end %>
         </div>
+
         <!-- TITLE + DESCRIPTION -->
         <div class="mb-6">
           <h1 class="text-3xl font-bold text-gray-900 mb-3"><%= @pin.title %></h1>
@@ -70,88 +82,58 @@
             <p class="text-gray-600"><%= render_with_mentions(@pin.description) %></p>
           <% end %>
         </div>
+
         <!-- LIKE / REPOST / SAVE -->
-        <% if logged_in? %>
-          <div class="flex items-center space-x-4 mb-6 pb-6 border-b">
-            <!--LIKE (Turbo Frame) -->
-            <turbo-frame id="like_button_<%= @pin.id %>">
-              <% if current_user.liked?(@pin) %>
-                <%= button_to pin_like_path(@pin),
-                    method: :delete,
-                    format: :turbo_stream,
-                    class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
-                  ❤️ <span><%= @pin.likes.count %></span>
-                <% end %>
-              <% else %>
-                <%= button_to pin_like_path(@pin),
-                    method: :post,
-                    format: :turbo_stream,
-                    class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
-                  🤍 <span><%= @pin.likes.count %></span>
-                <% end %>
+        <div class="flex items-center space-x-4 mb-6 pb-6 border-b">
+
+          <!-- LIKE -->
+          <turbo-frame id="like_button_<%= @pin.id %>">
+            <% if current_user&.liked?(@pin) %>
+              <%= button_to pin_like_path(@pin),
+                  method: :delete,
+                  format: :turbo_stream,
+                  class: "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200" do %>
+                ❤️ <span><%= @pin.likes.count %></span>
               <% end %>
-            </turbo-frame>
-            <!--  REPOST (Turbo Frame)  -->
-            <turbo-frame id="repost_button_<%= @pin.id %>">
-              <% if current_user.reposted?(@pin) %>
-                <%= button_to pin_repost_path(@pin),
-                    method: :delete,
-                    format: :turbo_stream,
-                    class: "flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200" do %>
-                  🔁 <span><%= @pin.reposts.count %></span>
-                <% end %>
-              <% else %>
-                <%= button_to pin_repost_path(@pin),
-                    method: :post,
-                    format: :turbo_stream,
-                    class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
-                  🔁 <span><%= @pin.reposts.count %></span>
-                <% end %>
+            <% else %>
+              <%= button_to pin_like_path(@pin),
+                  method: :post,
+                  format: :turbo_stream,
+                  class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
+                🤍 <span><%= @pin.likes.count %></span>
               <% end %>
-            </turbo-frame>
-            <!--  END REPOST TURBO FRAME -->
-            <!-- SAVE MENU -->
-            <div class="relative inline-block text-left">
-              <button
-                onclick="document.getElementById('save-menu').classList.toggle('hidden')"
-                class="flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50">
-                📌 <span>Save</span>
-              </button>
-              <div
-                id="save-menu"
-                class="hidden absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg z-50">
-                <div class="p-2">
-                  <p class="text-sm font-semibold mb-2">Save to collection</p>
-                  <% if current_user.collections.any? %>
-                    <% current_user.collections.each do |collection| %>
-                      <%= button_to pin_saved_pins_path(@pin, collection_id: collection.id),
-                          method: :post,
-                          class: "w-full text-left px-4 py-2 rounded hover:bg-gray-100" do %>
-                        <%= collection.name %>
-                      <% end %>
-                    <% end %>
-                  <% end %>
-                </div>
-                <hr>
-                <div class="p-2">
-                  <%= form_with url: collections_path, method: :post, local: true do |f| %>
-                    <%= hidden_field_tag :pin_id, @pin.id %>
-                    <%= f.text_field :name,
-                        placeholder: "New collection",
-                        class: "w-full border px-3 py-1 rounded mb-2" %>
-                    <%= f.submit "Create & Save",
-                        class: "w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700" %>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-          </div>
-        <% end %>
+            <% end %>
+          </turbo-frame>
+
+          <!-- REPOST -->
+          <turbo-frame id="repost_button_<%= @pin.id %>">
+            <% if current_user&.reposted?(@pin) %>
+              <%= button_to pin_repost_path(@pin),
+                  method: :delete,
+                  format: :turbo_stream,
+                  class: "flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200" do %>
+                🔁 <span><%= @pin.reposts.count %></span>
+              <% end %>
+            <% else %>
+              <%= button_to pin_repost_path(@pin),
+                  method: :post,
+                  format: :turbo_stream,
+                  class: "flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50" do %>
+                🔁 <span><%= @pin.reposts.count %></span>
+              <% end %>
+            <% end %>
+          </turbo-frame>
+
+          <!-- SAVE MENU -->
+          <%= render "pins/save_menu", pin: @pin %>
+        </div>
+
         <!-- COMMENTS -->
         <div class="flex-1 overflow-y-auto max-h-[400px]">
           <h3 class="font-semibold mb-4">
             Comments (<%= @pin.comments.where(parent_id: nil).count %>)
           </h3>
+
           <% if logged_in? %>
             <%= form_with model: [@pin, Comment.new], class: "mb-6" do |f| %>
               <div class="flex space-x-3">
@@ -175,14 +157,17 @@
               </div>
             <% end %>
           <% end %>
+
           <% @pin.comments.where(parent_id: nil).order(created_at: :asc).each do |comment| %>
             <%= render partial: "pins/comment", locals: { comment: comment } %>
           <% end %>
         </div>
+
       </div>
     </div>
   </div>
 </div>
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const commentId = new URLSearchParams(window.location.search).get("comment_id");
