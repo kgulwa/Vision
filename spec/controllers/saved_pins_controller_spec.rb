@@ -13,11 +13,22 @@ class SavedPinsController < ApplicationController
       collection = current_user.collections.find_or_create_by!(name: "Default")
     end
 
-    SavedPin.find_or_create_by!(
+    saved = SavedPin.find_or_create_by!(
       pin_id: @pin.id,
       collection_id: collection.id,
       user_id: current_user.id
     )
+
+    # Notify pin owner their post was saved
+    if @pin.user != current_user
+      Notification.create!(
+        user: @pin.user,
+        actor: current_user,
+        action: "saved your post",
+        notifiable: @pin,
+        read: false
+      )
+    end
 
     respond_to do |format|
       format.turbo_stream
@@ -27,9 +38,16 @@ class SavedPinsController < ApplicationController
 
   def destroy
     @saved_pin = SavedPin.find_by(id: params[:id])
-    saved_pin_pin = @saved_pin&.pin
-    @saved_pin&.destroy
-    redirect_to pin_path(saved_pin_pin.id), notice: "Pin removed."
+
+    # If saved_pin does not exist, still redirect safely using pin_id from params.
+    if @saved_pin.nil?
+      return redirect_to pin_path(params[:pin_id]), notice: "Pin removed."
+    end
+
+    pin = @saved_pin.pin
+    @saved_pin.destroy
+
+    redirect_to pin_path(pin.id), notice: "Pin removed."
   end
 
   private
