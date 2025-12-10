@@ -1,11 +1,17 @@
 module AuthHelpers
-  def log_in_as(user)
-    # Store UID because your app uses UID as session key
+  # For controller specs
+  def controller_log_in(user)
     session[:user_id] = user.uid
-
-    # Ensure current_user returns the right user in tests
-    allow_any_instance_of(ApplicationController)
-      .to receive(:current_user)
-      .and_return(user)
   end
+
+  # For request specs
+  def request_log_in(user)
+    post login_path,
+         params: { username: user.username, password: user.password }
+  end
+end
+
+RSpec.configure do |config|
+  config.include AuthHelpers, type: :controller
+  config.include AuthHelpers, type: :request
 end

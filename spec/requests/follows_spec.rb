@@ -1,12 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Follows", type: :request do
-  let(:user) { create(:user) }
-  let(:other_user) { create(:user) }
+  let(:user)        { create(:user, password: "password123", password_confirmation: "password123") }
+  let(:other_user)  { create(:user, password: "password123", password_confirmation: "password123") }
 
   before do
-    # Test helper that logs in using UID and stubs current_user
-    log_in_as(user)
+    request_log_in(user)
   end
 
   it "follows another user" do

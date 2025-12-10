@@ -1,12 +1,12 @@
 require "rails_helper"
 
 RSpec.describe FollowsController, type: :controller do
-  let(:user)        { create(:user) }
-  let(:other_user)  { create(:user) }
+  let(:user)        { create(:user, password: "password123", password_confirmation: "password123") }
+  let(:other_user)  { create(:user, password: "password123", password_confirmation: "password123") }
 
   before do
-    # Your app uses session for login, NOT Devise
-    session[:user_id] = user.uid
+    # Controller authentication uses user.id, not UID
+    session[:user_id] = user.id
   end
 
   describe "POST #create" do
