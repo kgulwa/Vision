@@ -16,6 +16,7 @@ class Pin < ApplicationRecord
   has_many :tagged_users, through: :pin_tags, source: :tagged_user
 
   has_one_attached :file #allows both images and videos
+  has_one_attached :thumbnail #custom video thumbnail
 
   
   def image
@@ -25,6 +26,10 @@ class Pin < ApplicationRecord
   def video
     file if file&.video?
   end
+
+  def display_thumbnail
+    thumbnail if thumbnail.attached?
+  end 
 
   validates :title, presence: true
   validate :acceptable_file
