@@ -22,15 +22,20 @@
 
             <% if pin.file.attached? %>
 
-              <% if pin.file.content_type.start_with?("video") %>
-                <!-- VIDEO THUMBNAIL -->
-                <video class="w-full h-auto rounded-xl" muted playsinline>
-                  <source src="<%= url_for(pin.file) %>" type="<%= pin.file.content_type %>">
-                </video>
+              <% if pin.file.video? %>
+                <!-- ⭐ VIDEO: Show thumbnail if available -->
+                <% if pin.thumbnail.attached? %>
+                  <%= image_tag pin.thumbnail, class: "w-full h-auto rounded-xl object-cover" %>
+                <% else %>
+                  <!-- No thumbnail → show video preview (muted, no controls) -->
+                  <video class="w-full h-auto rounded-xl" muted playsinline preload="metadata">
+                    <source src="<%= url_for(pin.file) %>" type="<%= pin.file.content_type %>">
+                  </video>
+                <% end %>
 
-              <% elsif pin.file.content_type.start_with?("image") %>
+              <% elsif pin.file.image? %>
                 <!-- IMAGE -->
-                <%= image_tag pin.file, class: "w-full h-auto rounded-xl" %>
+                <%= image_tag pin.file, class: "w-full h-auto rounded-xl object-cover" %>
 
               <% else %>
                 <!-- FALLBACK -->
@@ -52,9 +57,8 @@
               </div>
             <% end %>
 
-            <!--  HOVER OVERLAY -->
+            <!-- HOVER OVERLAY -->
             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-
               <div class="flex space-x-6 text-white font-semibold text-lg">
                 <div class="flex items-center space-x-1">
                   <svg class="w-6 h-6" fill="white" viewBox="0 0 24 24">
@@ -76,7 +80,6 @@
                   <span><%= pin.comments.count %></span>
                 </div>
               </div>
-
             </div>
             <!-- END OVERLAY -->
 
