@@ -12,23 +12,31 @@
 
   <!-- Title -->
   <div class="mb-4">
-    <%= form.label :title, style: "display: block;" %>
+    <%= form.label :title, class: "font-semibold" %>
     <%= form.text_field :title, class: "w-full border p-2 rounded" %>
   </div>
 
   <!-- Description -->
   <div class="mb-4">
-    <%= form.label :description, style: "display: block;" %>
+    <%= form.label :description, class: "font-semibold" %>
     <%= form.text_area :description, class: "w-full border p-2 rounded" %>
   </div>
 
-  <!-- Image -->
+  <!-- File Upload (Image or Video) -->
   <div class="mb-4">
-    <%= form.label :image %>
-    <%= form.file_field :image, class: "w-full" %>
+    <%= form.label :file, "Upload Image or Video", class: "font-semibold block mb-1" %>
+    <%= form.file_field :file, accept: "image/*,video/*", class: "w-full" %>
   </div>
 
-  <!--  TAG PEOPLE  -->
+  <!-- Thumbnail Upload  -->
+  <% if pin.file.attached? && pin.file.video? %>
+    <div class="mb-4">
+      <%= form.label :thumbnail, "Choose Thumbnail (Image)", class: "font-semibold block mb-1" %>
+      <%= form.file_field :thumbnail, accept: "image/*", class: "w-full" %>
+    </div>
+  <% end %>
+
+  <!-- TAG PEOPLE -->
   <div data-controller="tag-people" class="mb-6">
     <label class="block mb-2 font-semibold">Tag People</label>
 
