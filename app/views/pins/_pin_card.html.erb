@@ -1,7 +1,8 @@
 <div class="break-inside-avoid mb-4 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition bg-white">
   <%= link_to pin_path(pin), class: "block relative group" do %>
-    <% if pin.image.attached? %>
-      <%= image_tag url_for(pin.image), class: "w-full h-auto object-cover rounded-t-xl" %>
+
+    <% if pin.file&.attached? %>
+      <%= image_tag url_for(pin.file), class: "w-full h-auto object-cover rounded-t-xl" %>
     <% else %>
       <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
         <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -10,7 +11,8 @@
         </svg>
       </div>
     <% end %>
-    <!--  Hover overlay: likes + comments + reposts -->
+
+    <!-- Hover overlay: likes + comments + reposts -->
     <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                 transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
       <span>❤️ <%= pin.likes.count %></span>
@@ -18,20 +20,25 @@
       <span>🔁 <%= pin.reposts.count %></span>
     </div>
   <% end %>
+
   <div class="p-4">
     <h3 class="font-semibold text-gray-800 mb-1"><%= pin.title %></h3>
+
     <p class="text-gray-500 text-xs mb-2">
       Posted by
       <%= link_to user_path(pin.user), class: "font-medium text-gray-800 hover:underline" do %>
         <%= pin.user&.username || "Deleted User" %>
       <% end %>
+
       <span id="explore_follower_count_<%= pin.user.uid.delete('-') %>" class="text-gray-500 text-xs ml-1">
         (<%= pin.user.followers.count %>)
       </span>
+
       <% if logged_in? && current_user != pin.user %>
         <%= render "users/follow_button", user: pin.user, page: "explore" %>
       <% end %>
     </p>
+
     <% if current_user == pin.user %>
       <div class="flex space-x-2 mb-2">
         <%= link_to "Edit", edit_pin_path(pin), class: "px-2 py-1 bg-blue-100 text-blue-600 rounded text-sm" %>
@@ -40,6 +47,7 @@
               class: "px-2 py-1 bg-red-100 text-red-600 rounded text-sm" %>
       </div>
     <% end %>
+
     <div class="flex items-center space-x-4 text-sm text-gray-600">
       <span>❤️ <%= pin.likes.count %></span>
       <span>💬 <%= pin.comments.count %></span>

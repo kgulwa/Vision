@@ -3,12 +3,14 @@ FactoryBot.define do
     title       { "Test Pin" }
     description { "Test description" }
 
-    # Associate user properly (lets tests override user)
+    # Associate a user unless tests override user_uid manually
     association :user, factory: :user
 
-    # Ensure user_uid matches the associated user
+    # Ensure user_uid matches associated user unless already set by test
     after(:build) do |pin|
-      pin.user_uid = pin.user.uid
+      # If test provides pin.user_uid explicitly, do NOT override it
+      # If pin.user exists, assign its UID
+      pin.user_uid ||= pin.user&.uid
     end
 
     trait :with_image do
