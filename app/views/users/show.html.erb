@@ -18,12 +18,12 @@
         <h1 class="text-3xl font-bold text-gray-900"><%= @user.username %></h1>
         <!-- FOLLOW SECTION -->
         <p class="text-gray-600">
-          <span id="follower_count_<%= sanitized_uid %>">
+          <span id="profile_follower_count_<%= sanitized_uid %>">
             <%= @user.followers.count %>
           </span> followers
         </p>
         <% if logged_in? && current_user != @user %>
-          <%= render "users/follow_button", user: @user %>
+          <%= render "users/follow_button", user: @user, page: "profile" %>
         <% end %>
       </div>
     </div>

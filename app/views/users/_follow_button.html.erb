@@ -1,5 +1,6 @@
 <% sanitized_uid = user.uid.delete("-") %>
-<turbo-frame id="follow_button_<%= sanitized_uid %>">
+<% page_id = defined?(page) ? page : "profile" %>
+<turbo-frame id="<%= page_id %>_follow_button_<%= sanitized_uid %>">
   <% if current_user.following?(user) %>
     <%= button_to user_follow_path(user.uid),
           method: :delete,

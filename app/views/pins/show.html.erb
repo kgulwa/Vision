@@ -1,28 +1,21 @@
 <% sanitized_uid = @pin.user.uid.gsub("-", "") %>
-
 <div class="max-w-6xl mx-auto">
   <div class="bg-white rounded-xl shadow-lg overflow-hidden">
     <div class="grid md:grid-cols-2 gap-0">
-
       <!-- LEFT SIDE MEDIA -->
       <div class="bg-gray-900">
-
         <% if @pin.file.attached? %>
-
           <% if @pin.file.content_type.start_with?("video") %>
             <video controls class="w-full h-full object-cover">
               <source src="<%= url_for(@pin.file) %>" type="<%= @pin.file.content_type %>">
             </video>
-
           <% elsif @pin.file.content_type.start_with?("image") %>
             <%= image_tag @pin.file, class: "w-full h-full object-cover" %>
-
           <% else %>
             <div class="w-full h-96 bg-gray-700 flex items-center justify-center">
               <p class="text-white">Unsupported file</p>
             </div>
           <% end %>
-
         <% else %>
           <div class="w-full h-96 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
             <svg class="w-32 h-32 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,35 +24,31 @@
             </svg>
           </div>
         <% end %>
-
       </div>
-
       <!-- RIGHT SIDE CONTENT -->
       <div class="p-6 flex flex-col">
-
         <!-- PIN OWNER -->
         <div class="flex items-center justify-between mb-6">
           <%= link_to user_path(@pin.user),
               data: { turbo_action: "replace" },
               class: "flex items-center space-x-3 hover:bg-gray-50 rounded-lg p-2 -m-2" do %>
-
             <%= user_avatar(@pin.user, size: 48) %>
-
             <div>
               <div class="font-semibold text-gray-900"><%= @pin.user.username %></div>
-              <div class="text-sm text-gray-500"><%= @pin.user.followers.count %> followers</div>
+              <div class="text-sm text-gray-500">
+                <span id="profile_follower_count_<%= sanitized_uid %>">
+                  <%= @pin.user.followers.count %>
+                </span> followers
+              </div>
             </div>
           <% end %>
-
           <% if logged_in? %>
             <% if @pin.user == current_user %>
-
               <div class="flex space-x-2">
                 <%= link_to edit_pin_path(@pin),
                     class: "px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg" do %>
                   Edit
                 <% end %>
-
                 <%= button_to pin_path(@pin),
                     method: :delete,
                     data: { turbo_confirm: "Are you sure?" },
@@ -67,15 +56,13 @@
                   Delete
                 <% end %>
               </div>
-
             <% else %>
-              <div id="follow_button_<%= sanitized_uid %>">
-                <%= render "users/follow_button", user: @pin.user %>
+              <div id="profile_follow_button_<%= sanitized_uid %>">
+                <%= render "users/follow_button", user: @pin.user, page: "profile" %>
               </div>
             <% end %>
           <% end %>
         </div>
-
         <!-- TITLE + DESCRIPTION -->
         <div class="mb-6">
           <h1 class="text-3xl font-bold text-gray-900 mb-3"><%= @pin.title %></h1>
@@ -83,11 +70,9 @@
             <p class="text-gray-600"><%= render_with_mentions(@pin.description) %></p>
           <% end %>
         </div>
-
         <!-- LIKE / REPOST / SAVE -->
         <% if logged_in? %>
           <div class="flex items-center space-x-4 mb-6 pb-6 border-b">
-
             <!-- ⭐⭐⭐ LIKE (Turbo Frame) ⭐⭐⭐ -->
             <turbo-frame id="like_button_<%= @pin.id %>">
               <% if current_user.liked?(@pin) %>
@@ -106,7 +91,6 @@
                 <% end %>
               <% end %>
             </turbo-frame>
-
             <!-- ⭐⭐⭐ REPOST (Turbo Frame) ⭐⭐⭐ -->
             <turbo-frame id="repost_button_<%= @pin.id %>">
               <% if current_user.reposted?(@pin) %>
@@ -126,7 +110,6 @@
               <% end %>
             </turbo-frame>
             <!-- ⭐ END REPOST TURBO FRAME -->
-
             <!-- SAVE MENU -->
             <div class="relative inline-block text-left">
               <button
@@ -134,14 +117,11 @@
                 class="flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50">
                 📌 <span>Save</span>
               </button>
-
               <div
                 id="save-menu"
                 class="hidden absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg z-50">
-
                 <div class="p-2">
                   <p class="text-sm font-semibold mb-2">Save to collection</p>
-
                   <% if current_user.collections.any? %>
                     <% current_user.collections.each do |collection| %>
                       <%= button_to pin_saved_pins_path(@pin, collection_id: collection.id),
@@ -152,9 +132,7 @@
                     <% end %>
                   <% end %>
                 </div>
-
                 <hr>
-
                 <div class="p-2">
                   <%= form_with url: collections_path, method: :post, local: true do |f| %>
                     <%= hidden_field_tag :pin_id, @pin.id %>
@@ -167,26 +145,19 @@
                 </div>
               </div>
             </div>
-
           </div>
         <% end %>
-
         <!-- COMMENTS -->
         <div class="flex-1 overflow-y-auto max-h-[400px]">
-
           <h3 class="font-semibold mb-4">
             Comments (<%= @pin.comments.where(parent_id: nil).count %>)
           </h3>
-
           <% if logged_in? %>
             <%= form_with model: [@pin, Comment.new], class: "mb-6" do |f| %>
               <div class="flex space-x-3">
-
                 <%= user_avatar(current_user, size: 40) %>
-
                 <div class="flex-1">
                   <div class="relative w-full" data-controller="mentions">
-
                     <%= f.text_area :content,
                         rows: 3,
                         placeholder: "Add a comment...",
@@ -195,43 +166,31 @@
                           action: "input->mentions#search",
                           mentions_target: "input"
                         } %>
-
                     <div data-mentions-target="dropdown"
                          class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50"></div>
-
                   </div>
-
                   <%= f.submit "Comment",
                       class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded" %>
                 </div>
-
               </div>
             <% end %>
           <% end %>
-
           <% @pin.comments.where(parent_id: nil).order(created_at: :asc).each do |comment| %>
             <%= render partial: "pins/comment", locals: { comment: comment } %>
           <% end %>
-
         </div>
-
       </div>
     </div>
   </div>
 </div>
-
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const commentId = new URLSearchParams(window.location.search).get("comment_id");
     if (!commentId) return;
-
     const el = document.getElementById(`comment-${commentId}`);
     if (!el) return;
-
     el.scrollIntoView({ behavior: "smooth", block: "center" });
-
     el.classList.add("ring-4", "ring-yellow-400", "transition");
-
     setTimeout(() => {
       el.classList.remove("ring-4", "ring-yellow-400");
     }, 2000);

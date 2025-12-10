@@ -25,11 +25,11 @@
       <%= link_to user_path(pin.user), class: "font-medium text-gray-800 hover:underline" do %>
         <%= pin.user&.username || "Deleted User" %>
       <% end %>
-      <span id="follower_count_<%= pin.user.uid.delete('-') %>" class="text-gray-500 text-xs ml-1">
+      <span id="explore_follower_count_<%= pin.user.uid.delete('-') %>" class="text-gray-500 text-xs ml-1">
         (<%= pin.user.followers.count %>)
       </span>
       <% if logged_in? && current_user != pin.user %>
-        <%= render "users/follow_button", user: pin.user %>
+        <%= render "users/follow_button", user: pin.user, page: "explore" %>
       <% end %>
     </p>
     <% if current_user == pin.user %>

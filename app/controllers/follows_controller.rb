@@ -3,8 +3,7 @@ class FollowsController < ApplicationController
   before_action :set_user
   def create
     current_user.follow(@user)
-    @user.reload # <-- REFRESH THE FOLLOWERS COUNT
-    # Send notification
+    @user.reload
     if @user.id != current_user.id
       Notification.create!(
         user: @user,
@@ -18,12 +17,21 @@ class FollowsController < ApplicationController
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.replace(
-            "follow_button_#{@user.uid.delete('-')}",
+            "profile_follow_button_#{@user.uid.delete('-')}",
             partial: "users/follow_button",
-            locals: { user: @user }
+            locals: { user: @user, page: "profile" }
+          ),
+          turbo_stream.replace(
+            "explore_follow_button_#{@user.uid.delete('-')}",
+            partial: "users/follow_button",
+            locals: { user: @user, page: "explore" }
           ),
           turbo_stream.update(
-            "follower_count_#{@user.uid.delete('-')}",
+            "profile_follower_count_#{@user.uid.delete('-')}",
+            @user.followers.count
+          ),
+          turbo_stream.update(
+            "explore_follower_count_#{@user.uid.delete('-')}",
             @user.followers.count
           )
         ]
@@ -33,17 +41,26 @@ class FollowsController < ApplicationController
   end
   def destroy
     current_user.unfollow(@user)
-    @user.reload # <-- REFRESH THE FOLLOWERS COUNT
+    @user.reload
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.replace(
-            "follow_button_#{@user.uid.delete('-')}",
+            "profile_follow_button_#{@user.uid.delete('-')}",
             partial: "users/follow_button",
-            locals: { user: @user }
+            locals: { user: @user, page: "profile" }
+          ),
+          turbo_stream.replace(
+            "explore_follow_button_#{@user.uid.delete('-')}",
+            partial: "users/follow_button",
+            locals: { user: @user, page: "explore" }
           ),
           turbo_stream.update(
-            "follower_count_#{@user.uid.delete('-')}",
+            "profile_follower_count_#{@user.uid.delete('-')}",
+            @user.followers.count
+          ),
+          turbo_stream.update(
+            "explore_follower_count_#{@user.uid.delete('-')}",
             @user.followers.count
           )
         ]
