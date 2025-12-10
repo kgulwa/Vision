@@ -79,7 +79,7 @@ class FollowsController < ApplicationController
   private
 
   def set_user
-    # RSpec passes numeric ID, not UID
-    @user = User.find(params[:user_id])
+    
+    @user = User.find_by!(uid: params[:user_id])
   end
 end
