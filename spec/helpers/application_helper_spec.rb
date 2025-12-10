@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationHelper, type: :helper do
+
+  # --------------------------
+  # LOGGED IN?
+  # --------------------------
   describe '#logged_in?' do
     it 'returns true when session has a user_id' do
       session[:user_id] = 1
@@ -13,6 +17,9 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
+  # --------------------------
+  # CURRENT USER
+  # --------------------------
   describe '#current_user' do
     let(:user) do
       User.create!(
@@ -41,7 +48,91 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
-  # 🔥 NEW: unread notifications counter tests
+  # --------------------------
+  # USER AVATAR
+  # --------------------------
+  describe '#user_avatar' do
+    let(:user) { create(:user) }
+    let(:avatar_path) { Rails.root.join("spec/fixtures/files/test.png") }
+
+    context "when user has no avatar" do
+      it "returns default avatar image tag" do
+        html = helper.user_avatar(user)
+        expect(html).to include("default-avatar")  # fingerprint safe
+        expect(html).to include("img")
+      end
+    end
+
+    context "when user has an avatar" do
+      before do
+        user.avatar.attach(
+          io: File.open(avatar_path),
+          filename: "test.png",
+          content_type: "image/png"
+        )
+      end
+
+      it "returns an HTML img tag with a variant URL" do
+        html = helper.user_avatar(user)
+
+        expect(html).to include("img")
+        expect(html).to include("width=")
+        expect(html).to include("height=")
+      end
+    end
+
+    context "when variant processing fails" do
+      before do
+        allow(user).to receive_message_chain(:avatar, :attached?).and_return(true)
+        allow(user.avatar).to receive(:variant).and_raise(StandardError)
+      end
+
+      it "falls back to default avatar" do
+        html = helper.user_avatar(user)
+        expect(html).to include("default-avatar")
+      end
+    end
+  end
+
+  # --------------------------
+  # MENTIONS
+  # --------------------------
+  describe '#render_with_mentions' do
+    let!(:user) do
+      User.create!(
+        username: 'konke',
+        email: 'k@example.com',
+        password: 'password',
+        password_confirmation: 'password'
+      )
+    end
+
+    it "returns empty string for blank text" do
+      expect(helper.render_with_mentions(nil)).to eq("")
+      expect(helper.render_with_mentions("")).to eq("")
+    end
+
+    it "returns original text if no mention exists" do
+      expect(helper.render_with_mentions("hello world")).to eq("hello world")
+    end
+
+    it "does not convert mention if user does not exist" do
+      expect(helper.render_with_mentions("Hello @ghost"))
+        .to eq("Hello @ghost")
+    end
+
+    it "converts valid mention to link" do
+      html = helper.render_with_mentions("Hi @konke")
+
+      expect(html).to include("href=\"/users/#{user.uid}\"")
+      expect(html).to include("@konke")
+      expect(html).to include("text-blue-600")
+    end
+  end
+
+  # --------------------------
+  # UNREAD NOTIFICATIONS COUNT
+  # --------------------------
   describe "#unread_notifications_count" do
     let(:user) do
       User.create!(
