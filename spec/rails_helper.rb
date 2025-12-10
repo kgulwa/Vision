@@ -2,12 +2,12 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 
-# Prevent database truncation if the environment is production
+
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
 require 'rspec/rails'
 
-# Require support files
+
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 
 # Ensure the test database schema is up to date
@@ -26,6 +26,11 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
 
   config.include FactoryBot::Syntax::Methods
+
+  
+  config.include AuthHelpers, type: :controller
+  config.include AuthHelpers, type: :request
+  config.include AuthHelpers, type: :system
 end
 
 # Configure Shoulda Matchers for RSpec + Rails
@@ -35,7 +40,6 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
-
 
 require 'capybara/rails'
 

@@ -7,12 +7,10 @@ RSpec.describe PinTag, type: :model do
 
   describe "associations" do
     it { should belong_to(:pin) }
-
     it do
       should belong_to(:tagged_user)
         .class_name("User")
     end
-
     it do
       should belong_to(:tagged_by)
         .class_name("User")
@@ -27,7 +25,6 @@ RSpec.describe PinTag, type: :model do
         tagged_user: tagged_user,
         tagged_by: tagged_by
       )
-
       expect(pin_tag).to be_valid
     end
 
@@ -37,7 +34,6 @@ RSpec.describe PinTag, type: :model do
         tagged_user: tagged_user,
         tagged_by: nil
       )
-
       expect(pin_tag).to be_valid
     end
 
@@ -47,7 +43,6 @@ RSpec.describe PinTag, type: :model do
         tagged_user: tagged_user,
         tagged_by: tagged_by
       )
-
       expect(pin_tag).to_not be_valid
       expect(pin_tag.errors[:pin]).to include("must exist")
     end
@@ -58,7 +53,6 @@ RSpec.describe PinTag, type: :model do
         tagged_user: nil,
         tagged_by: tagged_by
       )
-
       expect(pin_tag).to_not be_valid
       expect(pin_tag.errors[:tagged_user]).to include("must exist")
     end

@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     resource :repost, only: [:create, :destroy]
     resources :saved_pins, only: [:create, :destroy]
   end
-  # USERS
+  
   resources :users do
     # This automatically creates BOTH:
     # POST   /users/:user_id/follow   → follows#create

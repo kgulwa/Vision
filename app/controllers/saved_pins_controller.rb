@@ -17,8 +17,8 @@ class SavedPinsController < ApplicationController
       user_id: current_user.id
     )
 
-    # 🔔 Notify pin owner their post was saved
-    # FIXED: @pin.user_id → @pin.user
+    #  Notify pin owner their post was saved
+    
     if @pin.user != current_user
       Notification.create!(
         user: @pin.user,

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe CommentsController, type: :request do
   let(:user) { create(:user) }
-  let(:pin)  { create(:pin, user: user) }
+  let(:pin)  { create(:pin, user_uid: user.uid) }
 
   before do
     post login_path, params: { username: user.username, password: "password" }
@@ -18,7 +18,6 @@ RSpec.describe CommentsController, type: :request do
 
   it "deletes a comment" do
     comment = create(:comment, pin: pin, user: user)
-
     expect {
       delete pin_comment_path(pin, comment)
     }.to change { Comment.count }.by(-1)

@@ -155,7 +155,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_07_210828) do
   add_foreign_key "pin_tags", "pins"
   add_foreign_key "pin_tags", "users", column: "tagged_by_id"
   add_foreign_key "pin_tags", "users", column: "tagged_user_id"
-  add_foreign_key "pins", "users", column: "user_uid"
   add_foreign_key "pins", "users", column: "user_uid", primary_key: "uid"
   add_foreign_key "reposts", "pins"
   add_foreign_key "reposts", "users"

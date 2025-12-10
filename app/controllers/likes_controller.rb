@@ -6,7 +6,7 @@ class LikesController < ApplicationController
     current_user.like(@pin)
 
     # Notify pin owner (unless liking own pin)
-    if @pin.user.uid != current_user.uid   # 🔥 FIXED: user_uid instead of user_id
+    if @pin.user.uid != current_user.uid   
       Notification.create!(
         user: @pin.user,
         actor: current_user,

@@ -9,13 +9,12 @@ class CommentsController < ApplicationController
 
   def create
     @comment = @pin.comments.build(comment_params)
-    @comment.user_id = current_user.id
+    @comment.user = current_user
     @comment.parent_id = params[:parent_id] if params[:parent_id]
 
     if @comment.save
-
-      #  Notify pin owner (unless commenting own pin)
-      if @pin.user_id != current_user.id
+      # Notify pin owner (unless commenting own pin)
+      if @pin.user_uid != current_user.uid
         Notification.create!(
           user: @pin.user,
           actor: current_user,
@@ -25,11 +24,10 @@ class CommentsController < ApplicationController
         )
       end
 
-      #  Notify parent owner if replying
+      # Notify parent owner if replying
       if @comment.parent_id.present?
         parent_user = Comment.find(@comment.parent_id).user
-
-        if parent_user.id != current_user.id && parent_user.id != @pin.user_id
+        if parent_user.uid != current_user.uid && parent_user.uid != @pin.user_uid
           Notification.create!(
             user: parent_user,
             actor: current_user,
@@ -40,11 +38,10 @@ class CommentsController < ApplicationController
         end
       end
 
-      #  Notify ALL tagged users (except actor + owner)
+      # Notify ALL tagged users (except actor + owner)
       @pin.tagged_users.each do |tagged|
         next if tagged.id == current_user.id
-        next if tagged.id == @pin.user_id
-
+        next if tagged.uid == @pin.user_uid
         Notification.create!(
           user: tagged,
           actor: current_user,
@@ -71,7 +68,7 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    @comment.destroy if @comment.user_id == current_user.id
+    @comment.destroy if @comment.user == current_user
     redirect_to pin_path(@pin.id)
   end
 

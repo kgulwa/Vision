@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Like, type: :model do
   let(:user) { create(:user) }
-  let(:pin)  { create(:pin, user: user) }
+  let(:pin)  { create(:pin, user_uid: user.uid) }
 
   it "is valid with user and pin" do
     like = Like.new(user: user, pin: pin)

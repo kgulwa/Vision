@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # ⭐⭐ IMPORTANT FIX: the `and return` stops the action from continuing
+  
   def require_login
     unless logged_in?
       redirect_to login_path, alert: "You must be logged in to access this page." and return

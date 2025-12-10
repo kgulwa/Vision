@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "LikesController", type: :request do
   let(:user) { create(:user) }
-  let(:pin)  { create(:pin, user: user) }
+  let(:pin)  { create(:pin, user_uid: user.uid) }
 
   before do
     post login_path, params: {
@@ -17,13 +17,11 @@ RSpec.describe "LikesController", type: :request do
       expect {
         post pin_like_path(pin)
       }.to change(Like, :count).by(1)
-
       expect(response).to redirect_to(pin_path(pin))
     end
 
     it "does not duplicate likes" do
       post pin_like_path(pin)
-
       expect {
         post pin_like_path(pin)
       }.not_to change(Like, :count)
@@ -33,11 +31,9 @@ RSpec.describe "LikesController", type: :request do
   describe "DELETE /pins/:pin_id/like" do
     it "unlikes a pin" do
       Like.create!(pin: pin, user: user)
-
       expect {
         delete pin_like_path(pin)
       }.to change(Like, :count).by(-1)
-
       expect(response).to redirect_to(pin_path(pin))
     end
   end

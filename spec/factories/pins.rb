@@ -1,16 +1,21 @@
 FactoryBot.define do
   factory :pin do
-    title { "Test Pin" }
+    title       { "Test Pin" }
     description { "Test description" }
+    user_uid    { create(:user).uid }
 
-    association :user  
+    trait :with_image do
+      after(:build) do |pin|
+        file_path = Rails.root.join("spec", "fixtures", "files", "test.png")
 
-    after(:build) do |pin|
-      pin.image.attach(
-        io: File.open(Rails.root.join("spec", "fixtures", "files", "test.png")),
-        filename: "test.png",
-        content_type: "image/png"
-      )
+        if File.exist?(file_path)
+          pin.file.attach(
+            io: File.open(file_path),
+            filename: "test.png",
+            content_type: "image/png"
+          )
+        end
+      end
     end
   end
 end

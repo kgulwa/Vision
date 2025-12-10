@@ -26,7 +26,7 @@ class PinsController < ApplicationController
   end
 
   def create
-    Rails.logger.info "⭐ PARAMS: #{params.inspect}"
+    Rails.logger.info " PARAMS: #{params.inspect}"
 
     # current_user.pins.build assigns user_uid automatically
     @pin = current_user.pins.build(pin_params)
@@ -91,9 +91,7 @@ class PinsController < ApplicationController
     redirect_to pins_path, alert: "You can only edit your own pins." unless @pin.user == current_user
   end
 
-  # ==========================================
-  # ✅ FIX — TAG USERS BY UID, NOT BY ID
-  # ==========================================
+ 
   def create_pin_tags(pin)
     return unless params[:pin][:tagged_user_ids].present?
 
@@ -104,7 +102,7 @@ class PinsController < ApplicationController
       .reject(&:blank?)
       .each do |user_uid|
 
-      # 🔥 Find user using UID instead of ID
+      # Find user using UID instead of ID
       tagged_user = User.find_by(uid: user_uid)
       next unless tagged_user   # Skip invalid UIDs to avoid crashes
 
@@ -114,7 +112,7 @@ class PinsController < ApplicationController
         tagged_by_id: current_user.id
       )
 
-      # 🔔 Notify tagged user
+      #  Notify tagged user
       Notification.create!(
         user_id: tagged_user.id,
         actor_id: current_user.id,
