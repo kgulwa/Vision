@@ -73,7 +73,7 @@
         <!-- LIKE / REPOST / SAVE -->
         <% if logged_in? %>
           <div class="flex items-center space-x-4 mb-6 pb-6 border-b">
-            <!-- ⭐⭐⭐ LIKE (Turbo Frame) ⭐⭐⭐ -->
+            <!--LIKE (Turbo Frame) -->
             <turbo-frame id="like_button_<%= @pin.id %>">
               <% if current_user.liked?(@pin) %>
                 <%= button_to pin_like_path(@pin),
@@ -91,7 +91,7 @@
                 <% end %>
               <% end %>
             </turbo-frame>
-            <!-- ⭐⭐⭐ REPOST (Turbo Frame) ⭐⭐⭐ -->
+            <!--  REPOST (Turbo Frame)  -->
             <turbo-frame id="repost_button_<%= @pin.id %>">
               <% if current_user.reposted?(@pin) %>
                 <%= button_to pin_repost_path(@pin),
@@ -109,7 +109,7 @@
                 <% end %>
               <% end %>
             </turbo-frame>
-            <!-- ⭐ END REPOST TURBO FRAME -->
+            <!--  END REPOST TURBO FRAME -->
             <!-- SAVE MENU -->
             <div class="relative inline-block text-left">
               <button
