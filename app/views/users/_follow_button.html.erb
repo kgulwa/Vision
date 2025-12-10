@@ -1,13 +1,18 @@
-<% if current_user.following?(user) %>
-  <%= button_to "Unfollow",
-        user_follow_path(user),
-        method: :delete,
-        form: { data: { turbo_stream: true } },
-        class: "px-4 py-2 bg-gray-200 text-gray-800 rounded-lg" %>
-<% else %>
-  <%= button_to "Follow",
-        user_follow_path(user),
-        method: :post,
-        form: { data: { turbo_stream: true } },
-        class: "px-4 py-2 bg-blue-600 text-white rounded-lg" %>
-<% end %>
+<% sanitized_uid = user.uid.delete("-") %>
+<turbo-frame id="follow_button_<%= sanitized_uid %>">
+  <% if current_user.following?(user) %>
+    <%= button_to user_follow_path(user.uid),
+          method: :delete,
+          data: { turbo_stream: true },
+          class: "px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50" do %>
+      Following
+    <% end %>
+  <% else %>
+    <%= button_to user_follow_path(user.uid),
+          method: :post,
+          data: { turbo_stream: true },
+          class: "px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700" do %>
+      Follow
+    <% end %>
+  <% end %>
+</turbo-frame>

@@ -3,6 +3,8 @@ class User < ApplicationRecord
   has_one_attached :avatar
 
   # VALIDATIONS
+
+  validates :uid, uniqueness: true
   validates :username,
             presence: true,
             uniqueness: { case_sensitive: true },

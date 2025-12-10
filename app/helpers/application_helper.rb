@@ -67,7 +67,7 @@ module ApplicationHelper
   def unread_notifications_count
     return 0 unless current_user
 
-    # 🔥 FIXED — Use user_id, NOT user_uid
+    #  FIXED — Use user_id, NOT user_uid
     current_user.notifications.where(read: false).count
   end
 end
