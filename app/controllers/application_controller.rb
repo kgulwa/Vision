@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # Prevent sensitive views from being cached
+  
   def prevent_view_caching
     response.headers["Cache-Control"] = "no-store" if logged_in?
   end

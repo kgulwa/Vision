@@ -23,7 +23,7 @@ RSpec.describe "SearchController", type: :request do
 
       expect(response).to have_http_status(:ok)
 
-      # Check HTML content instead of assigns(:users)
+      
       expect(response.body).to include("jane")
       expect(response.body).not_to include("john")
       expect(response.body).not_to include("alex")

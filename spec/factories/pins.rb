@@ -2,7 +2,14 @@ FactoryBot.define do
   factory :pin do
     title       { "Test Pin" }
     description { "Test description" }
-    user_uid    { create(:user).uid }
+
+    # Associate user properly (lets tests override user)
+    association :user, factory: :user
+
+    # Ensure user_uid matches the associated user
+    after(:build) do |pin|
+      pin.user_uid = pin.user.uid
+    end
 
     trait :with_image do
       after(:build) do |pin|
