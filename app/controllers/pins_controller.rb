@@ -78,12 +78,13 @@ class PinsController < ApplicationController
     redirect_to pins_path, alert: "Pin not found" unless @pin
   end
 
-  # Supports images + videos
+  # Supports images + videos + custom video thumbnail
   def pin_params
     params.require(:pin).permit(
       :title,
       :description,
-      :file,          # ✔️ unified uploader
+      :file,          # unified uploader
+      :thumbnail   # custom thumbnail
     )
   end
 
