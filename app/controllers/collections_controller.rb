@@ -20,7 +20,6 @@ class CollectionsController < ApplicationController
     @saved_pins = @collection.saved_pins.includes(:pin)
   end
 
-  # NEW — EDIT COLLECTION NAME
   def edit
   end
 
@@ -32,18 +31,16 @@ class CollectionsController < ApplicationController
     end
   end
 
-  # Saved page
   def saved
     @collections = current_user.collections.includes(:saved_pins, :pins)
   end
 
-  # DELETE ENTIRE COLLECTION
   def destroy
     @collection.destroy
     redirect_to saved_path, notice: "Collection deleted."
   end
 
-  # NEW — REMOVE PIN FROM COLLECTION
+  # FIXED — REMOVE PIN FROM COLLECTION
   def remove_pin
     saved_pin = @collection.saved_pins.find_by(id: params[:saved_pin_id])
     saved_pin&.destroy
@@ -53,8 +50,11 @@ class CollectionsController < ApplicationController
 
   private
 
+  # UPDATED — SUPPORT both :id and :collection_id
   def set_collection
-    @collection = current_user.collections.find_by(id: params[:id])
+    collection_id = params[:id] || params[:collection_id]
+
+    @collection = current_user.collections.find_by(id: collection_id)
     redirect_to saved_path, alert: "Collection not found" unless @collection
   end
 end

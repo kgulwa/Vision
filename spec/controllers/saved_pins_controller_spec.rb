@@ -1,65 +1,108 @@
-class SavedPinsController < ApplicationController
-  before_action :require_login
-  before_action :set_pin
+require 'rails_helper'
 
-  def create
-    # Determine which collection to use
-    if params[:collection_id].present?
-      collection = current_user.collections.find_by(id: params[:collection_id])
+RSpec.describe SavedPinsController, type: :controller do
+  let(:user) { create(:user) }
+  let(:pin_owner) { create(:user) }
+  let(:pin) { create(:pin, user: pin_owner) }
+  let(:collection) { create(:collection, user: user) }
 
-      # If the given ID does not belong to the user, raise an error for clean test coverage
-      raise ActiveRecord::RecordInvalid.new(SavedPin.new), "Invalid collection" if collection.nil?
+  before do
+    allow(controller).to receive(:require_login).and_return(true)
+    allow(controller).to receive(:current_user).and_return(user)
+  end
 
-    elsif params[:new_collection_name].present?
-      collection = current_user.collections.create!(name: params[:new_collection_name])
+  describe "POST #create" do
+    context "when saving to an existing collection" do
+      it "creates a SavedPin and redirects (HTML)" do
+        post :create, params: { pin_id: pin.id, collection_id: collection.id }, format: :html
 
-    else
-      collection = current_user.collections.find_or_create_by!(name: "Default")
+        saved = SavedPin.last
+        expect(saved.user).to eq(user)
+        expect(saved.pin).to eq(pin)
+        expect(saved.collection).to eq(collection)
+
+        expect(response).to redirect_to(pin_path(pin.id))
+      end
     end
 
-    # Create or find the saved pin
-    saved = SavedPin.find_or_create_by!(
-      pin_id: @pin.id,
-      collection_id: collection.id,
-      user_id: current_user.id
-    )
+    context "when saving to a new collection" do
+      it "creates the collection and saves the pin" do
+        expect {
+          post :create, params: { pin_id: pin.id, new_collection_name: "New Stuff" }, format: :html
+        }.to change(Collection, :count).by(1)
 
-    # Notify pin owner if someone else saved it
-    if @pin.user != current_user
-      Notification.create!(
-        user: @pin.user,
-        actor: current_user,
-        action: "saved your post",
-        notifiable: @pin,
-        read: false
-      )
+        expect(Collection.last.name).to eq("New Stuff")
+        expect(response).to redirect_to(pin_path(pin.id))
+      end
     end
 
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to pin_path(@pin.id), notice: "Saved to #{collection.name}!" }
+    context "when no collection params are given" do
+      it "uses the Default collection" do
+        expect {
+          post :create, params: { pin_id: pin.id }, format: :html
+        }.to change(Collection, :count).by(1)
+
+        expect(Collection.last.name).to eq("Default")
+        expect(response).to redirect_to(pin_path(pin.id))
+      end
+    end
+
+    context "when user saves someone else's pin" do
+      it "creates a notification" do
+        expect {
+          post :create, params: { pin_id: pin.id }, format: :html
+        }.to change(Notification, :count).by(1)
+      end
+    end
+
+    context "when user saves their own pin" do
+      before { allow(controller).to receive(:current_user).and_return(pin_owner) }
+
+      it "does NOT create a notification" do
+        create(:collection, user: pin_owner)
+        expect {
+          post :create, params: { pin_id: pin.id }, format: :html
+        }.not_to change(Notification, :count)
+      end
+    end
+
+    context "turbo stream request" do
+      it "responds to turbo_stream without error" do
+        post :create, params: { pin_id: pin.id, collection_id: collection.id }, format: :turbo_stream
+
+        
+        expect(response).to have_http_status(:no_content)
+
+      end
     end
   end
 
-  def destroy
-    @saved_pin = SavedPin.find_by(id: params[:id])
+  describe "DELETE #destroy" do
+    context "when saved pin exists" do
+      it "deletes the saved pin and redirects" do
+        saved_pin = create(:saved_pin, user: user, pin: pin, collection: collection)
 
-    # If saved pin does not exist → redirect based on pin_id from params
-    if @saved_pin.nil?
-      return redirect_to pin_path(params[:pin_id]), notice: "Pin removed."
+        expect {
+          delete :destroy, params: { id: saved_pin.id, pin_id: pin.id }
+        }.to change(SavedPin, :count).by(-1)
+
+        expect(response).to redirect_to(pin_path(pin.id))
+      end
     end
 
-    pin = @saved_pin.pin
-    @saved_pin.destroy
-
-    redirect_to pin_path(pin.id), notice: "Pin removed."
+    context "when saved pin does NOT exist" do
+      it "raises an error when saved pin does not exist" do
+        expect {
+          delete :destroy, params: { id: 9999, pin_id: pin.id }
+        }.to raise_error(NoMethodError)
+      end
+    end
   end
 
-  private
-
-  def set_pin
-    # Accept id as string or integer
-    @pin = Pin.find_by(id: params[:pin_id])
-    redirect_to pins_path, alert: "Pin not found" unless @pin
+  describe "before_action :set_pin" do
+    it "redirects when pin does not exist" do
+      post :create, params: { pin_id: 9999 }
+      expect(response).to redirect_to(pins_path)
+    end
   end
 end
