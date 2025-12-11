@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_07_210828) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_11_074126) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -138,6 +138,18 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_07_210828) do
     t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
+  end
+
+  create_table "video_views", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "duration_seconds"
+    t.datetime "ended_at"
+    t.uuid "pin_id"
+    t.datetime "started_at"
+    t.datetime "updated_at", null: false
+    t.string "user_uid"
+    t.index ["pin_id"], name: "index_video_views_on_pin_id"
+    t.index ["user_uid"], name: "index_video_views_on_user_uid"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

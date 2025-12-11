@@ -13,6 +13,16 @@ class PinsController < ApplicationController
       return
     end
 
+    # VIDEO VIEW TRACKING 
+    if logged_in? && @pin.file&.video?
+      @video_view = VideoView.create!(
+        user_uid: current_user.uid,
+        pin_id: @pin.id,
+        started_at: Time.current
+      )
+    end
+    # END TRACKING
+
     @comments = @pin.comments
                     .includes(:user, :replies)
                     .select do |comment|
@@ -28,7 +38,6 @@ class PinsController < ApplicationController
   def create
     Rails.logger.info " PARAMS: #{params.inspect}"
 
-    # current_user.pins.build assigns user_uid automatically
     @pin = current_user.pins.build(pin_params)
 
     if @pin.save
@@ -78,13 +87,12 @@ class PinsController < ApplicationController
     redirect_to pins_path, alert: "Pin not found" unless @pin
   end
 
-  # Supports images + videos + custom video thumbnail
   def pin_params
     params.require(:pin).permit(
       :title,
       :description,
-      :file,          # unified uploader
-      :thumbnail   # custom thumbnail
+      :file,
+      :thumbnail
     )
   end
 
@@ -92,20 +100,17 @@ class PinsController < ApplicationController
     redirect_to pins_path, alert: "You can only edit your own pins." unless @pin.user == current_user
   end
 
- 
   def create_pin_tags(pin)
     return unless params[:pin][:tagged_user_ids].present?
 
-    # Remove old tags before adding new ones
     pin.pin_tags.destroy_all
 
     params[:pin][:tagged_user_ids]
       .reject(&:blank?)
       .each do |user_uid|
 
-      # Find user using UID instead of ID
       tagged_user = User.find_by(uid: user_uid)
-      next unless tagged_user   # Skip invalid UIDs to avoid crashes
+      next unless tagged_user
 
       PinTag.create!(
         pin: pin,
@@ -113,7 +118,6 @@ class PinsController < ApplicationController
         tagged_by_id: current_user.id
       )
 
-      #  Notify tagged user
       Notification.create!(
         user_id: tagged_user.id,
         actor_id: current_user.id,

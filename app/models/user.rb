@@ -116,6 +116,8 @@ class User < ApplicationRecord
            through: :pin_tags_as_tagged,
            source: :pin
 
+  has_many :video_views, foreign_key: :user_uid, primary_key: :uid
+
   # METHODS
   def following?(other_user)
     followings.exists?(id: other_user.id)

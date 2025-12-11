@@ -9,6 +9,7 @@ class Pin < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :reposts, dependent: :destroy
   has_many :saved_pins, dependent: :destroy
+  has_many :video_views, foreign_key: :pin_id, dependent: :destroy
 
   # TAGGING SYSTEM
   has_many :pin_tags, dependent: :destroy
