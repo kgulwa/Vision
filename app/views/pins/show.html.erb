@@ -130,10 +130,10 @@
           )
         </h3>
 
-        <!-- COMMENTS BLOCK INSIDE TURBO FRAME -->
-        <turbo-frame id="pin_comments_<%= @pin.id %>">
+        <!-- COMMENTS BLOCK — FIX: NO TURBO FRAME -->
+        <div id="pin_comments_<%= @pin.id %>">
           <%= render partial: "pins/comments", locals: { pin: @pin } %>
-        </turbo-frame>
+        </div>
 
       </div>
     </div>

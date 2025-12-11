@@ -1,39 +1,70 @@
-<div class="max-w-4xl mx-auto p-6">
-  <h1 class="text-3xl font-bold mb-6">Your Creator Insights</h1>
+<div class="max-w-5xl mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-8">Your Creator Insights</h1>
 
-  <div class="grid grid-cols-2 gap-4 mb-8">
-    <div class="p-4 bg-white shadow rounded-xl">
+  <!-- MAIN STATS -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+
+    <!-- TOTAL VIEWS -->
+    <div class="p-5 bg-white shadow rounded-xl border">
       <h3 class="text-sm text-gray-500">Total Views</h3>
-      <p class="text-2xl font-bold"><%= @total_views %></p>
+      <p class="text-3xl font-bold text-gray-900"><%= @total_views %></p>
     </div>
 
-    <div class="p-4 bg-white shadow rounded-xl">
+    <!-- TOTAL WATCH TIME -->
+    <div class="p-5 bg-white shadow rounded-xl border">
       <h3 class="text-sm text-gray-500">Total Screen Time</h3>
-      <p class="text-2xl font-bold"><%= (@total_screen_time / 60.0).round(1) %> minutes</p>
+      <p class="text-3xl font-bold text-gray-900">
+        <%= @total_screen_time_minutes %> minutes
+      </p>
     </div>
 
-    <div class="p-4 bg-white shadow rounded-xl">
+    <!-- AVERAGE WATCH TIME -->
+    <div class="p-5 bg-white shadow rounded-xl border">
       <h3 class="text-sm text-gray-500">Average Watch Time</h3>
-      <p class="text-2xl font-bold"><%= @average_watch_time %> sec</p>
+      <p class="text-3xl font-bold text-gray-900">
+        <%= @average_watch_time.to_i %> sec
+      </p>
     </div>
 
-    <div class="p-4 bg-white shadow rounded-xl">
+    <!-- NUMBER OF VIDEO PINS -->
+    <div class="p-5 bg-white shadow rounded-xl border">
       <h3 class="text-sm text-gray-500">Number of Video Pins</h3>
-      <p class="text-2xl font-bold"><%= @video_pins.count %></p>
+      <p class="text-3xl font-bold text-gray-900"><%= @video_pins.count %></p>
     </div>
   </div>
 
-  <h2 class="text-xl font-semibold mb-4">Your Videos</h2>
+  <!-- VIDEO LIST -->
+  <h2 class="text-2xl font-semibold mb-4">Your Videos</h2>
 
-  <div class="space-y-4">
+  <% if @video_pins.any? %>
     <% @video_pins.each do |pin| %>
-      <% pin_views = @views.where(pin_id: pin.id) %>
 
-      <div class="p-4 bg-white shadow rounded-xl">
-        <h3 class="font-semibold text-lg"><%= pin.title %></h3>
-        <p class="text-gray-600 text-sm"><%= pluralize(pin_views.count, "view") %></p>
-        <p class="text-gray-600 text-sm">Total watch time: <%= pin_views.sum(:duration_seconds) %> sec</p>
+      <% # Compute stats for this pin %>
+      <% pin_views = @views.where(pin_id: pin.id).count %>
+      <% pin_watch_time = @views.where(pin_id: pin.id).sum(:duration_seconds) || 0 %>
+      <% avg_per_view = pin_views > 0 ? (pin_watch_time.to_f / pin_views).round(1) : 0 %>
+
+      <div class="p-5 bg-white shadow rounded-xl border mb-5">
+        <h3 class="text-xl font-semibold text-gray-900"><%= pin.title %></h3>
+
+        <div class="mt-2 space-y-1 text-gray-700">
+
+          <p><strong>Views:</strong> <%= pin_views %></p>
+
+          <p><strong>Total Watch Time:</strong> <%= pin_watch_time %> sec</p>
+
+          <p><strong>Average per View:</strong> <%= avg_per_view %> sec</p>
+
+          <p><strong>Engagement Score:</strong>
+            <%= pin_views > 0 ? ((avg_per_view / @average_watch_time.to_f) * 100).round(1) : 0 %>%
+          </p>
+
+        </div>
       </div>
+
     <% end %>
-  </div>
+  <% else %>
+    <p class="text-gray-500">You have no video posts yet.</p>
+  <% end %>
+
 </div>

@@ -16,15 +16,12 @@ class CommentsController < ApplicationController
   def create
     @comment = @pin.comments.build(comment_params)
     @comment.user = current_user
-
     if @comment.save
       notify_users(@comment)
-
       respond_to do |format|
-        format.turbo_stream
+        format.turbo_stream { render :create }
         format.html { redirect_to pin_path(@pin), notice: "Comment created." }
       end
-
     else
       respond_to do |format|
         format.turbo_stream {
@@ -51,11 +48,20 @@ class CommentsController < ApplicationController
   def update
     if @comment.update(comment_params)
       respond_to do |format|
-        format.turbo_stream
+        format.turbo_stream { render :update }
         format.html { redirect_to pin_path(@pin), notice: "Comment updated." }
       end
     else
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.replace(
+            "comment-#{@comment.id}",
+            partial: "pins/comment",
+            locals: { comment: @comment }
+          ), status: :unprocessable_entity
+        }
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -66,9 +72,8 @@ class CommentsController < ApplicationController
     if @comment && @comment.user == current_user
       @comment.destroy
     end
-
     respond_to do |format|
-      format.turbo_stream
+      format.turbo_stream { render :destroy }
       format.html { redirect_to pin_path(@pin) }
     end
   end
@@ -89,7 +94,6 @@ class CommentsController < ApplicationController
         read: false
       )
     end
-
     # Notify parent comment owner
     if comment.parent_id.present?
       parent_user = Comment.find(comment.parent_id).user
@@ -103,12 +107,10 @@ class CommentsController < ApplicationController
         )
       end
     end
-
     # Notify tagged users
     @pin.tagged_users.each do |tagged|
       next if tagged.id == current_user.id
       next if tagged.uid == @pin.user_uid
-
       Notification.create!(
         user: tagged,
         actor: current_user,

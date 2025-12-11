@@ -31,7 +31,7 @@
 
         <!-- ⭐ CREATOR INSIGHTS BUTTON -->
         <% if current_user == @user %>
-          <%= link_to "View Insights", creator_insights_path,
+          <%= link_to "View Insights", insights_user_path(@user),
                 class: "inline-block mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700" %>
         <% end %>
       </div>

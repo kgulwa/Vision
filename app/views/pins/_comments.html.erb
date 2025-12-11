@@ -1,29 +1,46 @@
 <% if logged_in? %>
-  <%= form_with model: [pin, Comment.new], class: "mb-6", data: { turbo: true } do |f| %>
+  <!-- Form has its OWN turbo frame -->
+  <turbo-frame id="new_comment_frame_<%= pin.id %>">
 
-    <div class="flex space-x-3">
-      <%= user_avatar(current_user, size: 40) %>
+    <%= form_with model: [pin, Comment.new],
+                  url: pin_comments_path(pin),
+                  method: :post,
+                  format: :turbo_stream,
+                  data: { turbo_frame: "new_comment_frame_#{pin.id}" },
+                  class: "mb-6" do |f| %>
 
-      <div class="flex-1">
-        <div class="relative w-full" data-controller="mentions">
-          <%= f.text_area :content,
-              rows: 3,
-              placeholder: "Add a comment...",
-              class: "w-full border p-2 rounded",
-              data: { action: "input->mentions#search", mentions_target: "input" } %>
+      <div class="flex space-x-3">
+        <%= user_avatar(current_user, size: 40) %>
 
-          <div data-mentions-target="dropdown"
-               class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50"></div>
+        <div class="flex-1">
+          <div class="relative w-full" data-controller="mentions">
+
+            <%= f.text_area :content,
+                rows: 3,
+                required: true,
+                placeholder: "Add a comment...",
+                class: "w-full border p-2 rounded",
+                data: {
+                  action: "input->mentions#search",
+                  mentions_target: "input"
+                } %>
+
+            <div data-mentions-target="dropdown"
+                 class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50">
+            </div>
+          </div>
+
+          <%= f.submit "Comment",
+              class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded" %>
         </div>
-
-        <%= f.submit "Comment",
-            class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded" %>
       </div>
-    </div>
 
-  <% end %>
+    <% end %>
+
+  </turbo-frame>
 <% end %>
 
+<!-- COMMENTS LIST -->
 <% pin.comments.where(parent_id: nil).order(created_at: :asc).each do |comment| %>
   <%= render "pins/comment", comment: comment %>
 <% end %>

@@ -9,6 +9,9 @@ class InsightsController < ApplicationController
       .joins(:pin)
       .where(pins: { user_uid: @user.uid })
 
+    # Total Views
+    @total_views = @views.count
+
     # Grouped by day
     @views_per_day = @views.group_by_day(:started_at).count
 
@@ -18,8 +21,8 @@ class InsightsController < ApplicationController
     # Total watch time (seconds)
     @total_time = @views.sum(:duration_seconds) || 0
 
-    # For the view (in minutes)
-    @total_screen_time = @total_time
+    # Convert to minutes
+    @total_screen_time_minutes = (@total_time / 60.0).round(1)
 
     # Number of video pins
     @video_pins = @user.pins.select { |p| p.file&.video? } || []

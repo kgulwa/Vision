@@ -1,5 +1,7 @@
 <%= turbo_stream.remove "comment-#{@comment.id}" %>
-
+<% @comment.replies.each do |reply| %>
+  <%= turbo_stream.remove "comment-#{reply.id}" %>
+<% end %>
 <%= turbo_stream.replace "comment_count_#{@pin.id}" do %>
   <%= @pin.comments.where(parent_id: nil).count %>
 <% end %>
