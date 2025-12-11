@@ -9,7 +9,7 @@
         <% if @pin.file.attached? %>
 
           <% if @pin.file.video? %>
-            <!-- ⭐ SHOW VIDEO IMMEDIATELY (SHOW PAGE BEHAVIOR B) -->
+            <!--  SHOW VIDEO IMMEDIATELY -->
             <video autoplay controls class="w-full h-full object-cover">
               <source src="<%= url_for(@pin.file) %>" type="<%= @pin.file.content_type %>">
             </video>
@@ -211,16 +211,45 @@
   </div>
 </div>
 
+<!--  JS BLOCK WITH TRACKING INCLUDED -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // ------------------ Comment Highlight Logic ------------------
     const commentId = new URLSearchParams(window.location.search).get("comment_id");
-    if (!commentId) return;
-    const el = document.getElementById(`comment-${commentId}`);
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-    el.classList.add("ring-4", "ring-yellow-400", "transition");
-    setTimeout(() => {
-      el.classList.remove("ring-4", "ring-yellow-400");
-    }, 2000);
+    if (commentId) {
+      const el = document.getElementById(`comment-${commentId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add("ring-4", "ring-yellow-400", "transition");
+        setTimeout(() => {
+          el.classList.remove("ring-4", "ring-yellow-400");
+        }, 2000);
+      }
+    }
+
+    // --- VIDEO VIEW TRACKING --------
+    const video = document.querySelector("video");
+    if (!video) return;
+
+    const viewId = "<%= @video_view&.id %>";
+    if (!viewId) return;
+
+    let hasSent = false;
+
+    video.addEventListener("ended", () => {
+      if (hasSent) return;
+      hasSent = true;
+
+      const duration = Math.floor(video.duration);
+
+      fetch("/video_views/" + viewId, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ duration_seconds: duration })
+      });
+    });
   });
 </script>
