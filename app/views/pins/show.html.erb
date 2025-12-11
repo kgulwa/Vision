@@ -80,10 +80,9 @@
           <% end %>
         </div>
 
-        <!-- LIKE / REPOST / SAVE -->
+        <!-- LIKE / REPOST -->
         <div class="flex items-center space-x-4 mb-6 pb-6 border-b">
 
-          <!-- LIKE -->
           <turbo-frame id="like_button_<%= @pin.id %>">
             <% if current_user&.liked?(@pin) %>
               <%= button_to pin_like_path(@pin),
@@ -102,7 +101,6 @@
             <% end %>
           </turbo-frame>
 
-          <!-- REPOST -->
           <turbo-frame id="repost_button_<%= @pin.id %>">
             <% if current_user&.reposted?(@pin) %>
               <%= button_to pin_repost_path(@pin),
@@ -121,97 +119,20 @@
             <% end %>
           </turbo-frame>
 
-          <!-- SAVE MENU -->
-          <div class="relative inline-block text-left">
-            <button
-              onclick="document.getElementById('save-menu').classList.toggle('hidden')"
-              class="flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-gray-50">
-              📌 <span>Save</span>
-            </button>
-
-            <div
-              id="save-menu"
-              class="hidden absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg z-50">
-
-              <div class="p-2">
-                <p class="text-sm font-semibold mb-2">Save to collection</p>
-
-                <% if current_user.collections.any? %>
-                  <% current_user.collections.each do |collection| %>
-                    <%= button_to pin_saved_pins_path(@pin, collection_id: collection.id),
-                        method: :post,
-                        class: "w-full text-left px-4 py-2 rounded hover:bg-gray-100" do %>
-                      <%= collection.name %>
-                    <% end %>
-                  <% end %>
-                <% end %>
-              </div>
-
-              <hr>
-
-              <div class="p-2">
-                <%= form_with url: collections_path, method: :post, local: true do |f| %>
-                  <%= hidden_field_tag :pin_id, @pin.id %>
-                  <%= f.text_field :name,
-                      placeholder: "New collection",
-                      class: "w-full border px-3 py-1 rounded mb-2" %>
-                  <%= f.submit "Create & Save",
-                      class: "w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700" %>
-                <% end %>
-              </div>
-
-            </div>
-          </div>
-
         </div>
 
         <!-- COMMENTS TITLE -->
         <h3 class="font-semibold mb-4">
-          Comments (<%= @pin.comments.where(parent_id: nil).count %>)
+          Comments (
+            <span id="comment_count_<%= @pin.id %>">
+              <%= @pin.comments.where(parent_id: nil).count %>
+            </span>
+          )
         </h3>
 
-        <!-- ✅ RESTORED TURBO FRAME — REQUIRED FOR LIVE UPDATES -->
+        <!-- COMMENTS BLOCK INSIDE TURBO FRAME -->
         <turbo-frame id="pin_comments_<%= @pin.id %>">
-
-          <div class="flex-1 overflow-y-auto max-h-[400px]">
-
-            <% if logged_in? %>
-              <%= form_with model: [@pin, Comment.new],
-                            data: { turbo_stream: true },
-                            class: "mb-6" do |f| %>
-
-                <div class="flex space-x-3">
-                  <%= user_avatar(current_user, size: 40) %>
-
-                  <div class="flex-1">
-                    <div class="relative w-full" data-controller="mentions">
-                      <%= f.text_area :content,
-                          rows: 3,
-                          placeholder: "Add a comment...",
-                          class: "w-full border p-2 rounded",
-                          data: {
-                            action: "input->mentions#search",
-                            mentions_target: "input"
-                          } %>
-
-                      <div data-mentions-target="dropdown"
-                           class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50"></div>
-                    </div>
-
-                    <%= f.submit "Comment",
-                        class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded" %>
-                  </div>
-                </div>
-
-              <% end %>
-            <% end %>
-
-            <% @pin.comments.where(parent_id: nil).order(created_at: :asc).each do |comment| %>
-              <%= render partial: "pins/comment", locals: { comment: comment } %>
-            <% end %>
-
-          </div>
-
+          <%= render partial: "pins/comments", locals: { pin: @pin } %>
         </turbo-frame>
 
       </div>
@@ -219,7 +140,6 @@
   </div>
 </div>
 
-<!-- JS BLOCK WITH TRACKING INCLUDED -->
 <script>
   document.addEventListener("turbo:load", highlightComment);
   document.addEventListener("DOMContentLoaded", highlightComment);
@@ -236,30 +156,5 @@
         }, 2000);
       }
     }
-
-    // VIDEO VIEW TRACKING
-    const video = document.querySelector("video");
-    if (!video) return;
-
-    const viewId = "<%= @video_view&.id %>";
-    if (!viewId) return;
-
-    let hasSent = false;
-
-    video.addEventListener("ended", () => {
-      if (hasSent) return;
-      hasSent = true;
-
-      const duration = Math.floor(video.duration);
-
-      fetch("/video_views/" + viewId, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({ duration_seconds: duration })
-      });
-    });
   }
 </script>

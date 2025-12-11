@@ -1,9 +1,9 @@
-<turbo-frame id="reply_form_<%= @comment.parent_id %>">
+<turbo-frame id="reply_form_<%= params[:parent_id] %>">
 
   <h2 class="text-lg font-semibold mb-4">Reply</h2>
 
-  <%= form_with(model: [@pin, @comment], data: { turbo_stream: true }) do |form| %>
-    <%= form.hidden_field :parent_id, value: params[:parent_id] || @comment.parent_id %>
+  <%= form_with(model: [@pin, @comment], format: :turbo_stream) do |form| %>
+    <%= form.hidden_field :parent_id, value: params[:parent_id] %>
 
     <div class="relative w-full" data-controller="mentions">
       <%= form.text_area :content,

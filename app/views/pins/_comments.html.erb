@@ -1,5 +1,5 @@
 <% if logged_in? %>
-  <%= form_with model: [pin, Comment.new], data: { turbo_stream: true }, class: "mb-6" do |f| %>
+  <%= form_with model: [pin, Comment.new], class: "mb-6", data: { turbo: true } do |f| %>
 
     <div class="flex space-x-3">
       <%= user_avatar(current_user, size: 40) %>
@@ -25,5 +25,5 @@
 <% end %>
 
 <% pin.comments.where(parent_id: nil).order(created_at: :asc).each do |comment| %>
-  <%= render partial: "pins/comment", locals: { comment: comment } %>
+  <%= render "pins/comment", comment: comment %>
 <% end %>

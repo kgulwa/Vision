@@ -1,0 +1,5 @@
+<%= turbo_stream.remove "comment-#{@comment.id}" %>
+
+<%= turbo_stream.replace "comment_count_#{@pin.id}" do %>
+  <%= @pin.comments.where(parent_id: nil).count %>
+<% end %>
