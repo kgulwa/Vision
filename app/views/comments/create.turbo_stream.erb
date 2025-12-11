@@ -1,0 +1,5 @@
+<turbo-stream action="replace" target="pin_comments_<%= @pin.id %>">
+  <template>
+    <%= render partial: "pins/comments", locals: { pin: @pin } %>
+  </template>
+</turbo-stream>

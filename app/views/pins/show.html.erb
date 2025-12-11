@@ -9,13 +9,11 @@
         <% if @pin.file.attached? %>
 
           <% if @pin.file.video? %>
-            <!--  SHOW VIDEO IMMEDIATELY -->
             <video autoplay controls class="w-full h-full object-cover">
               <source src="<%= url_for(@pin.file) %>" type="<%= @pin.file.content_type %>">
             </video>
 
           <% elsif @pin.file.image? %>
-            <!-- IMAGE -->
             <%= image_tag @pin.file, class: "w-full h-full object-cover" %>
 
           <% else %>
@@ -40,7 +38,6 @@
         <!-- PIN OWNER -->
         <div class="flex items-center justify-between mb-6">
           <%= link_to user_path(@pin.user),
-              data: { turbo_action: "replace" },
               class: "flex items-center space-x-3 hover:bg-gray-50 rounded-lg p-2 -m-2" do %>
             <%= user_avatar(@pin.user, size: 48) %>
             <div>
@@ -124,7 +121,7 @@
             <% end %>
           </turbo-frame>
 
-          <!-- SAVE MENU (INLINE FIX) -->
+          <!-- SAVE MENU -->
           <div class="relative inline-block text-left">
             <button
               onclick="document.getElementById('save-menu').classList.toggle('hidden')"
@@ -168,53 +165,66 @@
 
         </div>
 
-        <!-- COMMENTS -->
-        <div class="flex-1 overflow-y-auto max-h-[400px]">
-          <h3 class="font-semibold mb-4">
-            Comments (<%= @pin.comments.where(parent_id: nil).count %>)
-          </h3>
+        <!-- COMMENTS TITLE -->
+        <h3 class="font-semibold mb-4">
+          Comments (<%= @pin.comments.where(parent_id: nil).count %>)
+        </h3>
 
-          <% if logged_in? %>
-            <%= form_with model: [@pin, Comment.new], class: "mb-6" do |f| %>
-              <div class="flex space-x-3">
-                <%= user_avatar(current_user, size: 40) %>
+        <!-- ✅ RESTORED TURBO FRAME — REQUIRED FOR LIVE UPDATES -->
+        <turbo-frame id="pin_comments_<%= @pin.id %>">
 
-                <div class="flex-1">
-                  <div class="relative w-full" data-controller="mentions">
-                    <%= f.text_area :content,
-                        rows: 3,
-                        placeholder: "Add a comment...",
-                        class: "w-full border p-2 rounded",
-                        data: {
-                          action: "input->mentions#search",
-                          mentions_target: "input"
-                        } %>
+          <div class="flex-1 overflow-y-auto max-h-[400px]">
 
-                    <div data-mentions-target="dropdown"
-                         class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50"></div>
+            <% if logged_in? %>
+              <%= form_with model: [@pin, Comment.new],
+                            data: { turbo_stream: true },
+                            class: "mb-6" do |f| %>
+
+                <div class="flex space-x-3">
+                  <%= user_avatar(current_user, size: 40) %>
+
+                  <div class="flex-1">
+                    <div class="relative w-full" data-controller="mentions">
+                      <%= f.text_area :content,
+                          rows: 3,
+                          placeholder: "Add a comment...",
+                          class: "w-full border p-2 rounded",
+                          data: {
+                            action: "input->mentions#search",
+                            mentions_target: "input"
+                          } %>
+
+                      <div data-mentions-target="dropdown"
+                           class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50"></div>
+                    </div>
+
+                    <%= f.submit "Comment",
+                        class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded" %>
                   </div>
-
-                  <%= f.submit "Comment",
-                      class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded" %>
                 </div>
-              </div>
-            <% end %>
-          <% end %>
 
-          <% @pin.comments.where(parent_id: nil).order(created_at: :asc).each do |comment| %>
-            <%= render partial: "pins/comment", locals: { comment: comment } %>
-          <% end %>
-        </div>
+              <% end %>
+            <% end %>
+
+            <% @pin.comments.where(parent_id: nil).order(created_at: :asc).each do |comment| %>
+              <%= render partial: "pins/comment", locals: { comment: comment } %>
+            <% end %>
+
+          </div>
+
+        </turbo-frame>
 
       </div>
     </div>
   </div>
 </div>
 
-<!--  JS BLOCK WITH TRACKING INCLUDED -->
+<!-- JS BLOCK WITH TRACKING INCLUDED -->
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // ------------------ Comment Highlight Logic ------------------
+  document.addEventListener("turbo:load", highlightComment);
+  document.addEventListener("DOMContentLoaded", highlightComment);
+
+  function highlightComment() {
     const commentId = new URLSearchParams(window.location.search).get("comment_id");
     if (commentId) {
       const el = document.getElementById(`comment-${commentId}`);
@@ -227,7 +237,7 @@
       }
     }
 
-    // --- VIDEO VIEW TRACKING --------
+    // VIDEO VIEW TRACKING
     const video = document.querySelector("video");
     if (!video) return;
 
@@ -251,5 +261,5 @@
         body: JSON.stringify({ duration_seconds: duration })
       });
     });
-  });
+  }
 </script>

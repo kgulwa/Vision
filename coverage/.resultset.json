@@ -70,7 +70,7 @@
           null,
           null,
           1,
-          30,
+          32,
           null,
           null,
           27,
@@ -112,7 +112,7 @@
           },
           "[:unless, 24, 68, 4, 68, 32]": {
             "[:else, 25, 68, 4, 68, 32]": 27,
-            "[:then, 26, 68, 4, 68, 12]": 3
+            "[:then, 26, 68, 4, 68, 12]": 5
           }
         }
       },
@@ -152,6 +152,13 @@
           }
         }
       },
+      "/home/konkecodes/vision/app/helpers/insights_helper.rb": {
+        "lines": [
+          1,
+          null
+        ],
+        "branches": {}
+      },
       "/home/konkecodes/vision/app/helpers/pins_helper.rb": {
         "lines": [
           1,
@@ -164,58 +171,58 @@
           1,
           1,
           null,
-          null,
           1,
           null,
           1,
           null,
           null,
           1,
-          581,
+          592,
           null,
-          154,
+          157,
           79,
           null,
-          75,
+          78,
           null,
           null,
           null,
           null,
           1,
-          282,
+          288,
           null,
           null,
           1,
           null,
           null,
-          1,
-          72,
-          5,
-          null,
-          null,
-          null,
           null,
           1,
-          166,
+          73,
+          6,
+          null,
+          null,
+          null,
+          null,
+          1,
+          169,
           null,
           null
         ],
         "branches": {
-          "[:if, 0, 11, 4, 11, 51]": {
-            "[:then, 1, 11, 4, 11, 24]": 427,
-            "[:else, 2, 11, 4, 11, 51]": 154
+          "[:if, 0, 10, 4, 10, 51]": {
+            "[:then, 1, 10, 4, 10, 24]": 435,
+            "[:else, 2, 10, 4, 10, 51]": 157
           },
-          "[:if, 3, 13, 4, 17, 7]": {
-            "[:then, 4, 14, 6, 14, 57]": 79,
-            "[:else, 5, 16, 6, 16, 25]": 75
+          "[:if, 3, 12, 4, 16, 7]": {
+            "[:then, 4, 13, 6, 13, 57]": 79,
+            "[:else, 5, 15, 6, 15, 25]": 78
           },
           "[:unless, 6, 29, 4, 31, 7]": {
             "[:else, 7, 29, 4, 31, 7]": 67,
-            "[:then, 8, 30, 6, 30, 92]": 5
+            "[:then, 8, 30, 6, 30, 81]": 6
           },
           "[:if, 9, 36, 4, 36, 64]": {
             "[:then, 10, 36, 4, 36, 50]": 91,
-            "[:else, 11, 36, 4, 36, 64]": 75
+            "[:else, 11, 36, 4, 36, 64]": 78
           }
         }
       },
@@ -663,14 +670,14 @@
           1,
           null,
           1,
-          63,
+          65,
           null,
-          63,
+          65,
           62,
           62,
           null,
-          1,
-          1,
+          3,
+          3,
           null,
           null,
           null,
@@ -683,11 +690,11 @@
         "branches": {
           "[:\"&.\", 0, 9, 7, 9, 45]": {
             "[:then, 1, 9, 7, 9, 45]": 62,
-            "[:else, 2, 9, 7, 9, 45]": 1
+            "[:else, 2, 9, 7, 9, 45]": 3
           },
           "[:if, 3, 9, 4, 15, 7]": {
             "[:then, 4, 10, 6, 11, 70]": 62,
-            "[:else, 5, 13, 6, 14, 48]": 1
+            "[:else, 5, 13, 6, 14, 48]": 3
           }
         }
       },
@@ -821,7 +828,7 @@
           1,
           null,
           1,
-          86,
+          89,
           null,
           null
         ],
@@ -962,7 +969,7 @@
           null,
           null,
           1,
-          106,
+          108,
           3,
           null,
           null,
@@ -1011,7 +1018,7 @@
           null,
           null,
           1,
-          106,
+          108,
           null,
           5,
           0,
@@ -1055,7 +1062,7 @@
           },
           "[:unless, 15, 40, 4, 40, 47]": {
             "[:else, 16, 40, 4, 40, 47]": 3,
-            "[:then, 17, 40, 4, 40, 10]": 103
+            "[:then, 17, 40, 4, 40, 10]": 105
           },
           "[:if, 18, 41, 4, 41, 33]": {
             "[:then, 19, 41, 4, 41, 10]": 0,
@@ -1071,7 +1078,7 @@
           },
           "[:unless, 27, 89, 4, 89, 32]": {
             "[:else, 28, 89, 4, 89, 32]": 5,
-            "[:then, 29, 89, 4, 89, 10]": 101
+            "[:then, 29, 89, 4, 89, 10]": 103
           },
           "[:if, 30, 91, 4, 93, 7]": {
             "[:then, 31, 92, 6, 92, 57]": 0,
@@ -1151,7 +1158,7 @@
           1,
           null,
           1,
-          540,
+          546,
           null,
           null,
           null,
@@ -1581,6 +1588,50 @@
           }
         }
       },
+      "/home/konkecodes/vision/app/controllers/insights_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "branches": {
+          "[:\"&.\", 0, 25, 42, 25, 56]": {
+            "[:then, 1, 25, 42, 25, 56]": 0,
+            "[:else, 2, 25, 42, 25, 56]": 0
+          }
+        }
+      },
       "/home/konkecodes/vision/app/controllers/reposts_controller.rb": {
         "lines": [
           1,
@@ -1697,8 +1748,38 @@
             "[:else, 8, 24, 15, 24, 24]": 2
           }
         }
+      },
+      "/home/konkecodes/vision/app/controllers/video_views_controller.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
       }
     },
-    "timestamp": 1765442609
+    "timestamp": 1765463586
   }
 }

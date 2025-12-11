@@ -32,28 +32,30 @@
 
         <%= link_to "Reply",
             new_pin_comment_path(comment.pin, parent_id: comment.id),
+            data: { turbo_frame: "reply_form_#{comment.id}" },
             class: "text-gray-600 text-sm" %>
       </div>
     </div>
 
+    <!-- INLINE REPLY FRAME -->
+    <turbo-frame id="reply_form_<%= comment.id %>"></turbo-frame>
+
     <!-- REPLIES -->
-    <% if comment.replies.any? %>
-      <div class="ml-6 mt-2 border-l-2 border-gray-200 pl-4 space-y-2">
-        <% comment.replies.each do |reply| %>
-          <div id="comment-<%= reply.id %>" class="flex space-x-3 p-2 bg-gray-100 rounded-lg">
+    <div id="replies_for_<%= comment.id %>" class="ml-6 mt-2 border-l-2 border-gray-200 pl-4 space-y-2">
+      <% comment.replies.each do |reply| %>
+        <div id="comment-<%= reply.id %>" class="flex space-x-3 p-2 bg-gray-100 rounded-lg">
 
-            <!-- REPLY AVATAR -->
-            <%= user_avatar(reply.user, size: 28) %>
+          <!-- REPLY AVATAR -->
+          <%= user_avatar(reply.user, size: 28) %>
 
-            <!-- REPLY TEXT -->
-            <p>
-              <strong><%= reply.user&.username || "Deleted User" %>:</strong>
-              <%= format_comment(reply.content) %>
-            </p>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
+          <!-- REPLY TEXT -->
+          <p>
+            <strong><%= reply.user&.username || "Deleted User" %>:</strong>
+            <%= format_comment(reply.content) %>
+          </p>
+        </div>
+      <% end %>
+    </div>
 
   </div>
 </div>

@@ -14,34 +14,47 @@
               height: 96,
               class: "rounded-full shadow" %>
       <% end %>
+
       <div>
         <h1 class="text-3xl font-bold text-gray-900"><%= @user.username %></h1>
+
         <!-- FOLLOW SECTION -->
         <p class="text-gray-600">
           <span id="profile_follower_count_<%= sanitized_uid %>">
             <%= @user.followers.count %>
           </span> followers
         </p>
+
         <% if logged_in? && current_user != @user %>
           <%= render "users/follow_button", user: @user, page: "profile" %>
+        <% end %>
+
+        <!-- ⭐ CREATOR INSIGHTS BUTTON -->
+        <% if current_user == @user %>
+          <%= link_to "View Insights", creator_insights_path,
+                class: "inline-block mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700" %>
         <% end %>
       </div>
     </div>
   </div>
+
   <!-- TABS -->
   <div class="flex space-x-6 border-b mb-6">
     <button data-tab-target="pins"
             class="py-2 font-semibold text-blue-600 border-b-2 border-blue-600">
       Pins
     </button>
+
     <button data-tab-target="reposts"
             class="py-2 font-semibold text-gray-600 hover:text-blue-600">
       Reposts
     </button>
+
     <button data-tab-target="tagged"
             class="py-2 font-semibold text-gray-600 hover:text-blue-600">
       Tagged
     </button>
+
     <% if @user == current_user %>
       <button data-tab-target="collections"
               class="py-2 font-semibold text-gray-600 hover:text-blue-600">
@@ -49,6 +62,7 @@
       </button>
     <% end %>
   </div>
+
   <div class="space-y-8">
     <!-- PINS GRID -->
     <div id="tab-pins" class="grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -68,6 +82,7 @@
               <span class="text-gray-400">No file</span>
             </div>
           <% end %>
+
           <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                       transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
             <span>❤️ <%= pin.likes.count %></span>
@@ -75,10 +90,12 @@
           </div>
         <% end %>
       <% end %>
+
       <% if @pins.empty? %>
         <p class="col-span-full text-center text-gray-500 py-10">No pins yet.</p>
       <% end %>
     </div>
+
     <!-- REPOSTS GRID -->
     <div id="tab-reposts" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
       <% @reposted_pins.each do |pin| %>
@@ -97,6 +114,7 @@
               No file
             </div>
           <% end %>
+
           <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                       transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
             <span>❤️ <%= pin.likes.count %></span>
@@ -104,10 +122,12 @@
           </div>
         <% end %>
       <% end %>
+
       <% if @reposted_pins.empty? %>
         <p class="col-span-full text-center text-gray-500 py-10">No reposts yet.</p>
       <% end %>
     </div>
+
     <!-- TAGGED GRID -->
     <div id="tab-tagged" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
       <% @tagged_pins.each do |pin| %>
@@ -126,22 +146,26 @@
               No file
             </div>
           <% end %>
+
           <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                       transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
             <span>❤️ <%= pin.likes.count %></span>
             <span>💬 <%= pin.comments.count %></span>
           </div>
+
           <div class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
             Tagged
           </div>
         <% end %>
       <% end %>
+
       <% if @tagged_pins.empty? %>
         <p class="col-span-full text-center text-gray-500 py-10">
           No tagged posts yet.
         </p>
       <% end %>
     </div>
+
     <!-- COLLECTIONS GRID -->
     <% if @user == current_user %>
       <div id="tab-collections" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -153,6 +177,7 @@
             </div>
           <% end %>
         <% end %>
+
         <% if @user.collections.empty? %>
           <p class="col-span-full text-center text-gray-500 py-10">
             No collections yet.
@@ -162,6 +187,7 @@
     <% end %>
   </div>
 </div>
+
 <script>
   const buttons = document.querySelectorAll("[data-tab-target]");
   const tabs = {
@@ -170,14 +196,18 @@
     tagged: document.getElementById("tab-tagged"),
     collections: document.getElementById("tab-collections"),
   };
+
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
       buttons.forEach(b => {
         b.classList.remove("text-blue-600", "border-blue-600", "border-b-2");
         b.classList.add("text-gray-600");
       });
+
       btn.classList.add("text-blue-600", "border-b-2", "border-blue-600");
+
       Object.values(tabs).forEach(tab => tab?.classList.add("hidden"));
+
       const target = btn.dataset.tabTarget;
       tabs[target]?.classList.remove("hidden");
     });

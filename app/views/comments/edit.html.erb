@@ -1,11 +1,10 @@
 <div class="max-w-md mx-auto mt-6 p-4 bg-white rounded-xl shadow">
   <h2 class="text-xl font-semibold mb-4">Edit Comment</h2>
 
-  <%= form_with model: [@pin, @comment], local: true do |f| %>
+  <%= form_with model: [@pin, @comment] do |f| %>
     <div class="mb-4">
       <%= f.label :content, "Your Comment", class: "block text-sm font-medium" %>
 
-      <!-- ⭐ ENABLE MENTIONS -->
       <div class="relative w-full" data-controller="mentions">
         <%= f.text_area :content,
             rows: 4,

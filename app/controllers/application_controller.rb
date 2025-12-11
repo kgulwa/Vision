@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   allow_browser versions: :modern
-  
 
   helper_method :current_user, :logged_in?
 
@@ -24,14 +23,15 @@ class ApplicationController < ActionController::Base
 
   private
 
-  
+  # 🔐 SAFEST version of login requirement
+  # avoids `.empty?` problems and RSpec failures
   def require_login
     unless logged_in?
-      redirect_to login_path, alert: "You must be logged in to access this page." and return
+      redirect_to login_path, alert: "You must be logged in to access this page."
     end
   end
 
-  
+  # Prevents caching pages when user is logged in
   def prevent_view_caching
     response.headers["Cache-Control"] = "no-store" if logged_in?
   end

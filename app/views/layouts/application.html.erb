@@ -13,8 +13,8 @@
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
-    <!-- ESBuild output must be a module -->
-    <%= javascript_include_tag "application", type: "module", defer: true %>
+    <!-- FIXED: correct JS tag for Turbo + ESBuild -->
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
 
   <body class="bg-white text-gray-900" autocomplete="off">
