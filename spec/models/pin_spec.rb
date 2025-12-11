@@ -1,8 +1,17 @@
 require "rails_helper"
 
 RSpec.describe Pin, type: :model do
-  let(:user) { User.create!(username: "tester", email: "test@example.com", password: "password", uid: "abc123") }
-  let(:image_path) { Rails.root.join("spec", "fixtures", "test.png") }
+  let(:user) do
+    User.create!(
+      username: "tester",
+      email: "test@example.com",
+      password: "password",
+      password_confirmation: "password",
+      uid: "abc123"
+    )
+  end
+
+  let(:image_path) { Rails.root.join("spec", "fixtures", "files", "test.png") }
 
   describe "associations" do
     it { should belong_to(:user).with_foreign_key(:user_uid).with_primary_key(:uid) }
@@ -59,7 +68,7 @@ RSpec.describe Pin, type: :model do
     end
 
     it "returns file for video" do
-      pin.file.attach(io: File.open(image_path), filename: "test.mp4", content_type: "video/mp4") # using image file as dummy
+      pin.file.attach(io: File.open(image_path), filename: "fake.mp4", content_type: "video/mp4")
       expect(pin.video).to eq(pin.file)
       expect(pin.image).to be_nil
     end
