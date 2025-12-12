@@ -1,51 +1,61 @@
 <div id="comment-<%= comment.id %>" class="p-3 border rounded-lg bg-gray-50">
   <div class="flex flex-col">
+
     <!-- MAIN COMMENT -->
     <div class="flex justify-between items-start">
+
       <div class="flex flex-1 space-x-3">
-        <!-- USER AVATAR -->
-        <%= user_avatar(comment.user, size: 36, class_name: "mr-2") %>
-        <!-- COMMENT TEXT -->
+
+        <!-- COMMENT TEXT (NO AVATAR) -->
         <p class="flex-1">
           <strong><%= comment.user&.username || "Deleted User" %>:</strong>
           <%= format_comment(comment.content) %>
         </p>
       </div>
+
       <!-- ACTION BUTTONS -->
       <div class="flex space-x-3">
         <% if current_user == comment.user %>
           <%= link_to "Edit",
               edit_pin_comment_path(comment.pin, comment),
               class: "text-blue-600 text-sm" %>
+
           <%= button_to "Delete",
               pin_comment_path(comment.pin, comment),
               method: :delete,
               data: { confirm: "Delete this comment?" },
               class: "text-red-600 text-sm" %>
         <% end %>
+
         <%= link_to "Reply",
             new_pin_comment_path(comment.pin, parent_id: comment.id),
             data: { turbo_frame: "reply_form_#{comment.id}" },
             class: "text-gray-600 text-sm" %>
       </div>
+
     </div>
+
     <!-- INLINE REPLY FRAME -->
     <turbo-frame id="reply_form_<%= comment.id %>"></turbo-frame>
+
     <!-- REPLIES -->
     <turbo-frame id="replies_for_<%= comment.id %>">
       <div class="ml-6 mt-2 border-l-2 border-gray-200 pl-4 space-y-2">
+
         <% comment.replies.each do |reply| %>
           <div id="comment-<%= reply.id %>" class="flex space-x-3 p-2 bg-gray-100 rounded-lg">
-            <!-- REPLY AVATAR -->
-            <%= user_avatar(reply.user, size: 28) %>
-            <!-- REPLY TEXT -->
+
+            <!-- REPLY TEXT (NO AVATAR) -->
             <p>
               <strong><%= reply.user&.username || "Deleted User" %>:</strong>
               <%= format_comment(reply.content) %>
             </p>
+
           </div>
         <% end %>
+
       </div>
     </turbo-frame>
+
   </div>
 </div>

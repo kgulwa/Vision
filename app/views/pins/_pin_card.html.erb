@@ -1,5 +1,7 @@
 <div class="break-inside-avoid mb-4 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition bg-white">
   <%= link_to pin_path(pin), class: "block relative group" do %>
+    
+    
 
     <% if pin.file&.attached? %>
       <%= image_tag url_for(pin.file), class: "w-full h-auto object-cover rounded-t-xl" %>
@@ -12,13 +14,14 @@
       </div>
     <% end %>
 
-    <!-- Hover overlay: likes + comments + reposts -->
+    <!-- HOVER OVERLAY (UNCHANGED except no save button here) -->
     <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
                 transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
       <span>❤️ <%= pin.likes.count %></span>
       <span>💬 <%= pin.comments.count %></span>
       <span>🔁 <%= pin.reposts.count %></span>
     </div>
+
   <% end %>
 
   <div class="p-4">
@@ -48,10 +51,27 @@
       </div>
     <% end %>
 
+    <!-- ALWAYS-VISIBLE ACTION ROW -->
     <div class="flex items-center space-x-4 text-sm text-gray-600">
+
       <span>❤️ <%= pin.likes.count %></span>
       <span>💬 <%= pin.comments.count %></span>
       <span>🔁 <%= pin.reposts.count %></span>
+
+      <!-- ⭐ ALWAYS VISIBLE SAVE ICON -->
+      <button 
+        type="button"
+        class="text-gray-700 text-lg hover:text-blue-600"
+        data-controller="save-modal"
+        data-action="click->save-modal#open"
+        data-save-modal-pin-id="<%= pin.id %>">
+        📌 Save
+      </button>
+
     </div>
   </div>
+
+  <!-- SAVE MODAL -->
+  <%= render "pins/save_modal", pin: pin %>
+
 </div>

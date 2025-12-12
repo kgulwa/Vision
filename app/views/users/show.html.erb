@@ -189,6 +189,7 @@
 </div>
 
 <script>
+document.addEventListener("turbo:load", function () {
   const buttons = document.querySelectorAll("[data-tab-target]");
   const tabs = {
     pins: document.getElementById("tab-pins"),
@@ -196,6 +197,8 @@
     tagged: document.getElementById("tab-tagged"),
     collections: document.getElementById("tab-collections"),
   };
+
+  if (!buttons.length) return;
 
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -212,4 +215,5 @@
       tabs[target]?.classList.remove("hidden");
     });
   });
+});
 </script>

@@ -26,7 +26,12 @@
           <div class="w-full h-96 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
             <svg class="w-32 h-32 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 
+                16m-2-2l1.586-1.586a2 2 0 
+                012.828 0L20 14m-6-6h.01M6 
+                20h12a2 2 0 002-2V6a2 2 0 
+                00-2-2H6a2 2 0 00-2 2v12a2 
+                2 0 002 2z" />
             </svg>
           </div>
         <% end %>
@@ -80,9 +85,10 @@
           <% end %>
         </div>
 
-        <!-- LIKE / REPOST -->
+        <!-- LIKE / REPOST / SAVE -->
         <div class="flex items-center space-x-4 mb-6 pb-6 border-b">
 
+          <!-- LIKE -->
           <turbo-frame id="like_button_<%= @pin.id %>">
             <% if current_user&.liked?(@pin) %>
               <%= button_to pin_like_path(@pin),
@@ -101,6 +107,7 @@
             <% end %>
           </turbo-frame>
 
+          <!-- REPOST -->
           <turbo-frame id="repost_button_<%= @pin.id %>">
             <% if current_user&.reposted?(@pin) %>
               <%= button_to pin_repost_path(@pin),
@@ -119,6 +126,17 @@
             <% end %>
           </turbo-frame>
 
+          <!-- SAVE BUTTON HERE 🔥 -->
+          <button
+            class="flex items-center space-x-2 px-4 py-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200"
+            data-controller="save-modal"
+            data-action="click->save-modal#open"
+            data-save-modal-pin-id="<%= @pin.id %>">
+            📌 <span>Save</span>
+          </button>
+
+          <%= render "pins/save_modal", pin: @pin %>
+
         </div>
 
         <!-- COMMENTS TITLE -->
@@ -130,7 +148,7 @@
           )
         </h3>
 
-        <!-- COMMENTS BLOCK — FIX: NO TURBO FRAME -->
+        <!-- COMMENTS BLOCK -->
         <div id="pin_comments_<%= @pin.id %>">
           <%= render partial: "pins/comments", locals: { pin: @pin } %>
         </div>

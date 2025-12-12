@@ -1,67 +1,56 @@
-<div class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group transform hover:-translate-y-1">
-  <%= link_to pin, class: "block" do %>
-    <% if pin.image.attached? %>
-      <div class="aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-        <%= image_tag pin.image, class: "w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" %>
-      </div>
-    <% else %>
-      <div class="aspect-square bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center">
-        <svg class="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      </div>
-    <% end %>
+<div class="break-inside-avoid mb-4 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition bg-white relative">
+
+  <!-- TEST LINE: REMOVE LATER -->
+  <p style="color:red">LAYOUT PIN CARD LOADED – logged in? <%= logged_in? %></p>
+
+  <% if logged_in? %>
+    <button
+      class="absolute top-3 right-3 z-20 bg-white/90 backdrop-blur px-2 py-1 rounded-full shadow hover:bg-white"
+      data-controller="save-modal"
+      data-action="click->save-modal#open"
+      data-save-modal-pin-uid="<%= pin.uid %>"
+    >
+      📌
+    </button>
   <% end %>
 
-  <div class="p-3">
-    <h3 class="font-semibold text-gray-900 text-sm mb-2 truncate"><%= pin.title %></h3>
-
-    <div class="flex items-center justify-between mb-2">
-      <%= link_to pin.user, class: "flex items-center space-x-2 hover:opacity-80 transition-opacity" do %>
-        <div class="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-          <%= pin.user.username[0].upcase %>
-        </div>
-        <span class="text-xs text-gray-600 truncate"><%= pin.user.username %></span>
-      <% end %>
-    </div>
-
-    <div class="flex items-center space-x-3 text-xs text-gray-500">
-      <div class="flex items-center space-x-1">
-        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd"
-                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                clip-rule="evenodd" />
+  <%= link_to pin_path(pin), class: "block relative group" do %>
+    <% if pin.file&.attached? %>
+      <%= image_tag url_for(pin.file), class: "w-full h-auto object-cover rounded-t-xl" %>
+    <% else %>
+      <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
-        <span><%= pin.likes_count %></span>
-      </div>
-
-      <div class="flex items-center space-x-1">
-        <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd"
-                d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
-                clip-rule="evenodd" />
-        </svg>
-        <span><%= pin.comments_count %></span>
-      </div>
-
-      <div class="flex items-center space-x-1">
-        <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-          <path
-            d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
-        </svg>
-        <span><%= pin.reposts_count %></span>
-      </div>
-    </div>
-
-    <% if logged_in? && current_user == pin.user %>
-      <div class="mt-3 flex space-x-2">
-        <%= link_to "Edit", edit_pin_path(pin),
-            class: "text-blue-600 text-xs font-semibold hover:underline" %>
-        <%= link_to "Delete", pin,
-            data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
-            class: "text-red-600 text-xs font-semibold hover:underline" %>
       </div>
     <% end %>
+
+    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100
+                transition flex items-center justify-center space-x-6 text-white text-lg font-semibold">
+      <span>❤️ <%= pin.likes.count %></span>
+      <span>💬 <%= pin.comments.count %></span>
+      <span>🔁 <%= pin.reposts.count %></span>
+    </div>
+  <% end %>
+
+  <div class="p-4">
+    <h3 class="font-semibold text-gray-800 mb-1"><%= pin.title %></h3>
+
+    <p class="text-gray-500 text-xs mb-2">
+      Posted by
+      <%= link_to user_path(pin.user), class: "font-medium text-gray-800 hover:underline" do %>
+        <%= pin.user.username %>
+      <% end %>
+    </p>
+
+    <div class="flex items-center space-x-4 text-sm text-gray-600">
+      <span>❤️ <%= pin.likes.count %></span>
+      <span>💬 <%= pin.comments.count %></span>
+      <span>🔁 <%= pin.reposts.count %></span>
+    </div>
   </div>
+
+  <%= render "pins/save_modal", pin: pin %>
+
 </div>
