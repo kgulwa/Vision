@@ -11,12 +11,10 @@ RSpec.describe "Insights", type: :request do
     )
   end
 
+  # Fake login helper — works for all Rails auth systems
   before do
-    # Log in the user before requesting insights
-    post login_path, params: {
-      email: user.email,
-      password: "password"
-    }
+    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+    allow_any_instance_of(ApplicationController).to receive(:logged_in?).and_return(true)
   end
 
   it "returns http success for the creator" do

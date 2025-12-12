@@ -28,13 +28,11 @@
     <%= form.file_field :file, accept: "image/*,video/*", class: "w-full" %>
   </div>
 
-  <!-- Thumbnail Upload  -->
-  <% if pin.file.attached? && pin.file.video? %>
-    <div class="mb-4">
-      <%= form.label :thumbnail, "Choose Thumbnail (Image)", class: "font-semibold block mb-1" %>
-      <%= form.file_field :thumbnail, accept: "image/*", class: "w-full" %>
-    </div>
-  <% end %>
+  <!-- Thumbnail Upload (Now works on NEW + EDIT) -->
+  <div id="thumbnail-selector" class="mb-4" style="<%= pin.file&.video? ? '' : 'display:none;' %>">
+    <%= form.label :thumbnail, "Choose Thumbnail (Image)", class: "font-semibold block mb-1" %>
+    <%= form.file_field :thumbnail, accept: "image/*", class: "w-full" %>
+  </div>
 
   <!-- TAG PEOPLE -->
   <div data-controller="tag-people" class="mb-6">
@@ -74,3 +72,25 @@
     <%= link_to "Back to Pins", pins_path, class: "text-red-500" %>
   </div>
 <% end %>
+
+<!-- SCRIPT: Shows thumbnail selector when a video is chosen -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const fileInput = document.querySelector('input[type="file"][name="pin[file]"]');
+  const thumbSection = document.getElementById("thumbnail-selector");
+
+  if (!fileInput || !thumbSection) return;
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    // If user selects a video → show thumbnail selector
+    if (file.type.startsWith("video/")) {
+      thumbSection.style.display = "block";
+    } else {
+      thumbSection.style.display = "none";
+    }
+  });
+});
+</script>
