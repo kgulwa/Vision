@@ -61,7 +61,8 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    @user = User.find(params[:id]) # Works with UUID
+    # Allow finding by numeric ID OR UUID
+    @user = User.find_by(id: params[:id]) || User.find_by!(uid: params[:id])
   end
 
   def authorize_user
