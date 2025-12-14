@@ -27,17 +27,18 @@ RSpec.describe "VideoViewsController", type: :request do
     )
   end
 
-  # Fake login helper to satisfy require_login
   before do
-    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
     allow_any_instance_of(ApplicationController).to receive(:logged_in?).and_return(true)
+    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
   end
 
   describe "PATCH /video_views/:id" do
     it "updates the video view and returns JSON success" do
-      patch video_view_path(video_view), params: {
-        video_view: { duration_seconds: 42 }
-      }
+      patch video_view_path(video_view),
+        params: {
+          video_view: { duration_seconds: 42 }
+        }.to_json,
+        headers: { "CONTENT_TYPE" => "application/json" }
 
       expect(response).to have_http_status(:success)
 
@@ -57,9 +58,11 @@ RSpec.describe "VideoViewsController", type: :request do
     end
 
     it "redirects to login" do
-      patch video_view_path(video_view), params: {
-        video_view: { duration_seconds: 50 }
-      }
+      patch video_view_path(video_view),
+        params: {
+          video_view: { duration_seconds: 50 }
+        }.to_json,
+        headers: { "CONTENT_TYPE" => "application/json" }
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(login_path)
