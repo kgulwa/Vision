@@ -1,0 +1,23 @@
+<div id="new_comment_form_<%= pin.id %>">
+  <%= form_with model: [pin, Comment.new], data: { turbo: true } do |f| %>
+
+    <div class="relative w-full" data-controller="mentions">
+      <%= f.text_area :content,
+          rows: 3,
+          placeholder: "Add a comment...",
+          class: "w-full border p-2 rounded",
+          data: {
+            action: "input->mentions#search",
+            mentions_target: "input"
+          } %>
+
+      <div data-mentions-target="dropdown"
+           class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50">
+      </div>
+    </div>
+
+    <%= f.submit "Comment",
+        class: "mt-2 px-4 py-2 bg-blue-600 text-white rounded" %>
+
+  <% end %>
+</div>

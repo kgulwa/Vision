@@ -1,13 +1,5 @@
-<%= turbo_stream.replace "comment-#{@comment.id}" do %>
+<%= turbo_stream.replace "comment_#{@comment.id}" do %>
   <%= render "pins/comment", comment: @comment %>
 <% end %>
-<% if @comment.parent_id.present? %>
-  <%= turbo_stream.replace "replies_for_#{@comment.parent_id}" do %>
-    <% @comment.parent.replies.each do |reply| %>
-      <%= render "pins/comment", comment: reply %>
-    <% end %>
-  <% end %>
-<% end %>
-<%= turbo_stream.replace "comment_count_#{@pin.id}" do %>
-  <%= @pin.comments.where(parent_id: nil).count %>
-<% end %>
+
+<turbo-stream action="redirect" url="<%= pin_path(@pin, anchor: "comments") %>"></turbo-stream>

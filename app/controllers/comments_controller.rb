@@ -3,84 +3,62 @@ class CommentsController < ApplicationController
   before_action :set_pin
   before_action :set_comment, only: [:edit, :update, :destroy]
 
-  # -----------------------------
-  # NEW — Reply form
-  # -----------------------------
+ 
   def new
     @comment = @pin.comments.build(parent_id: params[:parent_id])
   end
 
-  # -----------------------------
-  # CREATE COMMENT
-  # -----------------------------
+
   def create
     @comment = @pin.comments.build(comment_params)
     @comment.user = current_user
+
     if @comment.save
       notify_users(@comment)
+
       respond_to do |format|
-        format.turbo_stream { render :create }
+        format.turbo_stream
         format.html { redirect_to pin_path(@pin), notice: "Comment created." }
       end
     else
       respond_to do |format|
-        format.turbo_stream {
-          render turbo_stream: turbo_stream.replace(
-            "pin_comments_#{@pin.id}",
-            partial: "pins/comments",
-            locals: { pin: @pin }
-          ), status: :unprocessable_entity
-        }
+        format.turbo_stream { head :unprocessable_entity }
         format.html { redirect_to pin_path(@pin), alert: @comment.errors.full_messages.join(", ") }
       end
     end
   end
 
-  # -----------------------------
-  # EDIT COMMENT
-  # -----------------------------
+
   def edit
+    # rendered inside turbo-frame
   end
 
-  # -----------------------------
-  # UPDATE COMMENT
-  # -----------------------------
+  
   def update
     if @comment.update(comment_params)
       respond_to do |format|
-        format.turbo_stream { render :update }
+        format.turbo_stream   
         format.html { redirect_to pin_path(@pin), notice: "Comment updated." }
       end
     else
       respond_to do |format|
-        format.turbo_stream {
-          render turbo_stream: turbo_stream.replace(
-            "comment-#{@comment.id}",
-            partial: "pins/comment",
-            locals: { comment: @comment }
-          ), status: :unprocessable_entity
-        }
+        format.turbo_stream { head :unprocessable_entity }
         format.html { render :edit, status: :unprocessable_entity }
       end
     end
   end
 
-  # -----------------------------
-  # DELETE COMMENT
-  # -----------------------------
+  
   def destroy
-    if @comment && @comment.user == current_user
-      @comment.destroy
-    end
+    @comment.destroy if @comment && @comment.user == current_user
+
     respond_to do |format|
-      format.turbo_stream { render :destroy }
+      format.turbo_stream
       format.html { redirect_to pin_path(@pin) }
     end
   end
 
-  # -----------------------------
-  # PRIVATE HELPERS
-  # -----------------------------
+ -
   private
 
   def notify_users(comment)
@@ -94,6 +72,7 @@ class CommentsController < ApplicationController
         read: false
       )
     end
+
     # Notify parent comment owner
     if comment.parent_id.present?
       parent_user = Comment.find(comment.parent_id).user
@@ -107,10 +86,12 @@ class CommentsController < ApplicationController
         )
       end
     end
+
     # Notify tagged users
     @pin.tagged_users.each do |tagged|
       next if tagged.id == current_user.id
       next if tagged.uid == @pin.user_uid
+
       Notification.create!(
         user: tagged,
         actor: current_user,

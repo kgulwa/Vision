@@ -2,11 +2,26 @@
   <%= turbo_stream.append "replies_for_#{@comment.parent_id}" do %>
     <%= render "pins/comment", comment: @comment %>
   <% end %>
+
+  
+  <%= turbo_stream.replace "reply_form_#{@comment.parent_id}" do %>
+    <turbo-frame id="reply_form_<%= @comment.parent_id %>"></turbo-frame>
+  <% end %>
+
 <% else %>
-  <%= turbo_stream.replace "pin_comments_#{@pin.id}" do %>
-    <%= render partial: "pins/comments", locals: { pin: @pin } %>
+  <%= turbo_stream.append "pin_comments_#{@pin.id}" do %>
+    <%= render "pins/comment", comment: @comment %>
   <% end %>
 <% end %>
+
+
 <%= turbo_stream.replace "comment_count_#{@pin.id}" do %>
-  <%= @pin.comments.where(parent_id: nil).count %>
+  <span id="comment_count_<%= @pin.id %>">
+    <%= @pin.comments.where(parent_id: nil).count %>
+  </span>
+<% end %>
+
+<!-- RESET FORM -->
+<%= turbo_stream.replace "new_comment_form_#{@pin.id}" do %>
+  <%= render "pins/comment_form", pin: @pin %>
 <% end %>

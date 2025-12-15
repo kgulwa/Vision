@@ -1,32 +1,26 @@
-<div class="max-w-md mx-auto mt-6 p-4 bg-white rounded-xl shadow">
-  <h2 class="text-xl font-semibold mb-4">Edit Comment</h2>
+<%= turbo_frame_tag "comment_#{@comment.id}" do %>
+  <div class="p-3 border rounded-lg bg-white shadow">
 
-  <%= form_with model: [@pin, @comment],
-                data: { turbo: true } do |f| %>
+    <%= form_with model: [@pin, @comment],
+                  format: :turbo_stream,
+                  data: { turbo: true } do |f| %>
 
-    <div class="mb-4">
-      <%= f.label :content, "Your Comment", class: "block text-sm font-medium" %>
-
-      <div class="relative w-full" data-controller="mentions">
+      <div class="mb-3">
         <%= f.text_area :content,
-            value: @comment.content,
-            rows: 4,
-            class: "w-full p-2 border rounded",
-            data: {
-              action: "input->mentions#search",
-              mentions_target: "input"
-            } %>
-
-        <div data-mentions-target="dropdown"
-             class="absolute left-0 top-full mt-1 w-full bg-white border rounded-lg shadow hidden z-50">
-        </div>
+            rows: 3,
+            class: "w-full border p-2 rounded" %>
       </div>
-    </div>
 
-    <div class="flex justify-between">
-      <%= f.submit "Update Comment", class: "px-4 py-2 bg-blue-600 text-white rounded" %>
+      <div class="flex space-x-2">
+        <%= f.submit "Update Comment",
+            class: "px-4 py-2 bg-blue-600 text-white rounded" %>
 
-      <%= link_to "Cancel", pin_path(@pin), class: "px-4 py-2 bg-gray-300 rounded" %>
-    </div>
-  <% end %>
-</div>
+        <%= link_to "Cancel",
+            "#",
+            data: { turbo_frame: "comment_#{@comment.id}" },
+            class: "px-4 py-2 bg-gray-300 rounded" %>
+      </div>
+
+    <% end %>
+  </div>
+<% end %>

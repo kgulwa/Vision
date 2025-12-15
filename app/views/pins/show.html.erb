@@ -126,7 +126,7 @@
             <% end %>
           </turbo-frame>
 
-          <!-- SAVE BUTTON HERE 🔥 -->
+          <!-- SAVE -->
           <button
             class="flex items-center space-x-2 px-4 py-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200"
             data-controller="save-modal"
@@ -136,7 +136,6 @@
           </button>
 
           <%= render "pins/save_modal", pin: @pin %>
-
         </div>
 
         <!-- COMMENTS TITLE -->
@@ -148,7 +147,7 @@
           )
         </h3>
 
-        <!-- COMMENTS BLOCK -->
+        <!-- COMMENTS BLOCK (🔥 FIXED STRATEGY) -->
         <div id="pin_comments_<%= @pin.id %>">
           <%= render partial: "pins/comments", locals: { pin: @pin } %>
         </div>
