@@ -58,7 +58,7 @@ class CommentsController < ApplicationController
     end
   end
 
- -
+ 
   private
 
   def notify_users(comment)
