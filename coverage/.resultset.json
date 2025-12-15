@@ -170,7 +170,7 @@
           null,
           null,
           1,
-          576,
+          575,
           null,
           154,
           79,
@@ -201,7 +201,7 @@
         ],
         "branches": {
           "[:if, 0, 10, 4, 10, 51]": {
-            "[:then, 1, 10, 4, 10, 24]": 422,
+            "[:then, 1, 10, 4, 10, 24]": 421,
             "[:else, 2, 10, 4, 10, 51]": 154
           },
           "[:if, 3, 12, 4, 16, 7]": {
@@ -808,7 +808,7 @@
           1,
           null,
           1,
-          89,
+          91,
           null,
           null
         ],
@@ -1557,10 +1557,6 @@
           1,
           2,
           null,
-          2,
-          1,
-          null,
-          null,
           null,
           null,
           null,
@@ -1577,6 +1573,9 @@
           null,
           1,
           2,
+          null,
+          null,
+          null,
           1,
           null,
           1,
@@ -1590,43 +1589,132 @@
           1,
           1,
           1,
-          null,
           null,
           null,
           1,
           2,
-          2,
+          null,
+          null,
+          null,
           null,
           2,
           null,
           null,
           1,
-          null,
           null,
           1,
           9,
-          null,
           9,
+          null,
           9,
           null,
           null
         ],
         "branches": {
-          "[:if, 0, 8, 4, 14, 7]": {
-            "[:then, 1, 9, 6, 13, 7]": 1,
-            "[:else, 2, 8, 4, 14, 7]": 1
+          "[:if, 0, 23, 4, 30, 7]": {
+            "[:then, 1, 27, 6, 27, 77]": 1,
+            "[:else, 2, 29, 6, 29, 49]": 1
           },
-          "[:if, 3, 27, 4, 31, 7]": {
-            "[:then, 4, 28, 6, 28, 77]": 1,
-            "[:else, 5, 30, 6, 30, 49]": 1
-          },
-          "[:\"&.\", 6, 46, 4, 46, 22]": {
-            "[:then, 7, 46, 4, 46, 22]": 1,
-            "[:else, 8, 46, 4, 46, 22]": 1
-          },
-          "[:unless, 9, 58, 4, 58, 76]": {
-            "[:else, 10, 58, 4, 58, 76]": 7,
-            "[:then, 11, 58, 4, 58, 57]": 2
+          "[:unless, 3, 57, 4, 57, 76]": {
+            "[:else, 4, 57, 4, 57, 76]": 7,
+            "[:then, 5, 57, 4, 57, 57]": 2
+          }
+        }
+      },
+      "/home/konkecodes/vision/app/services/collections/create.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          2,
+          null,
+          null,
+          1,
+          2,
+          2,
+          2,
+          null,
+          null,
+          1,
+          2,
+          2,
+          2,
+          null,
+          null,
+          1,
+          null,
+          1,
+          null,
+          1,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "branches": {
+          "[:if, 0, 15, 6, 15, 58]": {
+            "[:then, 1, 15, 6, 15, 39]": 1,
+            "[:else, 2, 15, 6, 15, 58]": 1
+          }
+        }
+      },
+      "/home/konkecodes/vision/app/services/collections/update.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          2,
+          null,
+          null,
+          1,
+          2,
+          2,
+          null,
+          null,
+          1,
+          2,
+          null,
+          null,
+          1,
+          null,
+          1,
+          null,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/konkecodes/vision/app/services/collections/remove_pin.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          2,
+          null,
+          null,
+          1,
+          2,
+          2,
+          null,
+          null,
+          1,
+          2,
+          2,
+          null,
+          null,
+          1,
+          null,
+          1,
+          null,
+          null
+        ],
+        "branches": {
+          "[:\"&.\", 0, 14, 6, 14, 24]": {
+            "[:then, 1, 14, 6, 14, 24]": 1,
+            "[:else, 2, 14, 6, 14, 24]": 1
           }
         }
       },
@@ -1874,6 +1962,6 @@
         "branches": {}
       }
     },
-    "timestamp": 1765807714
+    "timestamp": 1765810544
   }
 }
