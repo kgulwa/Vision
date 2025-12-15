@@ -170,7 +170,7 @@
           null,
           null,
           1,
-          583,
+          580,
           null,
           154,
           79,
@@ -201,7 +201,7 @@
         ],
         "branches": {
           "[:if, 0, 10, 4, 10, 51]": {
-            "[:then, 1, 10, 4, 10, 24]": 429,
+            "[:then, 1, 10, 4, 10, 24]": 426,
             "[:else, 2, 10, 4, 10, 51]": 154
           },
           "[:if, 3, 12, 4, 16, 7]": {
@@ -473,33 +473,9 @@
           1,
           1,
           null,
+          null,
           1,
           4,
-          null,
-          null,
-          4,
-          0,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          4,
-          0,
-          null,
-          0,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
           4,
           null,
           null,
@@ -517,17 +493,9 @@
           null
         ],
         "branches": {
-          "[:if, 0, 9, 4, 17, 7]": {
-            "[:then, 1, 10, 6, 16, 7]": 0,
-            "[:else, 2, 9, 4, 17, 7]": 4
-          },
-          "[:if, 3, 21, 6, 21, 42]": {
-            "[:then, 4, 21, 6, 21, 10]": 0,
-            "[:else, 5, 21, 6, 21, 42]": 0
-          },
-          "[:unless, 6, 44, 4, 44, 61]": {
-            "[:else, 7, 44, 4, 44, 61]": 6,
-            "[:then, 8, 44, 4, 44, 49]": 0
+          "[:unless, 0, 20, 4, 20, 61]": {
+            "[:else, 1, 20, 4, 20, 61]": 6,
+            "[:then, 2, 20, 4, 20, 49]": 0
           }
         }
       },
@@ -1518,6 +1486,68 @@
           }
         }
       },
+      "/home/konkecodes/vision/app/services/likes/create.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          4,
+          null,
+          null,
+          1,
+          4,
+          4,
+          null,
+          null,
+          1,
+          4,
+          4,
+          4,
+          null,
+          null,
+          1,
+          null,
+          1,
+          null,
+          1,
+          4,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          4,
+          0,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "branches": {
+          "[:if, 0, 23, 6, 23, 40]": {
+            "[:then, 1, 23, 6, 23, 12]": 4,
+            "[:else, 2, 23, 6, 23, 40]": 0
+          },
+          "[:if, 3, 36, 8, 36, 36]": {
+            "[:then, 4, 36, 8, 36, 12]": 0,
+            "[:else, 5, 36, 8, 36, 36]": 0
+          }
+        }
+      },
       "/home/konkecodes/vision/app/controllers/collections_controller.rb": {
         "lines": [
           1,
@@ -1790,6 +1820,6 @@
         "branches": {}
       }
     },
-    "timestamp": 1765802548
+    "timestamp": 1765805875
   }
 }
