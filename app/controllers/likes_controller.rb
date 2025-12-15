@@ -2,40 +2,16 @@ class LikesController < ApplicationController
   before_action :require_login
   before_action :set_pin
 
+
   def create
-    current_user.like(@pin)
-
-    # Notify pin owner (unless liking own pin)
-    if @pin.user.uid != current_user.uid   
-      Notification.create!(
-        user: @pin.user,
-        actor: current_user,
-        action: "liked your post",
-        notifiable: @pin,
-        read: false
-      )
-    end
-
-    # Notify ALL tagged users (except the actor)
-    @pin.tagged_users.each do |tagged|
-      next if tagged.id == current_user.id
-
-      Notification.create!(
-        user: tagged,
-        actor: current_user,
-        action: "liked a post you're tagged in",
-        notifiable: @pin,
-        read: false
-      )
-    end
-
+    Likes::Create.call(user: current_user, pin: @pin)
     redirect_to @pin, notice: "Pin liked!"
-  end
+  end 
 
   def destroy
     current_user.unlike(@pin)
     redirect_to @pin, notice: "Pin unliked!"
-  end
+  end 
 
   private
 

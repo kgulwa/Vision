@@ -10,9 +10,7 @@ module ApplicationHelper
     @current_user = user_id ? User.find_by(id: user_id) : nil
   end
 
-  # -----------------------------
-  # USER AVATAR
-  # -----------------------------
+  
   def user_avatar(user, size: 40, class_name: "")
     css = "rounded-full object-cover #{class_name}".strip
 
@@ -39,9 +37,7 @@ module ApplicationHelper
     end
   end
 
-  # -----------------------------
-  # RENDER @MENTIONS AS LINKS (UID SAFE)
-  # -----------------------------
+  
   def render_with_mentions(text)
     return "" if text.blank?
 
@@ -61,9 +57,7 @@ module ApplicationHelper
     end.html_safe
   end
 
-  # -----------------------------
-  # UNREAD NOTIFICATION COUNT
-  # -----------------------------
+  
   def unread_notifications_count
     return 0 unless current_user
 

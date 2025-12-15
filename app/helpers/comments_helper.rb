@@ -1,4 +1,3 @@
-# app/helpers/comments_helper.rb
 module CommentsHelper
   def format_comment(text)
     return "" if text.blank?
