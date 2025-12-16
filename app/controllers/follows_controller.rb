@@ -3,83 +3,63 @@ class FollowsController < ApplicationController
   before_action :set_user
 
   def create
-    current_user.follow(@user)
-    @user.reload
-
-    if @user.id != current_user.id
-      Notification.create!(
-        user: @user,
-        actor: current_user,
-        action: "started following you",
-        notifiable: @user,
-        read: false
-      )
-    end
+    @user = Follows::Create.call(
+      follower: current_user,
+      followed: @user
+    )
 
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.replace(
-            "profile_follow_button_#{@user.uid.delete('-')}",
-            partial: "users/follow_button",
-            locals: { user: @user, page: "profile" }
-          ),
-          turbo_stream.replace(
-            "explore_follow_button_#{@user.uid.delete('-')}",
-            partial: "users/follow_button",
-            locals: { user: @user, page: "explore" }
-          ),
-          turbo_stream.update(
-            "profile_follower_count_#{@user.uid.delete('-')}",
-            @user.followers.count
-          ),
-          turbo_stream.update(
-            "explore_follower_count_#{@user.uid.delete('-')}",
-            @user.followers.count
-          )
-        ]
+      format.turbo_stream { render_follow_updates }
+      format.html do
+        redirect_to user_path(@user),
+                    notice: "You are now following #{@user.username}!"
       end
-
-      format.html { redirect_to user_path(@user), notice: "You are now following #{@user.username}!" }
     end
   end
 
   def destroy
-    current_user.unfollow(@user)
-    @user.reload
+    @user = Follows::Destroy.call(
+      follower: current_user,
+      followed: @user
+    )
 
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.replace(
-            "profile_follow_button_#{@user.uid.delete('-')}",
-            partial: "users/follow_button",
-            locals: { user: @user, page: "profile" }
-          ),
-          turbo_stream.replace(
-            "explore_follow_button_#{@user.uid.delete('-')}",
-            partial: "users/follow_button",
-            locals: { user: @user, page: "explore" }
-          ),
-          turbo_stream.update(
-            "profile_follower_count_#{@user.uid.delete('-')}",
-            @user.followers.count
-          ),
-          turbo_stream.update(
-            "explore_follower_count_#{@user.uid.delete('-')}",
-            @user.followers.count
-          )
-        ]
+      format.turbo_stream { render_follow_updates }
+      format.html do
+        redirect_to user_path(@user),
+                    notice: "You unfollowed #{@user.username}."
       end
-
-      format.html { redirect_to user_path(@user), notice: "You unfollowed #{@user.username}." }
     end
   end
 
   private
 
   def set_user
-    
     @user = User.find_by!(uid: params[:user_id])
+  end
+
+  def render_follow_updates
+    sanitized_uid = @user.uid.delete("-")
+
+    render turbo_stream: [
+      turbo_stream.replace(
+        "profile_follow_button_#{sanitized_uid}",
+        partial: "users/follow_button",
+        locals: { user: @user, page: "profile" }
+      ),
+      turbo_stream.replace(
+        "explore_follow_button_#{sanitized_uid}",
+        partial: "users/follow_button",
+        locals: { user: @user, page: "explore" }
+      ),
+      turbo_stream.update(
+        "profile_follower_count_#{sanitized_uid}",
+        @user.followers.count
+      ),
+      turbo_stream.update(
+        "explore_follower_count_#{sanitized_uid}",
+        @user.followers.count
+      )
+    ]
   end
 end
