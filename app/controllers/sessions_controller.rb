@@ -4,9 +4,12 @@ class SessionsController < ApplicationController
   def new; end
 
   def create
-    @user = User.find_by(username: params[:username])
+    @user = Sessions::Authenticate.call(
+      username: params[:username],
+      password: params[:password]
+    )
 
-    if @user&.authenticate(params[:password])
+    if @user
       session[:user_id] = @user.id
       redirect_to pins_path, notice: "Welcome back, #{@user.username}"
     else

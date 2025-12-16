@@ -7,16 +7,11 @@ class UsersController < ApplicationController
     @pins = @user.pins.order(created_at: :desc)
     @reposted_pins = @user.reposted_pins.order(created_at: :desc)
     @collections = @user.collections
-
-    # LOAD TAGGED PINS FOR THE TAB
     @tagged_pins = @user.tagged_pins.includes(:user).order(created_at: :desc)
   end
 
-  # TAGGED PAGE (separate route)
   def tagged
-    @pins = @user.tagged_pins
-                 .includes(:user)
-                 .order(created_at: :desc)
+    @pins = @user.tagged_pins.includes(:user).order(created_at: :desc)
   end
 
   def new
@@ -24,9 +19,9 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
+    @user = Users::Register.call(params: user_params)
 
-    if @user.save
+    if @user.persisted?
       session[:user_id] = @user.id
       redirect_to pins_path, notice: "Welcome to Vision, #{@user.username}!"
     else
@@ -37,15 +32,7 @@ class UsersController < ApplicationController
   def edit; end
 
   def update
-    cleaned = user_params.dup
-
-    # Prevent blank password validation errors
-    if cleaned[:password].blank?
-      cleaned.delete(:password)
-      cleaned.delete(:password_confirmation)
-    end
-
-    if @user.update(cleaned)
+    if Users::UpdateProfile.call(user: @user, params: user_params)
       redirect_to user_path(@user), notice: "Profile updated successfully!"
     else
       render :edit, status: :unprocessable_content
@@ -61,17 +48,12 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    # Allow finding by numeric ID OR UUID
     @user = User.find_by(id: params[:id]) || User.find_by!(uid: params[:id])
   end
 
   def authorize_user
-    # Allow visiting tagged + show
     return if %w[show tagged].include?(action_name)
-
-    unless @user == current_user
-      redirect_to root_path, alert: "You can only edit your own profile."
-    end
+    redirect_to root_path, alert: "You can only edit your own profile." unless @user == current_user
   end
 
   def user_params
