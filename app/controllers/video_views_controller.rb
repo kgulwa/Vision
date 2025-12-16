@@ -4,8 +4,8 @@ class VideoViewsController < ApplicationController
   def update
     video_view = VideoView.find(params[:id])
 
-    video_view.update(
-      ended_at: Time.current,
+    VideoViews::Update.call(
+      video_view: video_view,
       duration_seconds: video_view_params[:duration_seconds]
     )
 
