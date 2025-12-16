@@ -8,20 +8,11 @@ class PinsController < ApplicationController
   end
 
   def show
-    unless @pin.user.present?
-      redirect_to pins_path, alert: "Pin not found"
-      return
-    end
+    redirect_to pins_path, alert: "Pin not found" and return unless @pin.user.present?
 
-    # VIDEO VIEW TRACKING 
-    if logged_in? && @pin.file&.video?
-      @video_view = VideoView.create!(
-        user_uid: current_user.uid,
-        pin_id: @pin.id,
-        started_at: Time.current
-      )
+    if logged_in?
+      Pins::TrackVideoView.call(user: current_user, pin: @pin)
     end
-    # END TRACKING
 
     @comments = @pin.comments
                     .includes(:user, :replies)
@@ -36,15 +27,15 @@ class PinsController < ApplicationController
   end
 
   def create
-    Rails.logger.info " PARAMS: #{params.inspect}"
+    @pin = Pins::Create.call(
+      user: current_user,
+      params: pin_params,
+      tagged_user_ids: params.dig(:pin, :tagged_user_ids)
+    )
 
-    @pin = current_user.pins.build(pin_params)
-
-    if @pin.save
-      create_pin_tags(@pin)
+    if @pin.persisted?
       redirect_to pin_path(@pin), notice: "Pin posted successfully!"
     else
-      Rails.logger.info "❌ PIN SAVE FAILED: #{@pin.errors.full_messages}"
       flash.now[:alert] = "Failed to post pin."
       render :new, status: :unprocessable_entity
     end
@@ -61,23 +52,13 @@ class PinsController < ApplicationController
   end
 
   def destroy
-    @pin.file.purge if @pin.file.attached?
-    @pin.destroy
+    Pins::Destroy.call(pin: @pin)
     redirect_to pins_path, notice: "Pin deleted successfully!"
   end
 
   def search
     @query = params[:query]
-
-    @pins =
-      if @query.present?
-        Pin.where("title ILIKE ? OR description ILIKE ?", "%#{@query}%", "%#{@query}%")
-           .includes(:user)
-           .from_existing_users
-           .recent
-      else
-        Pin.none
-      end
+    @pins = Pins::Search.call(query: @query)
   end
 
   private
@@ -88,42 +69,10 @@ class PinsController < ApplicationController
   end
 
   def pin_params
-    params.require(:pin).permit(
-      :title,
-      :description,
-      :file,
-      :thumbnail
-    )
+    params.require(:pin).permit(:title, :description, :file, :thumbnail)
   end
 
   def authorize_user
     redirect_to pins_path, alert: "You can only edit your own pins." unless @pin.user == current_user
-  end
-
-  def create_pin_tags(pin)
-    return unless params[:pin][:tagged_user_ids].present?
-
-    pin.pin_tags.destroy_all
-
-    params[:pin][:tagged_user_ids]
-      .reject(&:blank?)
-      .each do |user_uid|
-
-      tagged_user = User.find_by(uid: user_uid)
-      next unless tagged_user
-
-      PinTag.create!(
-        pin: pin,
-        tagged_user_id: tagged_user.id,
-        tagged_by_id: current_user.id
-      )
-
-      Notification.create!(
-        user_id: tagged_user.id,
-        actor_id: current_user.id,
-        notifiable: pin,
-        action: "tagged_you"
-      )
-    end
   end
 end
