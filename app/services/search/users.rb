@@ -31,7 +31,7 @@ module Search
 
 
         def search_results
-            return User.none unless querySelectory.present?
+            return User.none unless query.present?
 
 
             User
