@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_11_074126) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_17_093116) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -132,11 +132,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_11_074126) do
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
+    t.datetime "email_verification_sent_at"
+    t.string "email_verification_token"
+    t.boolean "email_verified", default: false, null: false
     t.string "password_digest"
     t.uuid "uid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "updated_at", null: false
     t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email_verification_token"], name: "index_users_on_email_verification_token", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 

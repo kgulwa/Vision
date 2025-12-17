@@ -22,10 +22,7 @@ Rails.application.routes.draw do
 
     member do
       get :tagged
-
-    
       get :insights, to: "insights#show", as: :insights
-     
     end
   end
 
@@ -42,6 +39,9 @@ Rails.application.routes.draw do
   get '/login', to: 'sessions#new', as: :login
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy', as: :logout
+
+  # 🔐 EMAIL VERIFICATION
+  get "/verify-email", to: "email_verifications#update", as: :verify_email
 
   # SEARCH
   get '/search', to: 'pins#search', as: :search
