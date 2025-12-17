@@ -150,4 +150,11 @@ class User < ApplicationRecord
   def saved?(pin)
     saved_pins.exists?(pin_id: pin.id)
   end
+
+  #helper for email verification
+
+  def email_verified?
+    email_verified
+  end
+  
 end
