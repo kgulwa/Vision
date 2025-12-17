@@ -40,7 +40,7 @@ Rails.application.routes.draw do
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy', as: :logout
 
-  # 🔐 EMAIL VERIFICATION
+  # EMAIL VERIFICATION
   get "/verify-email", to: "email_verifications#update", as: :verify_email
 
   # SEARCH
