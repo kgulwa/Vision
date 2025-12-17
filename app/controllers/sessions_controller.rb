@@ -10,6 +10,12 @@ class SessionsController < ApplicationController
     )
 
     if @user
+      unless @user.email_verified
+        flash.now[:alert] = "Please verify your email before logging in."
+        render :new, status: :unprocessable_entity
+        return
+      end
+
       session[:user_id] = @user.id
       redirect_to pins_path, notice: "Welcome back, #{@user.username}"
     else
