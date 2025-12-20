@@ -1,22 +1,20 @@
 module Users
   class Register
-    def self.call(params:)
-      new(params).call
+    def self.call(user_params)
+      new(user_params).call
     end
 
-    def initialize(params)
-      @params = params
+    def initialize(user_params)
+      @user_params = user_params
     end
 
     def call
-      user = User.new(params)
-      return user unless user.save
+      user = User.create!(@user_params)
+
+      Users::EmailVerificationService.new(user).call
+      UserMailer.email_verification(user).deliver_now
 
       user
     end
-
-    private
-
-    attr_reader :params
   end
 end

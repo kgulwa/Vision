@@ -14,13 +14,15 @@ RSpec.describe "PinsController", type: :request do
     }
   end
 
+  
   before do
-    post login_path, params: { username: user.username, password: "password" }
+    allow_any_instance_of(ApplicationController)
+      .to receive(:current_user)
+      .and_return(user)
   end
 
-  
-  # CREATE
-  
+ 
+
   describe "POST /pins" do
     it "creates a new pin with valid params" do
       expect {
@@ -41,9 +43,8 @@ RSpec.describe "PinsController", type: :request do
     end
   end
 
-  
-  # SHOW
-  
+ 
+
   describe "GET /pins/:id" do
     it "redirects when pin's user is missing" do
       orphan_pin = build(:pin)
@@ -64,22 +65,23 @@ RSpec.describe "PinsController", type: :request do
   end
 
   
-  # UPDATE
-  
   describe "PATCH /pins/:id" do
     it "updates when owner edits their pin" do
       patch pin_path(pin), params: { pin: { title: "Updated" } }
+
       expect(pin.reload.title).to eq("Updated")
       expect(response).to redirect_to(pin_path(pin))
     end
 
     it "does not update with invalid params" do
       patch pin_path(pin), params: { pin: { title: "" } }
+
       expect(response.status).to eq(422)
     end
 
     it "prevents updating someone else's pin" do
       foreign_pin = create(:pin, user_uid: other_user.uid)
+
       patch pin_path(foreign_pin), params: { pin: { title: "Hacked" } }
 
       expect(foreign_pin.reload.title).not_to eq("Hacked")
@@ -88,8 +90,7 @@ RSpec.describe "PinsController", type: :request do
   end
 
   
-  # DESTROY
-  
+
   describe "DELETE /pins/:id" do
     it "deletes the pin when owner is logged in" do
       pin_to_delete = create(:pin, user_uid: user.uid)
@@ -118,9 +119,7 @@ RSpec.describe "PinsController", type: :request do
   end
 
   
-  # SEARCH
-  
-  describe "GET /searc (search_path)" do
+  describe "GET /search (search_path)" do
     it "returns matching pins when query present" do
       match_user = create(:user)
       create(:pin, title: "Hello World", user_uid: match_user.uid)
@@ -138,9 +137,8 @@ RSpec.describe "PinsController", type: :request do
     end
   end
 
-  
-  # TAGGING USERS
-  
+ 
+
   describe "POST /pins with tagged users" do
     let(:tagged_user) { create(:user) }
 
@@ -156,7 +154,7 @@ RSpec.describe "PinsController", type: :request do
       expect {
         post pins_path, params: params
       }.to change(PinTag, :count).by(1)
-         .and change(Notification, :count).by(1)
+       .and change(Notification, :count).by(1)
     end
 
     it "skips blank user IDs" do
@@ -174,10 +172,8 @@ RSpec.describe "PinsController", type: :request do
     end
 
     it "does nothing when tagged_user_ids missing" do
-      params = valid_params
-
       expect {
-        post pins_path, params: params
+        post pins_path, params: valid_params
       }.not_to change(PinTag, :count)
     end
   end

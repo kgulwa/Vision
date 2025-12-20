@@ -19,14 +19,13 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = Users::Register.call(params: user_params)
+    @user = Users::Register.call(user_params)
 
-    if @user.persisted?
-      session[:user_id] = @user.id
-      redirect_to pins_path, notice: "Welcome to Vision, #{@user.username}!"
-    else
-      render :new, status: :unprocessable_content
-    end
+    redirect_to login_path,
+                notice: "Account created! Please check your email to verify your account."
+  rescue ActiveRecord::RecordInvalid => e
+    @user = e.record
+    render :new, status: :unprocessable_entity
   end
 
   def edit; end
@@ -35,7 +34,7 @@ class UsersController < ApplicationController
     if Users::UpdateProfile.call(user: @user, params: user_params)
       redirect_to user_path(@user), notice: "Profile updated successfully!"
     else
-      render :edit, status: :unprocessable_content
+      render :edit, status: :unprocessable_entity
     end
   end
 

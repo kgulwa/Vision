@@ -4,8 +4,8 @@ class FollowsController < ApplicationController
 
   def create
     @user = Follows::Create.call(
-      follower: current_user,
-      followed: @user
+      follower: current_user, #passes logged-in user as follower
+      followed: @user         #passes target user from set_user
     )
 
     respond_to do |format|

@@ -19,6 +19,7 @@ module Likes
 
     attr_reader :user, :pin, :name
 
+
     def notify_pin_owner
       return if pin.user.uid == user.uid
 

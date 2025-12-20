@@ -105,4 +105,50 @@ RSpec.describe User, type: :model do
       expect(user.password_digest).to be_present
     end
   end
+
+  # -------------------------
+  # 🔐 EMAIL VERIFICATION
+  # -------------------------
+
+  describe 'email verification' do
+    it 'defaults email_verified to false' do
+      user = User.create!(
+        username: 'verifyuser',
+        email: 'verify@example.com',
+        password: 'password123',
+        password_confirmation: 'password123'
+      )
+
+      expect(user.email_verified).to be(false)
+    end
+
+    it 'does not generate a verification token by default' do
+      user = User.create!(
+        username: 'verifyuser',
+        email: 'verify@example.com',
+        password: 'password123',
+        password_confirmation: 'password123'
+      )
+
+      expect(user.email_verification_token).to be_nil
+      expect(user.email_verification_sent_at).to be_nil
+    end
+
+    it 'can be marked as verified' do
+      user = User.create!(
+        username: 'verifyuser',
+        email: 'verify@example.com',
+        password: 'password123',
+        password_confirmation: 'password123'
+      )
+
+      user.update!(
+        email_verified: true,
+        email_verification_token: nil
+      )
+
+      expect(user.email_verified).to be(true)
+      expect(user.email_verification_token).to be_nil
+    end
+  end
 end

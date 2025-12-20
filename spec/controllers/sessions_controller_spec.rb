@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe SessionsController, type: :controller do
   describe "GET #home" do
@@ -10,7 +10,7 @@ RSpec.describe SessionsController, type: :controller do
     end
 
     context "when logged in" do
-      let(:user) { User.create!(username: "test", email: "test@example.com", password: "password", password_confirmation: "password") }
+      let(:user) { create(:user, email_verified: true) }
 
       before do
         session[:user_id] = user.id
@@ -24,29 +24,37 @@ RSpec.describe SessionsController, type: :controller do
   end
 
   describe "POST #create" do
-    it "logs in with valid credentials" do
-      user = User.create!(
+    it "logs in with valid credentials when email is verified" do
+      user = create(
+        :user,
         username: "john",
-        email: "john@example.com",
         password: "password",
-        password_confirmation: "password"
+        password_confirmation: "password",
+        email_verified: true
       )
 
-      post :create, params: { username: "john", password: "password" }
+      post :create, params: {
+        username: "john",
+        password: "password"
+      }
 
       expect(session[:user_id]).to eq(user.id)
       expect(response).to redirect_to(pins_path)
     end
 
     it "renders :new with invalid credentials" do
-      post :create, params: { username: "fake", password: "wrong" }
-      expect(response.status).to eq(422)
+      post :create, params: {
+        username: "fake",
+        password: "wrong"
+      }
+
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
   describe "DELETE #destroy" do
     it "logs out the user" do
-      session[:user_id] = 123
+      session[:user_id] = SecureRandom.uuid
 
       delete :destroy
 

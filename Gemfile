@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem "rails", "~> 8.1.1"
-gem "propshaft", "~> 1.3"  
+gem "propshaft", "~> 1.3"
 gem "puma", ">= 5.0"
 gem "turbo-rails"
 gem "stimulus-rails"
@@ -13,6 +13,7 @@ gem "pg"                      # PostgreSQL
 gem "bootsnap", require: false
 gem "image_processing", "~> 1.2"
 gem "groupdate"
+
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
   gem "bundler-audit", require: false
@@ -22,10 +23,13 @@ group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "faker"
+
+  gem "dotenv-rails"
 end
 
 group :development do
   gem "web-console"
+  gem "letter_opener"
 end
 
 group :test do

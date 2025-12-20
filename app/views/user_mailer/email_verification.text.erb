@@ -1,3 +1,7 @@
-User#email_verification
+Hi <%= @user.username %>,
 
-<%= @greeting %>, find me in app/views/user_mailer/email_verification.text.erb
+Please verify your email by visiting the link below:
+
+<%= verify_email_url(token: @user.email_verification_token) %>
+
+If you did not create this account, you can ignore this email.

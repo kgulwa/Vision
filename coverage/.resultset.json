@@ -1,7 +1,7 @@
 {
   "RSpec": {
     "coverage": {
-      "/home/konkecodes/vision/app/helpers/application_helper.rb": {
+      "/home/konkecodes/Vision/app/helpers/application_helper.rb": {
         "lines": [
           1,
           1,
@@ -64,7 +64,7 @@
           null,
           null,
           1,
-          31,
+          33,
           null,
           null,
           28,
@@ -106,11 +106,11 @@
           },
           "[:unless, 24, 62, 4, 62, 32]": {
             "[:else, 25, 62, 4, 62, 32]": 28,
-            "[:then, 26, 62, 4, 62, 12]": 3
+            "[:then, 26, 62, 4, 62, 12]": 5
           }
         }
       },
-      "/home/konkecodes/vision/app/helpers/comments_helper.rb": {
+      "/home/konkecodes/Vision/app/helpers/comments_helper.rb": {
         "lines": [
           1,
           1,
@@ -145,21 +145,28 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/helpers/insights_helper.rb": {
+      "/home/konkecodes/Vision/app/helpers/email_verifications_helper.rb": {
         "lines": [
           1,
           null
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/helpers/pins_helper.rb": {
+      "/home/konkecodes/Vision/app/helpers/insights_helper.rb": {
         "lines": [
           1,
           null
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/controllers/application_controller.rb": {
+      "/home/konkecodes/Vision/app/helpers/pins_helper.rb": {
+        "lines": [
+          1,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/konkecodes/Vision/app/controllers/application_controller.rb": {
         "lines": [
           1,
           1,
@@ -170,18 +177,18 @@
           null,
           null,
           1,
-          547,
+          447,
           null,
-          154,
-          79,
+          127,
+          64,
           null,
-          75,
+          63,
           null,
           null,
           null,
           null,
           1,
-          284,
+          273,
           null,
           null,
           1,
@@ -195,30 +202,30 @@
           null,
           null,
           1,
-          169,
+          156,
           null,
           null
         ],
         "branches": {
           "[:if, 0, 10, 4, 10, 51]": {
-            "[:then, 1, 10, 4, 10, 24]": 393,
-            "[:else, 2, 10, 4, 10, 51]": 154
+            "[:then, 1, 10, 4, 10, 24]": 320,
+            "[:else, 2, 10, 4, 10, 51]": 127
           },
           "[:if, 3, 12, 4, 16, 7]": {
-            "[:then, 4, 13, 6, 13, 57]": 79,
-            "[:else, 5, 15, 6, 15, 25]": 75
+            "[:then, 4, 13, 6, 13, 57]": 64,
+            "[:else, 5, 15, 6, 15, 25]": 63
           },
           "[:unless, 6, 28, 4, 30, 7]": {
             "[:else, 7, 28, 4, 30, 7]": 68,
             "[:then, 8, 29, 6, 29, 81]": 5
           },
           "[:if, 9, 35, 4, 35, 64]": {
-            "[:then, 10, 35, 4, 35, 50]": 94,
-            "[:else, 11, 35, 4, 35, 64]": 75
+            "[:then, 10, 35, 4, 35, 50]": 93,
+            "[:else, 11, 35, 4, 35, 64]": 63
           }
         }
       },
-      "/home/konkecodes/vision/app/controllers/comments_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/comments_controller.rb": {
         "lines": [
           1,
           1,
@@ -304,7 +311,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/controllers/follows_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/follows_controller.rb": {
         "lines": [
           1,
           1,
@@ -374,7 +381,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/controllers/likes_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/likes_controller.rb": {
         "lines": [
           1,
           1,
@@ -406,7 +413,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/controllers/mentions_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/mentions_controller.rb": {
         "lines": [
           1,
           1,
@@ -419,7 +426,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/controllers/notifications_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/notifications_controller.rb": {
         "lines": [
           1,
           1,
@@ -435,7 +442,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/controllers/saved_pins_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/saved_pins_controller.rb": {
         "lines": [
           1,
           1,
@@ -478,7 +485,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/controllers/sessions_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/sessions_controller.rb": {
         "lines": [
           1,
           1,
@@ -486,18 +493,28 @@
           1,
           null,
           1,
-          63,
+          49,
           null,
           null,
           null,
           null,
-          63,
-          62,
-          62,
           null,
-          1,
-          1,
+          49,
+          3,
+          3,
+          3,
           null,
+          null,
+          null,
+          46,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          46,
+          46,
           null,
           null,
           1,
@@ -507,13 +524,17 @@
           null
         ],
         "branches": {
-          "[:if, 0, 12, 4, 18, 7]": {
-            "[:then, 1, 13, 6, 14, 70]": 62,
-            "[:else, 2, 16, 6, 17, 48]": 1
+          "[:unless, 0, 13, 4, 17, 7]": {
+            "[:else, 1, 13, 4, 17, 7]": 46,
+            "[:then, 2, 14, 6, 16, 12]": 3
+          },
+          "[:unless, 3, 20, 4, 24, 7]": {
+            "[:else, 4, 20, 4, 24, 7]": 46,
+            "[:then, 5, 21, 6, 23, 12]": 0
           }
         }
       },
-      "/home/konkecodes/vision/app/controllers/users_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/users_controller.rb": {
         "lines": [
           1,
           1,
@@ -538,12 +559,11 @@
           1,
           3,
           null,
-          3,
           2,
-          2,
+          null,
           null,
           1,
-          null,
+          1,
           null,
           null,
           1,
@@ -585,25 +605,21 @@
           null
         ],
         "branches": {
-          "[:if, 0, 24, 4, 29, 7]": {
-            "[:then, 1, 25, 6, 26, 76]": 2,
-            "[:else, 2, 28, 6, 28, 49]": 1
+          "[:if, 0, 34, 4, 38, 7]": {
+            "[:then, 1, 35, 6, 35, 75]": 1,
+            "[:else, 2, 37, 6, 37, 49]": 0
           },
-          "[:if, 3, 35, 4, 39, 7]": {
-            "[:then, 4, 36, 6, 36, 75]": 1,
-            "[:else, 5, 38, 6, 38, 50]": 0
+          "[:if, 3, 54, 4, 54, 51]": {
+            "[:then, 4, 54, 4, 54, 10]": 0,
+            "[:else, 5, 54, 4, 54, 51]": 3
           },
-          "[:if, 6, 55, 4, 55, 51]": {
-            "[:then, 7, 55, 4, 55, 10]": 0,
-            "[:else, 8, 55, 4, 55, 51]": 3
-          },
-          "[:unless, 9, 56, 4, 56, 100]": {
-            "[:else, 10, 56, 4, 56, 100]": 2,
-            "[:then, 11, 56, 4, 56, 71]": 1
+          "[:unless, 6, 55, 4, 55, 100]": {
+            "[:else, 7, 55, 4, 55, 100]": 2,
+            "[:then, 8, 55, 4, 55, 71]": 1
           }
         }
       },
-      "/home/konkecodes/vision/app/models/collection.rb": {
+      "/home/konkecodes/Vision/app/models/collection.rb": {
         "lines": [
           1,
           1,
@@ -616,7 +632,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/models/application_record.rb": {
+      "/home/konkecodes/Vision/app/models/application_record.rb": {
         "lines": [
           1,
           1,
@@ -628,7 +644,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/models/comment.rb": {
+      "/home/konkecodes/Vision/app/models/comment.rb": {
         "lines": [
           1,
           1,
@@ -695,7 +711,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/models/like.rb": {
+      "/home/konkecodes/Vision/app/models/like.rb": {
         "lines": [
           1,
           1,
@@ -706,7 +722,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/models/notification.rb": {
+      "/home/konkecodes/Vision/app/models/notification.rb": {
         "lines": [
           1,
           1,
@@ -722,7 +738,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/models/pin.rb": {
+      "/home/konkecodes/Vision/app/models/pin.rb": {
         "lines": [
           1,
           1,
@@ -884,7 +900,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/models/pin_tag.rb": {
+      "/home/konkecodes/Vision/app/models/pin_tag.rb": {
         "lines": [
           1,
           1,
@@ -896,7 +912,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/models/repost.rb": {
+      "/home/konkecodes/Vision/app/models/repost.rb": {
         "lines": [
           1,
           1,
@@ -907,7 +923,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/models/saved_pin.rb": {
+      "/home/konkecodes/Vision/app/models/saved_pin.rb": {
         "lines": [
           1,
           1,
@@ -919,7 +935,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/models/search_history.rb": {
+      "/home/konkecodes/Vision/app/models/search_history.rb": {
         "lines": [
           1,
           1,
@@ -928,7 +944,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/models/user.rb": {
+      "/home/konkecodes/Vision/app/models/user.rb": {
         "lines": [
           1,
           1,
@@ -952,7 +968,7 @@
           1,
           null,
           1,
-          546,
+          570,
           null,
           null,
           null,
@@ -1082,11 +1098,18 @@
           1,
           0,
           null,
+          null,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
           null
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/models/video_view.rb": {
+      "/home/konkecodes/Vision/app/models/video_view.rb": {
         "lines": [
           1,
           1,
@@ -1095,24 +1118,47 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/services/sessions/authenticate.rb": {
+      "/home/konkecodes/Vision/app/services/users/email_verification_service.rb": {
         "lines": [
           1,
           1,
           1,
-          63,
+          3,
           null,
           null,
           1,
-          63,
-          63,
+          3,
+          null,
+          null,
+          null,
           null,
           null,
           1,
-          63,
-          63,
           null,
-          62,
+          1,
+          null,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/konkecodes/Vision/app/services/sessions/authenticate.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          49,
+          null,
+          null,
+          1,
+          49,
+          49,
+          null,
+          null,
+          1,
+          49,
+          49,
+          null,
+          46,
           null,
           null,
           1,
@@ -1123,16 +1169,16 @@
         ],
         "branches": {
           "[:\"&.\", 0, 14, 24, 14, 52]": {
-            "[:then, 1, 14, 24, 14, 52]": 62,
-            "[:else, 2, 14, 24, 14, 52]": 1
+            "[:then, 1, 14, 24, 14, 52]": 46,
+            "[:else, 2, 14, 24, 14, 52]": 3
           },
           "[:unless, 3, 14, 6, 14, 52]": {
-            "[:else, 4, 14, 6, 14, 52]": 62,
-            "[:then, 5, 14, 6, 14, 16]": 1
+            "[:else, 4, 14, 6, 14, 52]": 46,
+            "[:then, 5, 14, 6, 14, 16]": 3
           }
         }
       },
-      "/home/konkecodes/vision/app/controllers/pins_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/pins_controller.rb": {
         "lines": [
           1,
           1,
@@ -1240,7 +1286,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/comments/create.rb": {
+      "/home/konkecodes/Vision/app/services/comments/create.rb": {
         "lines": [
           1,
           1,
@@ -1352,7 +1398,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/comments/destroy.rb": {
+      "/home/konkecodes/Vision/app/services/comments/destroy.rb": {
         "lines": [
           1,
           1,
@@ -1370,7 +1416,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/models/follow.rb": {
+      "/home/konkecodes/Vision/app/models/follow.rb": {
         "lines": [
           1,
           1,
@@ -1396,7 +1442,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/follows/create.rb": {
+      "/home/konkecodes/Vision/app/services/follows/create.rb": {
         "lines": [
           1,
           1,
@@ -1441,7 +1487,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/follows/destroy.rb": {
+      "/home/konkecodes/Vision/app/services/follows/destroy.rb": {
         "lines": [
           1,
           1,
@@ -1468,7 +1514,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/services/likes/create.rb": {
+      "/home/konkecodes/Vision/app/services/likes/create.rb": {
         "lines": [
           1,
           1,
@@ -1490,6 +1536,7 @@
           1,
           null,
           1,
+          null,
           null,
           1,
           4,
@@ -1520,17 +1567,17 @@
           null
         ],
         "branches": {
-          "[:if, 0, 23, 6, 23, 40]": {
-            "[:then, 1, 23, 6, 23, 12]": 4,
-            "[:else, 2, 23, 6, 23, 40]": 0
+          "[:if, 0, 24, 6, 24, 40]": {
+            "[:then, 1, 24, 6, 24, 12]": 4,
+            "[:else, 2, 24, 6, 24, 40]": 0
           },
-          "[:if, 3, 36, 8, 36, 36]": {
-            "[:then, 4, 36, 8, 36, 12]": 0,
-            "[:else, 5, 36, 8, 36, 36]": 0
+          "[:if, 3, 37, 8, 37, 36]": {
+            "[:then, 4, 37, 8, 37, 12]": 0,
+            "[:else, 5, 37, 8, 37, 36]": 0
           }
         }
       },
-      "/home/konkecodes/vision/app/services/mentions/search.rb": {
+      "/home/konkecodes/Vision/app/services/mentions/search.rb": {
         "lines": [
           1,
           1,
@@ -1583,7 +1630,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/notifications/mark_all_as_read.rb": {
+      "/home/konkecodes/Vision/app/services/notifications/mark_all_as_read.rb": {
         "lines": [
           1,
           1,
@@ -1595,7 +1642,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/services/saved_pins/create.rb": {
+      "/home/konkecodes/Vision/app/services/saved_pins/create.rb": {
         "lines": [
           1,
           1,
@@ -1668,7 +1715,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/saved_pins/destroy.rb": {
+      "/home/konkecodes/Vision/app/services/saved_pins/destroy.rb": {
         "lines": [
           1,
           1,
@@ -1683,7 +1730,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/services/users/register.rb": {
+      "/home/konkecodes/Vision/app/services/users/register.rb": {
         "lines": [
           1,
           1,
@@ -1697,25 +1744,18 @@
           null,
           1,
           3,
-          3,
+          null,
+          2,
+          2,
           null,
           2,
           null,
           null,
-          1,
-          null,
-          1,
-          null,
           null
         ],
-        "branches": {
-          "[:unless, 0, 13, 6, 13, 34]": {
-            "[:else, 1, 13, 6, 13, 34]": 2,
-            "[:then, 2, 13, 6, 13, 17]": 1
-          }
-        }
+        "branches": {}
       },
-      "/home/konkecodes/vision/app/controllers/collections_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/collections_controller.rb": {
         "lines": [
           1,
           1,
@@ -1788,7 +1828,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/collections/create.rb": {
+      "/home/konkecodes/Vision/app/services/collections/create.rb": {
         "lines": [
           1,
           1,
@@ -1829,7 +1869,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/collections/update.rb": {
+      "/home/konkecodes/Vision/app/services/collections/update.rb": {
         "lines": [
           1,
           1,
@@ -1854,7 +1894,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/services/collections/remove_pin.rb": {
+      "/home/konkecodes/Vision/app/services/collections/remove_pin.rb": {
         "lines": [
           1,
           1,
@@ -1885,7 +1925,35 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/controllers/insights_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/email_verifications_controller.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null,
+          1,
+          0,
+          0,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null
+        ],
+        "branches": {
+          "[:if, 0, 5, 4, 8, 7]": {
+            "[:then, 1, 6, 6, 7, 12]": 0,
+            "[:else, 2, 5, 4, 8, 7]": 1
+          }
+        }
+      },
+      "/home/konkecodes/Vision/app/controllers/insights_controller.rb": {
         "lines": [
           1,
           1,
@@ -1907,7 +1975,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/services/insights/overview.rb": {
+      "/home/konkecodes/Vision/app/services/insights/overview.rb": {
         "lines": [
           1,
           1,
@@ -1978,7 +2046,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/pins/create.rb": {
+      "/home/konkecodes/Vision/app/services/pins/create.rb": {
         "lines": [
           1,
           1,
@@ -2045,7 +2113,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/pins/track_video_view.rb": {
+      "/home/konkecodes/Vision/app/services/pins/track_video_view.rb": {
         "lines": [
           1,
           1,
@@ -2072,7 +2140,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/pins/destroy.rb": {
+      "/home/konkecodes/Vision/app/services/pins/destroy.rb": {
         "lines": [
           1,
           1,
@@ -2090,7 +2158,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/pins/search.rb": {
+      "/home/konkecodes/Vision/app/services/pins/search.rb": {
         "lines": [
           1,
           1,
@@ -2113,7 +2181,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/controllers/reposts_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/reposts_controller.rb": {
         "lines": [
           1,
           1,
@@ -2144,7 +2212,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/reposts/create.rb": {
+      "/home/konkecodes/Vision/app/services/reposts/create.rb": {
         "lines": [
           1,
           1,
@@ -2206,7 +2274,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/reposts/destroy.rb": {
+      "/home/konkecodes/Vision/app/services/reposts/destroy.rb": {
         "lines": [
           1,
           1,
@@ -2231,7 +2299,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/controllers/search_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/search_controller.rb": {
         "lines": [
           1,
           1,
@@ -2258,7 +2326,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/services/search/users.rb": {
+      "/home/konkecodes/Vision/app/services/search/users.rb": {
         "lines": [
           1,
           1,
@@ -2323,7 +2391,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/services/search/clear_history.rb": {
+      "/home/konkecodes/Vision/app/services/search/clear_history.rb": {
         "lines": [
           1,
           1,
@@ -2335,7 +2403,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/services/users/update_profile.rb": {
+      "/home/konkecodes/Vision/app/services/users/update_profile.rb": {
         "lines": [
           1,
           1,
@@ -2373,7 +2441,7 @@
           }
         }
       },
-      "/home/konkecodes/vision/app/controllers/video_views_controller.rb": {
+      "/home/konkecodes/Vision/app/controllers/video_views_controller.rb": {
         "lines": [
           1,
           1,
@@ -2398,7 +2466,7 @@
         ],
         "branches": {}
       },
-      "/home/konkecodes/vision/app/services/video_views/update.rb": {
+      "/home/konkecodes/Vision/app/services/video_views/update.rb": {
         "lines": [
           1,
           1,
@@ -2427,6 +2495,6 @@
         "branches": {}
       }
     },
-    "timestamp": 1765913545
+    "timestamp": 1766130631
   }
 }

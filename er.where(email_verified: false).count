@@ -1,0 +1,35 @@
+=> 
+[[32m#<User:0x00007d70bcc5e770[0m
+  username: [31m[1m"[0m[31mkaGulwa[0m[31m[1m"[0m,
+  email: [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m,
+  password_digest: [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m,
+  created_at:
+   [31m[1m"[0m[31m2025-12-17 16:21:56.101598000 +0000[0m[31m[1m"[0m,
+  updated_at:
+   [31m[1m"[0m[31m2025-12-17 16:21:56.144691000 +0000[0m[31m[1m"[0m,
+  id:
+   [31m[1m"[0m[31mca7d12a5-577e-4d31-a359-b153560ca576[0m[31m[1m"[0m,
+  uid:
+   [31m[1m"[0m[31mc898e8df-c549-47fe-bc5f-a9e85972e52b[0m[31m[1m"[0m,
+  email_verified: [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m,
+  email_verification_token:
+   [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m,
+  email_verification_sent_at:
+   [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m[32m>[0m,
+ [32m#<User:0x00007d70c6502580[0m
+  username: [31m[1m"[0m[31mkaGulwaKonke[0m[31m[1m"[0m,
+  email: [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m,
+  password_digest: [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m,
+  created_at:
+   [31m[1m"[0m[31m2025-12-17 16:34:09.329175000 +0000[0m[31m[1m"[0m,
+  updated_at:
+   [31m[1m"[0m[31m2025-12-17 16:34:09.369251000 +0000[0m[31m[1m"[0m,
+  id:
+   [31m[1m"[0m[31m413ec58f-23cf-4c98-9449-4bbeeb54bc74[0m[31m[1m"[0m,
+  uid:
+   [31m[1m"[0m[31m9330aa3e-32e7-4028-9069-64c5f3afe40a[0m[31m[1m"[0m,
+  email_verified: [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m,
+  email_verification_token:
+   [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m,
+  email_verification_sent_at:
+   [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m[32m>[0m]
