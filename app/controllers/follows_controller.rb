@@ -3,63 +3,54 @@ class FollowsController < ApplicationController
   before_action :set_user
 
   def create
-    @user = Follows::Create.call(
-      follower: current_user, #passes logged-in user as follower
-      followed: @user         #passes target user from set_user
-    )
-
-    respond_to do |format|
-      format.turbo_stream { render_follow_updates }
-      format.html do
-        redirect_to user_path(@user),
-                    notice: "You are now following #{@user.username}!"
-      end
-    end
+    follow(:create, "You are now following #{@user.username}!")
   end
 
   def destroy
-    @user = Follows::Destroy.call(
-      follower: current_user,
-      followed: @user
-    )
-
-    respond_to do |format|
-      format.turbo_stream { render_follow_updates }
-      format.html do
-        redirect_to user_path(@user),
-                    notice: "You unfollowed #{@user.username}."
-      end
-    end
+    follow(:destroy, "You unfollowed #{@user.username}.")
   end
 
   private
+
+  def follow(action, notice_message)
+    @user =
+      if action == :create
+        Follows::Create.call(follower: current_user, followed: @user)
+      else
+        Follows::Destroy.call(follower: current_user, followed: @user)
+      end
+
+    respond_to do |format|
+      format.turbo_stream { render_follow_updates }
+      format.html { redirect_to user_path(@user), notice: notice_message }
+    end
+  end
 
   def set_user
     @user = User.find_by!(uid: params[:user_id])
   end
 
   def render_follow_updates
-    sanitized_uid = @user.uid.delete("-")
+    sanitized_uid   = @user.uid.delete("-")
+    follower_count  = @user.followers.count
 
     render turbo_stream: [
-      turbo_stream.replace(
-        "profile_follow_button_#{sanitized_uid}",
-        partial: "users/follow_button",
-        locals: { user: @user, page: "profile" }
-      ),
-      turbo_stream.replace(
-        "explore_follow_button_#{sanitized_uid}",
-        partial: "users/follow_button",
-        locals: { user: @user, page: "explore" }
-      ),
-      turbo_stream.update(
-        "profile_follower_count_#{sanitized_uid}",
-        @user.followers.count
-      ),
-      turbo_stream.update(
-        "explore_follower_count_#{sanitized_uid}",
-        @user.followers.count
-      )
+      follow_button_stream("profile", sanitized_uid),
+      follow_button_stream("explore", sanitized_uid),
+      follower_count_stream("profile", sanitized_uid, follower_count),
+      follower_count_stream("explore", sanitized_uid, follower_count)
     ]
+  end
+
+  def follow_button_stream(page, uid)
+    turbo_stream.replace(
+      "#{page}_follow_button_#{uid}",
+      partial: "users/follow_button",
+      locals: { user: @user, page: page }
+    )
+  end
+
+  def follower_count_stream(page, uid, count)
+    turbo_stream.update("#{page}_follower_count_#{uid}", count)
   end
 end

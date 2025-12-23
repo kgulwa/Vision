@@ -40,6 +40,12 @@ Rails.application.routes.draw do
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy', as: :logout
 
+  # PASSWORD RESET
+  get  "/forgot-password", to: "password_resets#new",    as: :forgot_password
+  post "/forgot-password", to: "password_resets#create"
+  get  "/reset-password",  to: "password_resets#edit",   as: :reset_password
+  patch "/reset-password", to: "password_resets#update"
+
   # EMAIL VERIFICATION
   get "/verify-email", to: "email_verifications#update", as: :verify_email
 

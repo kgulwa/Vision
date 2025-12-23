@@ -4,14 +4,11 @@ class UsersController < ApplicationController
   before_action :authorize_user, only: [:edit, :update, :destroy]
 
   def show
-    @pins = @user.pins.order(created_at: :desc)
-    @reposted_pins = @user.reposted_pins.order(created_at: :desc)
-    @collections = @user.collections
-    @tagged_pins = @user.tagged_pins.includes(:user).order(created_at: :desc)
+    @profile = build_profile(@user)
   end
 
   def tagged
-    @pins = @user.tagged_pins.includes(:user).order(created_at: :desc)
+    @pins = tagged_pins
   end
 
   def new
@@ -23,8 +20,8 @@ class UsersController < ApplicationController
 
     redirect_to login_path,
                 notice: "Account created! Please check your email to verify your account."
-  rescue ActiveRecord::RecordInvalid => e
-    @user = e.record
+  rescue ActiveRecord::RecordInvalid => error
+    @user = error.record
     render :new, status: :unprocessable_entity
   end
 
@@ -47,12 +44,29 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    @user = User.find_by(id: params[:id]) || User.find_by!(uid: params[:id])
+    identifier = params[:id]
+    @user = User.find_by(id: identifier) || User.find_by!(uid: identifier)
   end
 
   def authorize_user
     return if %w[show tagged].include?(action_name)
-    redirect_to root_path, alert: "You can only edit your own profile." unless @user == current_user
+
+    unless @user == current_user
+      redirect_to root_path, alert: "You can only edit your own profile."
+    end
+  end
+
+  def build_profile(user)
+    {
+      pins: user.pins.order(created_at: :desc),
+      reposted_pins: user.reposted_pins.order(created_at: :desc),
+      collections: user.collections,
+      tagged_pins: tagged_pins
+    }
+  end
+
+  def tagged_pins
+    @user.tagged_pins.includes(:user).order(created_at: :desc)
   end
 
   def user_params

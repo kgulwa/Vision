@@ -15,18 +15,9 @@ class CommentsController < ApplicationController
     )
 
     if @comment.persisted?
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to pin_path(@pin), notice: "Comment created." }
-      end
+      success_response("Comment created.")
     else
-      respond_to do |format|
-        format.turbo_stream { head :unprocessable_entity }
-        format.html do
-          redirect_to pin_path(@pin),
-                      alert: @comment.errors.full_messages.join(", ")
-        end
-      end
+      error_response(@comment.errors.full_messages.join(", "))
     end
   end
 
@@ -35,25 +26,15 @@ class CommentsController < ApplicationController
 
   def update
     if @comment.update(comment_params)
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to pin_path(@pin), notice: "Comment updated." }
-      end
+      success_response("Comment updated.")
     else
-      respond_to do |format|
-        format.turbo_stream { head :unprocessable_entity }
-        format.html { render :edit, status: :unprocessable_entity }
-      end
+      respond_with_unprocessable_entity
     end
   end
 
   def destroy
     Comments::Destroy.call(comment: @comment, user: current_user)
-
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to pin_path(@pin) }
-    end
+    success_response
   end
 
   private
@@ -68,5 +49,28 @@ class CommentsController < ApplicationController
 
   def comment_params
     params.require(:comment).permit(:content, :parent_id)
+  end
+
+  # ---- Response helpers ----
+
+  def success_response(message = nil)
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to pin_path(@pin), notice: message }
+    end
+  end
+
+  def error_response(message)
+    respond_to do |format|
+      format.turbo_stream { head :unprocessable_entity }
+      format.html { redirect_to pin_path(@pin), alert: message }
+    end
+  end
+
+  def respond_with_unprocessable_entity
+    respond_to do |format|
+      format.turbo_stream { head :unprocessable_entity }
+      format.html { render :edit, status: :unprocessable_entity }
+    end
   end
 end
