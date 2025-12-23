@@ -5,6 +5,12 @@ class UsersController < ApplicationController
 
   def show
     @profile = build_profile(@user)
+
+    # 🔒 SAFETY: ensure view variables always exist
+    @pins          = @profile[:pins]
+    @reposted_pins = @profile[:reposted_pins]
+    @collections   = @profile[:collections]
+    @tagged_pins   = @profile[:tagged_pins]
   end
 
   def tagged
@@ -51,22 +57,21 @@ class UsersController < ApplicationController
   def authorize_user
     return if %w[show tagged].include?(action_name)
 
-    unless @user == current_user
-      redirect_to root_path, alert: "You can only edit your own profile."
-    end
+    redirect_to root_path, alert: "You can only edit your own profile." unless @user == current_user
   end
 
   def build_profile(user)
     {
-      pins: user.pins.order(created_at: :desc),
-      reposted_pins: user.reposted_pins.order(created_at: :desc),
-      collections: user.collections,
+      # ✅ ALWAYS arrays — never nil
+      pins: user.pins.order(created_at: :desc).to_a,
+      reposted_pins: user.reposted_pins.order(created_at: :desc).to_a,
+      collections: user.collections.to_a,
       tagged_pins: tagged_pins
     }
   end
 
   def tagged_pins
-    @user.tagged_pins.includes(:user).order(created_at: :desc)
+    @user.tagged_pins.includes(:user).order(created_at: :desc).to_a
   end
 
   def user_params
