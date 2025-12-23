@@ -9,25 +9,21 @@ class ApplicationController < ActionController::Base
   def current_user
     return @current_user if defined?(@current_user)
 
-    if session[:user_id].present?
-      @current_user = User.find_by(id: session[:user_id])
-    else
-      @current_user = nil
-    end
+    user_id = session[:user_id]
+    @current_user = user_id && User.find_by(id: user_id)
   end
 
   # Boolean for login status
   def logged_in?
-    !!current_user
+    current_user.present?
   end
 
   private
 
-  
   def require_login
-    unless logged_in?
-      redirect_to login_path, alert: "You must be logged in to access this page."
-    end
+    return if logged_in?
+
+    redirect_to login_path, alert: "You must be logged in to access this page."
   end
 
   # Prevents caching pages when user is logged in

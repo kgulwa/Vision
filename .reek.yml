@@ -1,0 +1,22 @@
+detectors:
+  IrresponsibleModule:
+    enabled: false
+
+  InstanceVariableAssumption:
+    enabled: false
+
+  FeatureEnvy:
+    enabled: true
+
+  TooManyStatements:
+    max_statements: 8
+
+  DuplicateMethodCall:
+    enabled: true
+
+  NilCheck:
+    enabled: true
+
+exclude_paths:
+  - db/migrate
+  - app/helpers
