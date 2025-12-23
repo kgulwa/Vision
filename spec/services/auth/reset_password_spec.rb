@@ -13,7 +13,11 @@ RSpec.describe Auth::ResetPassword do
   end
 
   it "resets the password with a valid token" do
-    described_class.call(token: "validtoken", password: "newpassword")
+    described_class.call(
+      token: "validtoken",
+      password: "newpassword",
+      password_confirmation: "newpassword"
+    )
 
     user.reload
     expect(user.authenticate("newpassword")).to be_truthy
@@ -21,7 +25,11 @@ RSpec.describe Auth::ResetPassword do
   end
 
   it "fails with invalid token" do
-    result = described_class.call(token: "badtoken", password: "newpassword")
+    result = described_class.call(
+      token: "badtoken",
+      password: "newpassword",
+      password_confirmation: "newpassword"
+    )
 
     expect(result).to be_nil
   end

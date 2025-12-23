@@ -1,9 +1,9 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Users", type: :request do
   describe "POST /users" do
     context "with valid parameters" do
-      it "creates a user and logs them in" do
+      it "creates a user and redirects to login" do
         expect {
           post users_path, params: {
             user: {
@@ -15,7 +15,8 @@ RSpec.describe "Users", type: :request do
           }
         }.to change(User, :count).by(1)
 
-        expect(response).to redirect_to(pins_path)
+        #  User is NOT auto-logged in anymore
+        expect(response).to redirect_to(login_path)
       end
     end
 
