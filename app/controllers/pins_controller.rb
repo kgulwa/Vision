@@ -10,16 +10,10 @@ class PinsController < ApplicationController
   def show
     redirect_to pins_path, alert: "Pin not found" and return unless @pin.user.present?
 
-    if logged_in?
-      Pins::TrackVideoView.call(user: current_user, pin: @pin)
-    end
+    Pins::TrackVideoView.call(user: current_user, pin: @pin) if logged_in?
 
-    @comments = @pin.comments
-                    .includes(:user, :replies)
-                    .select do |comment|
-                      comment.user.present? &&
-                      (comment.parent.nil? || comment.parent.user.present?)
-                    end
+    presenter = Pins::ShowPresenter.new(pin: @pin)
+    @comments = presenter.comments
   end
 
   def new

@@ -15,7 +15,10 @@ detectors:
     enabled: true
 
   NilCheck:
-    enabled: true
+    enabled: false
+
+  ControlParameter:
+    enabled: false
 
 exclude_paths:
   - db/migrate

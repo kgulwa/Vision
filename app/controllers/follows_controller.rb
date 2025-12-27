@@ -3,36 +3,43 @@ class FollowsController < ApplicationController
   before_action :set_user
 
   def create
-    follow(:create, "You are now following #{@user.username}!")
+    Follows::Create.call(
+      follower: current_user,
+      followed: @user
+    )
+
+    respond_with_follow_update(
+      notice: "You are now following #{@user.username}!"
+    )
   end
 
   def destroy
-    follow(:destroy, "You unfollowed #{@user.username}.")
+    Follows::Destroy.call(
+      follower: current_user,
+      followed: @user
+    )
+
+    respond_with_follow_update(
+      notice: "You unfollowed #{@user.username}."
+    )
   end
 
   private
-
-  def follow(action, notice_message)
-    @user =
-      if action == :create
-        Follows::Create.call(follower: current_user, followed: @user)
-      else
-        Follows::Destroy.call(follower: current_user, followed: @user)
-      end
-
-    respond_to do |format|
-      format.turbo_stream { render_follow_updates }
-      format.html { redirect_to user_path(@user), notice: notice_message }
-    end
-  end
 
   def set_user
     @user = User.find_by!(uid: params[:user_id])
   end
 
+  def respond_with_follow_update(notice:)
+    respond_to do |format|
+      format.turbo_stream { render_follow_updates }
+      format.html { redirect_to user_path(@user), notice: notice }
+    end
+  end
+
   def render_follow_updates
-    sanitized_uid   = @user.uid.delete("-")
-    follower_count  = @user.followers.count
+    sanitized_uid  = @user.uid.delete("-")
+    follower_count = @user.followers.count
 
     render turbo_stream: [
       follow_button_stream("profile", sanitized_uid),

@@ -16,10 +16,8 @@ RSpec.describe "Sessions", type: :request do
     context "with valid credentials" do
       it "logs in and redirects to pins" do
         post login_path, params: {
-          user: {
-            username: user.username,
-            password: "password123"
-          }
+          username: user.username,
+          password: "password123"
         }
 
         expect(response).to redirect_to(pins_path)
@@ -31,10 +29,8 @@ RSpec.describe "Sessions", type: :request do
   describe "DELETE /logout" do
     before do
       post login_path, params: {
-        user: {
-          username: user.username,
-          password: "password123"
-        }
+        username: user.username,
+        password: "password123"
       }
     end
 
