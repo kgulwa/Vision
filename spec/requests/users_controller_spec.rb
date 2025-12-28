@@ -7,7 +7,7 @@ RSpec.describe "UsersController", type: :request do
   describe "GET /users/:id/edit" do
     it "redirects if not logged in" do
       get edit_user_path(user.id)
-      expect(response).to redirect_to(login_path)  # UPDATED
+      expect(response).to redirect_to(login_path)
     end
   end
 

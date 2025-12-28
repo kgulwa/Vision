@@ -28,7 +28,7 @@ RSpec.describe "VideoViewsController", type: :request do
   end
 
   before do
-    # ✅ BYPASS AUTH COMPLETELY
+    #BYPASS AUTH COMPLETELY
     allow_any_instance_of(VideoViewsController)
       .to receive(:require_login)
       .and_return(true)

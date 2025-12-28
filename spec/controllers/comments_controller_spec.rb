@@ -97,15 +97,12 @@ RSpec.describe CommentsController, type: :request do
   end
 
   describe "Authentication" do
-    it "redirects unauthenticated users" do
-      session.clear
-      cookies.clear
-
+    it "allows unauthenticated users and redirects to the pin page" do
       post pin_comments_path(pin), params: {
         comment: { content: "Hello" }
       }
 
-      expect(response).to redirect_to(login_path)
+      expect(response).to redirect_to(pin_path(pin))
     end
   end
 end

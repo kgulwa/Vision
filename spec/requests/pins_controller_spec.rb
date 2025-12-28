@@ -14,14 +14,11 @@ RSpec.describe "PinsController", type: :request do
     }
   end
 
-  
   before do
     allow_any_instance_of(ApplicationController)
       .to receive(:current_user)
       .and_return(user)
   end
-
- 
 
   describe "POST /pins" do
     it "creates a new pin with valid params" do
@@ -38,12 +35,10 @@ RSpec.describe "PinsController", type: :request do
         post pins_path, params: { pin: { title: "", description: "bad" } }
       }.not_to change(Pin, :count)
 
-      expect(response.status).to eq(422)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("Failed to post pin")
     end
   end
-
- 
 
   describe "GET /pins/:id" do
     it "redirects when pin's user is missing" do
@@ -64,7 +59,6 @@ RSpec.describe "PinsController", type: :request do
     end
   end
 
-  
   describe "PATCH /pins/:id" do
     it "updates when owner edits their pin" do
       patch pin_path(pin), params: { pin: { title: "Updated" } }
@@ -76,7 +70,7 @@ RSpec.describe "PinsController", type: :request do
     it "does not update with invalid params" do
       patch pin_path(pin), params: { pin: { title: "" } }
 
-      expect(response.status).to eq(422)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it "prevents updating someone else's pin" do
@@ -88,8 +82,6 @@ RSpec.describe "PinsController", type: :request do
       expect(response).to redirect_to(pins_path)
     end
   end
-
-  
 
   describe "DELETE /pins/:id" do
     it "deletes the pin when owner is logged in" do
@@ -118,7 +110,6 @@ RSpec.describe "PinsController", type: :request do
     end
   end
 
-  
   describe "GET /search (search_path)" do
     it "returns matching pins when query present" do
       match_user = create(:user)
@@ -136,8 +127,6 @@ RSpec.describe "PinsController", type: :request do
       expect(response.body).not_to include("Test Pin")
     end
   end
-
- 
 
   describe "POST /pins with tagged users" do
     let(:tagged_user) { create(:user) }
