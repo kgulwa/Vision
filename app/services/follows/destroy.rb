@@ -1,10 +1,11 @@
 module Follows
-  class Destroy
+  class Destroy < Services::BaseService
     def self.call(follower:, followed:)
       new(follower, followed).call
     end
 
     def initialize(follower, followed)
+      super()
       @follower = follower
       @followed = followed
     end

@@ -1,10 +1,11 @@
 module Likes
-  class Create
+  class Create < Services::BaseService
     def self.call(user:, pin:)
       new(user, pin).call
     end
 
     def initialize(user, pin)
+      super()
       @user = user
       @pin = pin
     end
@@ -17,8 +18,7 @@ module Likes
 
     private
 
-    attr_reader :user, :pin, :name
-
+    attr_reader :user, :pin
 
     def notify_pin_owner
       return if pin.user.uid == user.uid

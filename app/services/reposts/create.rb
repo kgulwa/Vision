@@ -1,10 +1,11 @@
 module Reposts
-  class Create
+  class Create < Services::BaseService
     def self.call(user:, pin:)
       new(user, pin).call
     end
 
     def initialize(user, pin)
+      super()
       @user = user
       @pin = pin
     end
