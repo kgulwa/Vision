@@ -7,7 +7,7 @@ gem "turbo-rails"
 gem "stimulus-rails"
 gem "jbuilder"
 gem "jsbundling-rails"
-gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.21"
 gem "tzinfo-data", platforms: %i[windows jruby]
 gem "pg"                      # PostgreSQL
 gem "bootsnap", require: false
